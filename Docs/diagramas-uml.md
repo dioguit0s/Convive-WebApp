@@ -1,59 +1,5 @@
 # Diagramas UML - Convive
 
-Este documento apresenta diagramas UML em Mermaid para o conceito inicial do web app **Convive**.
-
-Como o repositório ainda não possui um documento textual detalhado além do nome do projeto, os diagramas abaixo adotam a seguinte premissa funcional: o Convive é um web app para apoiar a convivência em uma comunidade, permitindo cadastro e autenticação de usuários, publicação de comunicados, criação e participação em eventos, reserva de espaços compartilhados e registro de ocorrências.
-
-## Diagrama de Caso de Uso
-
-```mermaid
-flowchart LR
-    visitante["Ator: Visitante"]
-    morador["Ator: Morador"]
-    moderador["Ator: Moderador"]
-    admin["Ator: Administrador"]
-
-    subgraph sistema["Convive"]
-        cadastrar(("Cadastrar-se"))
-        autenticar(("Autenticar-se"))
-        atualizarPerfil(("Atualizar perfil"))
-        consultarComunicados(("Consultar comunicados"))
-        criarComunicado(("Criar comunicado"))
-        criarEvento(("Criar evento"))
-        participarEvento(("Participar de evento"))
-        reservarEspaco(("Reservar espaço"))
-        registrarOcorrencia(("Registrar ocorrência"))
-        moderarConteudo(("Moderar conteúdo"))
-        gerenciarUsuarios(("Gerenciar usuários"))
-        gerarRelatorios(("Gerar relatórios"))
-    end
-
-    visitante --> cadastrar
-    visitante --> autenticar
-
-    morador --> autenticar
-    morador --> atualizarPerfil
-    morador --> consultarComunicados
-    morador --> participarEvento
-    morador --> reservarEspaco
-    morador --> registrarOcorrencia
-
-    moderador --> criarComunicado
-    moderador --> criarEvento
-    moderador --> moderarConteudo
-    moderador --> consultarComunicados
-
-    admin --> gerenciarUsuarios
-    admin --> gerarRelatorios
-    admin --> moderarConteudo
-
-    participarEvento -. "<<include>>" .-> autenticar
-    reservarEspaco -. "<<include>>" .-> autenticar
-    registrarOcorrencia -. "<<include>>" .-> autenticar
-    criarEvento -. "<<include>>" .-> autenticar
-    criarComunicado -. "<<include>>" .-> autenticar
-```
-
 ## Diagrama de Classes
 
 ```mermaid
@@ -173,7 +119,7 @@ sequenceDiagram
     participant WebApp as Interface Web
     participant AuthController as Controlador de Autenticação
     participant UsuarioService as Serviço de Usuários
-    database Banco as Banco de Dados
+    participant Banco as Banco de Dados
 
     Note over Visitante,Banco: Início da interação
     Visitante->>WebApp: Preenche formulário de cadastro
@@ -214,7 +160,7 @@ sequenceDiagram
     participant WebApp as Interface Web
     participant ComunicadoController as Controlador de Comunicados
     participant ComunicadoService as Serviço de Comunicados
-    database Banco as Banco de Dados
+    participant Banco as Banco de Dados
     participant NotificacaoService as Serviço de Notificações
 
     Note over Moderador,NotificacaoService: Início da interação
@@ -260,7 +206,7 @@ sequenceDiagram
     participant WebApp as Interface Web
     participant EventoController as Controlador de Eventos
     participant EventoService as Serviço de Eventos
-    database Banco as Banco de Dados
+    participant Banco as Banco de Dados
     participant NotificacaoService as Serviço de Notificações
 
     Note over Morador,NotificacaoService: Início da interação
@@ -306,7 +252,7 @@ sequenceDiagram
     participant WebApp as Interface Web
     participant ReservaController as Controlador de Reservas
     participant ReservaService as Serviço de Reservas
-    database Banco as Banco de Dados
+    participant Banco as Banco de Dados
     participant AgendaService as Serviço de Agenda
     participant NotificacaoService as Serviço de Notificações
 
@@ -357,7 +303,7 @@ sequenceDiagram
     participant WebApp as Interface Web
     participant OcorrenciaController as Controlador de Ocorrências
     participant OcorrenciaService as Serviço de Ocorrências
-    database Banco as Banco de Dados
+    participant Banco as Banco de Dados
     participant ModeracaoService as Serviço de Moderação
     participant NotificacaoService as Serviço de Notificações
     actor Moderador
