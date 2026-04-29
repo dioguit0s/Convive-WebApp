@@ -174,9 +174,8 @@ sequenceDiagram
     participant AuthController as Controlador de Autenticação
     participant UsuarioService as Serviço de Usuários
     database Banco as Banco de Dados
-    participant EmailService as Serviço de E-mail
 
-    Note over Visitante,EmailService: Início da interação
+    Note over Visitante,Banco: Início da interação
     Visitante->>WebApp: Preenche formulário de cadastro
     activate WebApp
     WebApp->>AuthController: enviarCadastro(dados)
@@ -193,10 +192,6 @@ sequenceDiagram
         activate Banco
         Banco-->>UsuarioService: usuário criado
         deactivate Banco
-        UsuarioService->>EmailService: enviarConfirmacao(usuario)
-        activate EmailService
-        EmailService-->>UsuarioService: confirmação enviada
-        deactivate EmailService
         UsuarioService-->>AuthController: cadastro aprovado
     else E-mail já cadastrado
         UsuarioService-->>AuthController: erro de duplicidade
@@ -207,7 +202,7 @@ sequenceDiagram
     deactivate AuthController
     WebApp-->>Visitante: Exibe sucesso ou mensagem de erro
     deactivate WebApp
-    Note over Visitante,EmailService: Fim da interação
+    Note over Visitante,Banco: Fim da interação
 ```
 
 ### 2. Publicação de comunicado para a comunidade
