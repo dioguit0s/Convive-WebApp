@@ -15,7 +15,7 @@ classDiagram
     }
 
     class Morador {
-        +String unidade
+        +int apartamento
         +solicitarReserva(espaco, periodo)
         +registrarOcorrencia(descricao)
         +inscreverEmEvento(evento)
@@ -38,7 +38,6 @@ classDiagram
         +String conteudo
         +DateTime publicadoEm
         +publicar()
-        +arquivar()
     }
 
     class Evento {
@@ -65,7 +64,7 @@ classDiagram
         +String nome
         +int capacidade
         +boolean ativo
-        +verificarDisponibilidade(periodo)
+        +verificarDisponibilidade(data, horaInicio, horaFim)
     }
 
     class Reserva {
@@ -95,7 +94,7 @@ classDiagram
 
     Usuario <|-- Morador
     Usuario <|-- Moderador
-    Usuario <|-- Administrador
+    Moderador <|-- Administrador
 
     Moderador "1" --> "0..*" Comunicado : publica
     Moderador "1" --> "0..*" Evento : organiza
