@@ -2,19 +2,21 @@ package com.EC6.Convive.Model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.UUID;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "Reserva")
 public class Reserva {
     @Id
-    @GeneratedValue
-    private int id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(name = "inicio")
     private LocalDate inicio;
@@ -22,6 +24,7 @@ public class Reserva {
     @Column(name = "fim")
     private LocalDate fim;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusReserva status;
 
