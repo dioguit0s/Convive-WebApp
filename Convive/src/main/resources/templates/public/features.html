@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Funcionalidades - Convive</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script th:src="@{/js/tailwindTheme.js}"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <link rel="stylesheet" th:href="@{/css/landing.css}"/>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+
+<div th:replace="~{fragments/public/components :: navbar}"></div>
+
+<main class="flex-grow flex flex-col items-center w-full pt-24 pb-xl">
+
+    <section class="w-full max-w-5xl px-margin mb-xl text-center">
+        <h1 class="text-display font-display text-primary mb-6">Funcionalidades do Convive</h1>
+        <p class="text-body-lg font-body-lg text-on-surface-variant max-w-3xl mx-auto">
+            Descubra como o Convive transforma a gestão do seu condomínio, trazendo mais controle, organização e harmonia para o dia a dia de moradores e síndicos.
+        </p>
+    </section>
+
+    <section class="w-full max-w-7xl px-margin mb-xl">
+        <div class="flex flex-col items-center mb-12">
+            <span class="bg-surface-container text-primary font-label-md text-label-md px-4 py-1 rounded-full uppercase tracking-wider mb-4">Administração</span>
+            <h2 class="text-h1 font-h1 text-primary text-center">Acesso e Gestão</h2>
+            <p class="text-body-md font-body-md text-on-surface-variant text-center max-w-2xl mt-2">
+                Controle total sobre quem entra e sai, com visão estratégica e relatórios detalhados para uma gestão eficiente.
+            </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+            <div class="bg-surface-container-lowest rounded-xl p-lg border border-outline-variant shadow-sm hover:shadow-md transition-shadow">
+                <div class="bg-surface-container-low w-12 h-12 rounded-lg flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-primary text-2xl" data-icon="admin_panel_settings">admin_panel_settings</span>
+                </div>
+                <h3 class="text-h3 font-h3 text-primary mb-3">Controle de Acessos e Perfis</h3>
+                <p class="text-body-sm font-body-sm text-on-surface-variant">
+                    Gerencie permissões granulares para moradores, funcionários e visitantes. Garanta a segurança do condomínio com um sistema robusto de controle de acesso.
+                </p>
+            </div>
+            <div class="bg-surface-container-lowest rounded-xl p-lg border border-outline-variant shadow-sm hover:shadow-md transition-shadow">
+                <div class="bg-surface-container-low w-12 h-12 rounded-lg flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-primary text-2xl" data-icon="group">group</span>
+                </div>
+                <h3 class="text-h3 font-h3 text-primary mb-3">Gestão de Moradores</h3>
+                <p class="text-body-sm font-body-sm text-on-surface-variant">
+                    Mantenha um cadastro atualizado e organizado de todos os residentes, facilitando a comunicação e a resolução de pendências do dia a dia.
+                </p>
+            </div>
+            <div class="bg-surface-container-lowest rounded-xl p-lg border border-outline-variant shadow-sm hover:shadow-md transition-shadow md:col-span-2 flex flex-col md:flex-row gap-gutter items-center">
+                <div class="flex-1">
+                    <div class="bg-surface-container-low w-12 h-12 rounded-lg flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-primary text-2xl" data-icon="query_stats">query_stats</span>
+                    </div>
+                    <h3 class="text-h3 font-h3 text-primary mb-3">Dashboard Gerencial e Relatórios</h3>
+                    <p class="text-body-sm font-body-sm text-on-surface-variant mb-4">
+                        Tenha uma visão consolidada da saúde do condomínio. Acompanhe métricas de inadimplência, uso de espaços e ocorrências em tempo real com gráficos intuitivos.
+                    </p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center gap-2 text-body-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-secondary text-sm" data-icon="check_circle">check_circle</span> Visão geral instantânea
+                        </li>
+                        <li class="flex items-center gap-2 text-body-sm text-on-surface-variant">
+                            <span class="material-symbols-outlined text-secondary text-sm" data-icon="check_circle">check_circle</span> Exportação de dados
+                        </li>
+                    </ul>
+                </div>
+                <div class="flex-1 w-full h-48 bg-surface-variant rounded-lg flex items-center justify-center relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-surface-container to-surface-variant opacity-50"></div>
+                    <span class="material-symbols-outlined text-primary opacity-20 text-6xl" data-icon="bar_chart">bar_chart</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="w-full max-w-7xl px-margin mb-xl">
+        <div class="flex flex-col items-center mb-12">
+            <span class="bg-secondary-container text-on-secondary-container font-label-md text-label-md px-4 py-1 rounded-full uppercase tracking-wider mb-4">Conveniência</span>
+            <h2 class="text-h1 font-h1 text-primary text-center">Espaços Compartilhados</h2>
+            <p class="text-body-md font-body-md text-on-surface-variant text-center max-w-2xl mt-2">
+                Organização e facilidade na reserva de áreas comuns, evitando conflitos e garantindo o uso justo por todos os moradores.
+            </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+            <div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col h-full">
+                <div class="h-32 bg-surface-container-high flex items-center justify-center relative">
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent to-surface-variant opacity-30"></div>
+                    <span class="material-symbols-outlined text-primary text-4xl" data-icon="calendar_month">calendar_month</span>
+                </div>
+                <div class="p-lg flex-grow flex flex-col">
+                    <h3 class="text-h3 font-h3 text-primary mb-3">Reserva Descomplicada</h3>
+                    <p class="text-body-sm font-body-sm text-on-surface-variant flex-grow">
+                        Agende salões de festas, churrasqueiras e quadras em poucos cliques. O sistema verifica a disponibilidade instantaneamente.
+                    </p>
+                </div>
+            </div>
+            <div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col h-full">
+                <div class="h-32 bg-surface-container-high flex items-center justify-center relative">
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent to-surface-variant opacity-30"></div>
+                    <span class="material-symbols-outlined text-primary text-4xl" data-icon="gavel">gavel</span>
+                </div>
+                <div class="p-lg flex-grow flex flex-col">
+                    <h3 class="text-h3 font-h3 text-primary mb-3">Prevenção de Conflitos</h3>
+                    <p class="text-body-sm font-body-sm text-on-surface-variant flex-grow">
+                        Regras claras e bloqueios automáticos para inadimplentes ou moradores com penalidades, garantindo justiça no uso.
+                    </p>
+                </div>
+            </div>
+            <div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col h-full">
+                <div class="h-32 bg-surface-container-high flex items-center justify-center relative">
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent to-surface-variant opacity-30"></div>
+                    <span class="material-symbols-outlined text-primary text-4xl" data-icon="rule">rule</span>
+                </div>
+                <div class="p-lg flex-grow flex flex-col">
+                    <h3 class="text-h3 font-h3 text-primary mb-3">Agenda e Moderação</h3>
+                    <p class="text-body-sm font-body-sm text-on-surface-variant flex-grow">
+                        O síndico tem controle total sobre as reservas, podendo aprovar, cancelar ou moderar solicitações especiais de forma ágil.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="w-full max-w-7xl px-margin mb-lg">
+        <div class="flex flex-col items-center mb-12">
+            <span class="bg-error-container text-on-error-container font-label-md text-label-md px-4 py-1 rounded-full uppercase tracking-wider mb-4">Comunicação</span>
+            <h2 class="text-h1 font-h1 text-primary text-center">Comunidade e Suporte</h2>
+            <p class="text-body-md font-body-md text-on-surface-variant text-center max-w-2xl mt-2">
+                Canais diretos e eficientes para manter todos informados e resolver problemas rapidamente.
+            </p>
+        </div>
+        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-outline-variant">
+                <div class="p-lg flex gap-4">
+                    <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center flex-shrink-0">
+                        <span class="material-symbols-outlined text-primary" data-icon="campaign">campaign</span>
+                    </div>
+                    <div>
+                        <h3 class="text-h3 font-h3 text-primary mb-2">Mural de Comunicados Inteligente</h3>
+                        <p class="text-body-sm font-body-sm text-on-surface-variant">Envie avisos importantes direto para o app dos moradores. Confirme leitura e garanta que a informação chegou a todos.</p>
+                    </div>
+                </div>
+                <div class="p-lg flex gap-4">
+                    <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center flex-shrink-0">
+                        <span class="material-symbols-outlined text-primary" data-icon="celebration">celebration</span>
+                    </div>
+                    <div>
+                        <h3 class="text-h3 font-h3 text-primary mb-2">Eventos do Condomínio</h3>
+                        <p class="text-body-sm font-body-sm text-on-surface-variant">Divulgue assembleias, manutenções programadas ou confraternizações. Sincronize com a agenda dos moradores.</p>
+                    </div>
+                </div>
+                <div class="p-lg flex gap-4">
+                    <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center flex-shrink-0">
+                        <span class="material-symbols-outlined text-primary" data-icon="report_problem">report_problem</span>
+                    </div>
+                    <div>
+                        <h3 class="text-h3 font-h3 text-primary mb-2">Registro e Triagem de Ocorrências</h3>
+                        <p class="text-body-sm font-body-sm text-on-surface-variant">Moradores podem relatar problemas com fotos e detalhes. O sistema categoriza automaticamente para o setor responsável.</p>
+                    </div>
+                </div>
+                <div class="p-lg flex gap-4">
+                    <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center flex-shrink-0">
+                        <span class="material-symbols-outlined text-primary" data-icon="low_priority">low_priority</span>
+                    </div>
+                    <div>
+                        <h3 class="text-h3 font-h3 text-primary mb-2">Gestão Ágil de Prioridades</h3>
+                        <p class="text-body-sm font-body-sm text-on-surface-variant">Acompanhe o status das ocorrências, desde a abertura até a resolução, mantendo o morador informado em cada etapa.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<div th:replace="~{fragments/public/components :: footer}"></div>
+
+</body>
+</html>

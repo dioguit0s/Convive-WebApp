@@ -3,8 +3,15 @@
 <body>
 
 <nav th:fragment="navbar" class="bg-surface-container-lowest flex justify-between items-center px-margin py-4 w-full shadow-sm sticky top-0 z-50">
-    <div class="text-h2 font-h2 text-primary">Convive</div>
+
+    <div class="flex items-center gap-2">
+        <a th:href="@{/}">
+            <span class="material-symbols-outlined text-primary text-3xl" data-icon="domain">domain</span>
+            <div class="text-h2 font-h2 text-primary">Convive</div>
+        </a>
+    </div>
     <div class="hidden md:flex gap-md">
+        <a th:href="@{/}" class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200">Home</a>
         <a th:href="@{/features}" class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200">Features</a>
         <a th:href="@{/about}" class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200">About Us</a>
     </div>
