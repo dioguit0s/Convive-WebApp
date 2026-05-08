@@ -15,7 +15,7 @@ import java.util.UUID;
 @Table(name = "Notificacao")
 public class Notificacao {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "mensagem")
