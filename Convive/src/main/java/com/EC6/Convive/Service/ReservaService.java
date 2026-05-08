@@ -12,22 +12,22 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ReservaService {
 
-    private final ReservaRepository ReservaRepository;
+    private final ReservaRepository reservaRepository;
 
     public Reserva insert(Reserva Reserva) {
-        return ReservaRepository.save(Reserva);
+        return reservaRepository.save(Reserva);
     }
 
     public List<Reserva> listAll() {
-        return ReservaRepository.findAll();
+        return reservaRepository.findAll();
     }
 
     public Reserva searchById(UUID id) {
-        return ReservaRepository.findById(id)
+        return reservaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Reserva não encontrada com o ID: " + id));
     }
 
     public void delete(UUID id) {
-        ReservaRepository.deleteById(id);
+        reservaRepository.deleteById(id);
     }
 }

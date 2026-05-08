@@ -12,22 +12,22 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class NotificacaoService {
 
-    private final NotificacaoRepository NotificacaoRepository;
+    private final NotificacaoRepository notificacaoRepository;
 
     public Notificacao insert(Notificacao Notificacao) {
-        return NotificacaoRepository.save(Notificacao);
+        return notificacaoRepository.save(Notificacao);
     }
 
     public List<Notificacao> listAll() {
-        return NotificacaoRepository.findAll();
+        return notificacaoRepository.findAll();
     }
 
     public Notificacao searchById(UUID id) {
-        return NotificacaoRepository.findById(id)
+        return notificacaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Notificacao não encontrada com o ID: " + id));
     }
 
     public void delete(UUID id) {
-        NotificacaoRepository.deleteById(id);
+        notificacaoRepository.deleteById(id);
     }
 }

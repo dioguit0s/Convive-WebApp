@@ -12,22 +12,22 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OcorrenciaService {
 
-    private final OcorrenciaRepository OcorrenciaRepository;
+    private final OcorrenciaRepository ocorrenciaRepository;
 
     public Ocorrencia insert(Ocorrencia Ocorrencia) {
-        return OcorrenciaRepository.save(Ocorrencia);
+        return ocorrenciaRepository.save(Ocorrencia);
     }
 
     public List<Ocorrencia> listAll() {
-        return OcorrenciaRepository.findAll();
+        return ocorrenciaRepository.findAll();
     }
 
     public Ocorrencia searchById(UUID id) {
-        return OcorrenciaRepository.findById(id)
+        return ocorrenciaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ocorrencia não encontrada com o ID: " + id));
     }
 
     public void delete(UUID id) {
-        OcorrenciaRepository.deleteById(id);
+        ocorrenciaRepository.deleteById(id);
     }
 }

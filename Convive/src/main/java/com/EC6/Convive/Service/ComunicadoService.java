@@ -12,22 +12,22 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ComunicadoService {
 
-    private final ComunicadoRepository ComunicadoRepository;
+    private final ComunicadoRepository comunicadoRepository;
 
     public Comunicado insert(Comunicado Comunicado) {
-        return ComunicadoRepository.save(Comunicado);
+        return comunicadoRepository.save(Comunicado);
     }
 
     public List<Comunicado> listAll() {
-        return ComunicadoRepository.findAll();
+        return comunicadoRepository.findAll();
     }
 
     public Comunicado searchById(UUID id) {
-        return ComunicadoRepository.findById(id)
+        return comunicadoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Comunicado não encontrada com o ID: " + id));
     }
 
     public void delete(UUID id) {
-        ComunicadoRepository.deleteById(id);
+        comunicadoRepository.deleteById(id);
     }
 }

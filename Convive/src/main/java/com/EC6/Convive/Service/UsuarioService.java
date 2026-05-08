@@ -12,22 +12,22 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UsuarioService {
 
-    private final UsuarioRepository UsuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
     public Usuario insert(Usuario Usuario) {
-        return UsuarioRepository.save(Usuario);
+        return usuarioRepository.save(Usuario);
     }
 
     public List<Usuario> listAll() {
-        return UsuarioRepository.findAll();
+        return usuarioRepository.findAll();
     }
 
     public Usuario searchById(UUID id) {
-        return UsuarioRepository.findById(id)
+        return usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario não encontrada com o ID: " + id));
     }
 
     public void delete(UUID id) {
-        UsuarioRepository.deleteById(id);
+        usuarioRepository.deleteById(id);
     }
 }

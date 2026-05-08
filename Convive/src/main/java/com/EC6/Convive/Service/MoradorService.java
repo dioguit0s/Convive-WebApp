@@ -12,22 +12,22 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MoradorService {
 
-    private final MoradorRepository MoradorRepository;
+    private final MoradorRepository moradorRepository;
 
     public Morador insert(Morador Morador) {
-        return MoradorRepository.save(Morador);
+        return moradorRepository.save(Morador);
     }
 
     public List<Morador> listAll() {
-        return MoradorRepository.findAll();
+        return moradorRepository.findAll();
     }
 
     public Morador searchById(UUID id) {
-        return MoradorRepository.findById(id)
+        return moradorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Morador não encontrada com o ID: " + id));
     }
 
     public void delete(UUID id) {
-        MoradorRepository.deleteById(id);
+        moradorRepository.deleteById(id);
     }
 }

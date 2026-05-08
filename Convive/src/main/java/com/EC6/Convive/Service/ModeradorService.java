@@ -12,22 +12,22 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ModeradorService {
 
-    private final ModeradorRepository ModeradorRepository;
+    private final ModeradorRepository moderadorRepository;
 
     public Moderador insert(Moderador Moderador) {
-        return ModeradorRepository.save(Moderador);
+        return moderadorRepository.save(Moderador);
     }
 
     public List<Moderador> listAll() {
-        return ModeradorRepository.findAll();
+        return moderadorRepository.findAll();
     }
 
     public Moderador searchById(UUID id) {
-        return ModeradorRepository.findById(id)
+        return moderadorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Moderador não encontrada com o ID: " + id));
     }
 
     public void delete(UUID id) {
-        ModeradorRepository.deleteById(id);
+        moderadorRepository.deleteById(id);
     }
 }
