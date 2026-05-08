@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Convive - Cadastro de Morador</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script th:src="@{/js/tailwindTheme.js}"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+
+<div th:replace="~{fragments/public/components :: navbar}"></div>
+
+<main class="max-w-3xl mx-auto py-xl px-margin">
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm">
+        <h1 class="font-h2 text-h2 text-primary mb-md">Cadastrar Novo Morador</h1>
+
+        <div th:if="${sucesso}" class="bg-secondary-container text-on-secondary-container p-4 rounded-lg mb-6">
+            <span th:text="${sucesso}"></span>
+        </div>
+        <div th:if="${erro}" class="bg-error-container text-on-error-container p-4 rounded-lg mb-6">
+            <span th:text="${erro}"></span>
+        </div>
+
+        <form th:action="@{/moderador/usuarios/novo}" th:object="${morador}" method="post" class="flex flex-col gap-md">
+
+            <div>
+                <label for="nome" class="block font-label-md text-on-surface-variant mb-1">Nome Completo</label>
+                <input type="text" id="nome" th:field="*{nome}" required
+                       class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary bg-surface text-on-surface">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+                <div>
+                    <label for="email" class="block font-label-md text-on-surface-variant mb-1">E-mail</label>
+                    <input type="email" id="email" th:field="*{email}" required
+                           class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary bg-surface text-on-surface">
+                </div>
+                <div>
+                    <label for="apartamento" class="block font-label-md text-on-surface-variant mb-1">Número do Apartamento</label>
+                    <input type="number" id="apartamento" th:field="*{apartamento}" required
+                           class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary bg-surface text-on-surface">
+                </div>
+            </div>
+
+            <div>
+                <label for="senha" class="block font-label-md text-on-surface-variant mb-1">Senha Inicial</label>
+                <input type="password" id="senha" th:field="*{senhaHash}" required
+                       class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary bg-surface text-on-surface">
+            </div>
+
+            <div class="mt-4 flex justify-end">
+                <button type="submit" class="bg-primary text-on-primary font-label-md px-md py-sm rounded-lg hover:opacity-90 transition-opacity">
+                    Salvar Morador
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<div th:replace="~{fragments/public/components :: footer}"></div>
+</body>
+</html>
