@@ -13,4 +13,10 @@ public class IndexController {
 
     @GetMapping("/features")
     public String features() {return "public/features";}
+
+    @GetMapping("/about")
+    public String about() {return "public/about";}
+
+    @GetMapping("/contact")
+    public String contact() {return "public/contact";}
 }
