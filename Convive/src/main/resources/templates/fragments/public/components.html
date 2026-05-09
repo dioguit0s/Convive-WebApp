@@ -3,10 +3,18 @@
 <body>
 
 <nav th:fragment="navbar" class="bg-surface-container-lowest flex justify-between items-center px-margin py-4 w-full shadow-sm sticky top-0 z-50">
-    <div class="text-h2 font-h2 text-primary">Convive</div>
+
+    <div class="flex items-center gap-2">
+        <a th:href="@{/}" class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-3xl" data-icon="domain">domain</span>
+            <div class="text-h2 font-h2 text-primary">Convive</div>
+        </a>
+    </div>
     <div class="hidden md:flex gap-md">
+        <a th:href="@{/}" class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200">Home</a>
         <a th:href="@{/features}" class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200">Features</a>
-        <a th:href="@{/about}" class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200">About Us</a>
+        <a th:href="@{/about}" class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200">Sobre nós</a>
+        <a th:href="@{/contact}" class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200">Contato</a>
     </div>
     <div>
         <a th:href="@{/login}" class="bg-primary text-on-primary font-label-md text-label-md px-md py-sm rounded-lg hover:opacity-90 transition-opacity no-underline inline-block">Login</a>
@@ -16,7 +24,7 @@
 <footer th:fragment="footer" class="bg-surface-container-lowest border-t border-outline-variant flex flex-col md:flex-row justify-between items-center px-margin py-lg w-full">
     <div class="text-h3 font-h3 text-primary mb-md md:mb-0">Convive</div>
     <div class="flex flex-wrap justify-center gap-md mb-md md:mb-0">
-        <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary underline opacity-80 hover:opacity-100 transition-opacity" href="#">Contact Support</a>
+        <a th:href="@{/contact}" class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary underline opacity-80 hover:opacity-100 transition-opacity" href="#">Contact Support</a>
     </div>
     <div class="font-body-sm text-body-sm text-on-surface-variant text-center md:text-right">
         © 2026 Convive Sistemas de Condominio. All rights reserved.

@@ -18,7 +18,7 @@
 </head>
 <body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
 
-<div th:replace="~{fragments/components/public :: navbar}"></div>
+<div th:replace="~{fragments/public/components :: navbar}"></div>
 
 <main class="flex-grow">
     <section class="px-margin py-xl flex flex-col lg:flex-row items-center gap-xl max-w-[1400px] mx-auto">
@@ -30,9 +30,9 @@
                 Simplifique a administração do seu condomínio e melhore a convivência entre moradores. Soluções modernas e integradas para síndicos e residentes.
             </p>
             <div class="pt-sm">
-                <button class="bg-secondary text-on-secondary font-label-md text-label-md px-md py-sm rounded-lg hover:opacity-90 transition-opacity shadow-sm">
+                <a th:href="@{/features}" class="inline-block bg-secondary text-on-secondary font-label-md text-label-md px-md py-sm rounded-lg hover:opacity-90 transition-opacity shadow-sm">
                     Conhecer Soluções
-                </button>
+                </a>
             </div>
         </div>
         <div class="flex-1 w-full relative">
@@ -96,6 +96,6 @@
     </section>
 </main>
 
-<div th:replace="~{fragments/components/public :: footer}"></div>
+<div th:replace="~{fragments/public/components :: footer}"></div>
 </body>
 </html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Contato - Convive</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script th:src="@{/js/tailwindTheme.js}"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <link rel="stylesheet" th:href="@{/css/landing.css}"/>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tonal-card {
+            background-color: #ffffff;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased">
+
+<div th:replace="~{fragments/public/components :: navbar}"></div>
+
+<main>
+<!--    Secao hero-->
+    <section class="relative py-xl px-margin bg-surface-container-low overflow-hidden">
+        <div class="max-w-7xl mx-auto relative z-10 flex flex-col items-center text-center">
+            <h1 class="font-display text-display text-on-background mb-sm">Entre em Contato</h1>
+            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+                Estamos aqui para ajudar você a transformar a gestão do seu condomínio. Escolha o canal de sua preferência e nossa equipe responderá o mais breve possível.
+            </p>
+        </div>
+        <div class="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[600px] h-[600px] bg-primary-fixed opacity-10 rounded-full blur-3xl"></div>
+    </section>
+
+<!--    secao formulario-->
+    <section class="max-w-7xl mx-auto px-margin py-xl grid grid-cols-1 lg:grid-cols-12 gap-lg">
+        <div class="lg:col-span-7">
+            <div class="tonal-card p-lg rounded-xl">
+                <h2 class="font-h2 text-h2 text-primary mb-md">Envie uma Mensagem</h2>
+                <div th:if="${contactSuccess}" class="mb-md p-sm rounded-lg bg-primary-fixed/20 text-on-surface font-body-md" role="status">
+                    Mensagem enviada com sucesso. Retornaremos em breve.
+                </div>
+                <div th:if="${contactMailError}" class="mb-md p-sm rounded-lg bg-red-50 text-red-800 border border-red-200 font-body-md" role="alert">
+                    Não foi possível enviar sua mensagem. Verifique sua conexão e tente novamente em instantes.
+                </div>
+                <form class="space-y-md" method="post" th:action="@{/contact}" th:object="${contactForm}">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+                        <div class="flex flex-col gap-xs">
+                            <label class="font-label-md text-label-md text-on-surface-variant" for="fullName">NOME COMPLETO</label>
+                            <input class="w-full p-sm border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface-container-lowest outline-none transition-all"
+                                   id="fullName"
+                                   placeholder="Ex: João Silva"
+                                   th:classappend="${#fields.hasErrors('fullName')} ? ' border-red-500' : ''"
+                                   th:field="*{fullName}"
+                                   type="text"/>
+                            <p th:errors="*{fullName}" class="text-sm text-red-600"></p>
+                        </div>
+                        <div class="flex flex-col gap-xs">
+                            <label class="font-label-md text-label-md text-on-surface-variant" for="email">E-MAIL CORPORATIVO</label>
+                            <input class="w-full p-sm border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface-container-lowest outline-none transition-all"
+                                   id="email"
+                                   placeholder="joao@condominio.com"
+                                   th:classappend="${#fields.hasErrors('email')} ? ' border-red-500' : ''"
+                                   th:field="*{email}"
+                                   type="email"/>
+                            <p th:errors="*{email}" class="text-sm text-red-600"></p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-label-md text-label-md text-on-surface-variant" for="subject">ASSUNTO</label>
+                        <input class="w-full p-sm border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface-container-lowest outline-none transition-all"
+                               id="subject"
+                               placeholder="Como podemos ajudar?"
+                               th:classappend="${#fields.hasErrors('subject')} ? ' border-red-500' : ''"
+                               th:field="*{subject}"
+                               type="text"/>
+                        <p th:errors="*{subject}" class="text-sm text-red-600"></p>
+                    </div>
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-label-md text-label-md text-on-surface-variant" for="message">MENSAGEM</label>
+                        <textarea class="w-full p-sm border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface-container-lowest outline-none transition-all resize-none"
+                                  id="message"
+                                  placeholder="Descreva sua solicitação em detalhes..."
+                                  rows="5"
+                                  th:classappend="${#fields.hasErrors('message')} ? ' border-red-500' : ''"
+                                  th:field="*{message}"></textarea>
+                        <p th:errors="*{message}" class="text-sm text-red-600"></p>
+                    </div>
+                    <button class="bg-primary text-on-primary px-xl py-sm rounded-lg font-h3 hover:opacity-90 transition-all flex items-center justify-center gap-sm" type="submit">
+                        Enviar Mensagem
+                        <span class="material-symbols-outlined" data-icon="send">send</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="lg:col-span-5 flex flex-col gap-md">
+            <div class="tonal-card p-lg rounded-xl flex flex-col gap-md">
+                <h3 class="font-h3 text-h3 text-primary">Informações de Contato</h3>
+                <div class="flex items-start gap-md">
+                    <div class="bg-primary-fixed p-sm rounded-lg">
+                        <span class="material-symbols-outlined text-primary" data-icon="mail">mail</span>
+                    </div>
+                    <div>
+                        <p class="font-label-md text-label-md text-on-surface-variant">SUPORTE TÉCNICO</p>
+                        <p class="font-body-md text-body-md font-bold text-on-surface">suporte@convive.com.br</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-md">
+                    <div class="bg-secondary-container p-sm rounded-lg">
+                        <span class="material-symbols-outlined text-on-secondary-container" data-icon="call">call</span>
+                    </div>
+                    <div>
+                        <p class="font-label-md text-label-md text-on-surface-variant">VENDAS E PARCERIAS</p>
+                        <p class="font-body-md text-body-md font-bold text-on-surface">0800 555 1234</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!--    secao FAQ-->
+    <section class="bg-surface-container-low py-xl">
+        <div class="max-w-4xl mx-auto px-margin">
+            <div class="text-center mb-lg">
+                <h2 class="font-h1 text-h1 text-on-background">Perguntas Frequentes</h2>
+                <p class="font-body-md text-body-md text-on-surface-variant mt-xs">Tire suas dúvidas rapidamente com nosso autoatendimento.</p>
+            </div>
+            <div class="space-y-sm">
+                <div class="tonal-card rounded-xl p-md">
+                    <details class="group">
+                        <summary class="flex justify-between items-center cursor-pointer list-none">
+                            <span class="font-h3 text-h3 text-on-surface">Como solicitar um orçamento?</span>
+                            <span class="material-symbols-outlined transition-transform group-open:rotate-180" data-icon="expand_more">expand_more</span>
+                        </summary>
+                        <div class="mt-md pt-md border-t border-outline-variant font-body-md text-on-surface-variant">
+                            Você pode solicitar um orçamento preenchendo o formulário acima selecionando o assunto "Orçamento". Nossa equipe entrará em contato em até 24 horas úteis.
+                        </div>
+                    </details>
+                </div>
+                <div class="tonal-card rounded-xl p-md">
+                    <details class="group">
+                        <summary class="flex justify-between items-center cursor-pointer list-none">
+                            <span class="font-h3 text-h3 text-on-surface">Qual o horário de atendimento do suporte?</span>
+                            <span class="material-symbols-outlined transition-transform group-open:rotate-180" data-icon="expand_more">expand_more</span>
+                        </summary>
+                        <div class="mt-md pt-md border-t border-outline-variant font-body-md text-on-surface-variant">
+                            Nosso suporte técnico funciona de segunda a sexta-feira, das 08:00 às 18:00 (horário de Brasília). Para urgências críticas em condomínios premium, oferecemos plantão 24/7 via canal exclusivo no WhatsApp.
+                        </div>
+                    </details>
+                </div>
+                <div class="tonal-card rounded-xl p-md">
+                    <details class="group">
+                        <summary class="flex justify-between items-center cursor-pointer list-none">
+                            <span class="font-h3 text-h3 text-on-surface">O Convive possui aplicativo para moradores?</span>
+                            <span class="material-symbols-outlined transition-transform group-open:rotate-180" data-icon="expand_more">expand_more</span>
+                        </summary>
+                        <div class="mt-md pt-md border-t border-outline-variant font-body-md text-on-surface-variant">
+                            Estamos com um roadmap para lançar um aplicativo nativo para ambas as plataformas IOS e Android até o fim de 2026
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/public/components :: footer}"></div>
+
+</body>
+</html>

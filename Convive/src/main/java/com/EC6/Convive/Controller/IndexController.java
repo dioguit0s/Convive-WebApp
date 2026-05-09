@@ -10,4 +10,11 @@ public class IndexController {
     public String index() {
         return "public/landing";
     }
+
+    @GetMapping("/features")
+    public String features() {return "public/features";}
+
+    @GetMapping("/about")
+    public String about() {return "public/about";}
+
 }
