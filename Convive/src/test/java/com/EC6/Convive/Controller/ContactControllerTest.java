@@ -1,7 +1,7 @@
 package com.EC6.Convive.Controller;
 
 import com.EC6.Convive.Service.ContactMailService;
-import com.EC6.Convive.dto.ContactMessageDto;
+import com.EC6.Convive.Model.ContactMessageModel;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -34,7 +34,7 @@ class ContactControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("public/contact"))
                 .andExpect(model().attributeExists("contactForm"))
-                .andExpect(model().attribute("contactForm", instanceOf(ContactMessageDto.class)));
+                .andExpect(model().attribute("contactForm", instanceOf(ContactMessageModel.class)));
     }
 
     @Test
@@ -47,7 +47,7 @@ class ContactControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/contact"));
 
-        verify(contactMailService).send(any(ContactMessageDto.class));
+        verify(contactMailService).send(any(ContactMessageModel.class));
     }
 
     @Test

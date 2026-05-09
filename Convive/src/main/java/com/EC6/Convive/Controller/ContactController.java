@@ -1,7 +1,7 @@
 package com.EC6.Convive.Controller;
 
 import com.EC6.Convive.Service.ContactMailService;
-import com.EC6.Convive.dto.ContactMessageDto;
+import com.EC6.Convive.Model.ContactMessageModel;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,13 +25,13 @@ public class ContactController {
     @GetMapping("/contact")
     public String contactPage(Model model) {
         if (!model.containsAttribute("contactForm")) {
-            model.addAttribute("contactForm", new ContactMessageDto());
+            model.addAttribute("contactForm", new ContactMessageModel());
         }
         return "public/contact";
     }
 
     @PostMapping("/contact")
-    public String submitContact(@Valid @ModelAttribute("contactForm") ContactMessageDto contactForm,
+    public String submitContact(@Valid @ModelAttribute("contactForm") ContactMessageModel contactForm,
                                 BindingResult bindingResult,
                                 Model model,
                                 RedirectAttributes redirectAttributes) {

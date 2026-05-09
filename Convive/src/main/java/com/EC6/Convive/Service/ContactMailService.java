@@ -1,6 +1,6 @@
 package com.EC6.Convive.Service;
 
-import com.EC6.Convive.dto.ContactMessageDto;
+import com.EC6.Convive.Model.ContactMessageModel;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ public class ContactMailService {
     @Value("${app.contact.to}")
     private String toAddress;
 
-    public void send(ContactMessageDto dto) throws MailException {
+    public void send(ContactMessageModel dto) throws MailException {
         if (!StringUtils.hasText(fromAddress) || !StringUtils.hasText(toAddress)) {
             log.warn("Contato: envio abortado — SMTP incompleto (defina spring.mail.username e app.contact.to).");
             throw new IllegalStateException("SMTP não configurado: defina spring.mail.username e app.contact.to.");
@@ -60,7 +60,7 @@ public class ContactMailService {
         }
     }
 
-    private static String buildBody(ContactMessageDto dto) {
+    private static String buildBody(ContactMessageModel dto) {
         return """
                 Nova mensagem pelo site Convive.
 

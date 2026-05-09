@@ -1,4 +1,4 @@
-package com.EC6.Convive.dto;
+package com.EC6.Convive.Model;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class ContactMessageDto {
+public class ContactMessageModel {
 
     @NotBlank(message = "Informe seu nome.")
     @Size(max = 200, message = "Nome deve ter no máximo 200 caracteres.")
