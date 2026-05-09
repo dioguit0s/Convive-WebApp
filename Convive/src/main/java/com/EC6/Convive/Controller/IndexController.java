@@ -17,6 +17,4 @@ public class IndexController {
     @GetMapping("/about")
     public String about() {return "public/about";}
 
-    @GetMapping("/contact")
-    public String contact() {return "public/contact";}
 }

@@ -44,24 +44,54 @@
         <div class="lg:col-span-7">
             <div class="tonal-card p-lg rounded-xl">
                 <h2 class="font-h2 text-h2 text-primary mb-md">Envie uma Mensagem</h2>
-                <form class="space-y-md">
+                <div th:if="${contactSuccess}" class="mb-md p-sm rounded-lg bg-primary-fixed/20 text-on-surface font-body-md" role="status">
+                    Mensagem enviada com sucesso. Retornaremos em breve.
+                </div>
+                <div th:if="${contactMailError}" class="mb-md p-sm rounded-lg bg-red-50 text-red-800 border border-red-200 font-body-md" role="alert">
+                    Não foi possível enviar sua mensagem. Verifique sua conexão e tente novamente em instantes.
+                </div>
+                <form class="space-y-md" method="post" th:action="@{/contact}" th:object="${contactForm}">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
                         <div class="flex flex-col gap-xs">
-                            <label class="font-label-md text-label-md text-on-surface-variant">NOME COMPLETO</label>
-                            <input class="w-full p-sm border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface-container-lowest outline-none transition-all" placeholder="Ex: João Silva" type="text"/>
+                            <label class="font-label-md text-label-md text-on-surface-variant" for="fullName">NOME COMPLETO</label>
+                            <input class="w-full p-sm border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface-container-lowest outline-none transition-all"
+                                   id="fullName"
+                                   placeholder="Ex: João Silva"
+                                   th:classappend="${#fields.hasErrors('fullName')} ? ' border-red-500' : ''"
+                                   th:field="*{fullName}"
+                                   type="text"/>
+                            <p th:errors="*{fullName}" class="text-sm text-red-600"></p>
                         </div>
                         <div class="flex flex-col gap-xs">
-                            <label class="font-label-md text-label-md text-on-surface-variant">E-MAIL CORPORATIVO</label>
-                            <input class="w-full p-sm border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface-container-lowest outline-none transition-all" placeholder="joao@condominio.com" type="email"/>
+                            <label class="font-label-md text-label-md text-on-surface-variant" for="email">E-MAIL CORPORATIVO</label>
+                            <input class="w-full p-sm border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface-container-lowest outline-none transition-all"
+                                   id="email"
+                                   placeholder="joao@condominio.com"
+                                   th:classappend="${#fields.hasErrors('email')} ? ' border-red-500' : ''"
+                                   th:field="*{email}"
+                                   type="email"/>
+                            <p th:errors="*{email}" class="text-sm text-red-600"></p>
                         </div>
                     </div>
                     <div class="flex flex-col gap-xs">
-                        <label class="font-label-md text-label-md text-on-surface-variant">ASSUNTO</label>
-                        <input class="w-full p-sm border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface-container-lowest outline-none transition-all" placeholder="Como podemos ajudar?" type="text"/>
+                        <label class="font-label-md text-label-md text-on-surface-variant" for="subject">ASSUNTO</label>
+                        <input class="w-full p-sm border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface-container-lowest outline-none transition-all"
+                               id="subject"
+                               placeholder="Como podemos ajudar?"
+                               th:classappend="${#fields.hasErrors('subject')} ? ' border-red-500' : ''"
+                               th:field="*{subject}"
+                               type="text"/>
+                        <p th:errors="*{subject}" class="text-sm text-red-600"></p>
                     </div>
                     <div class="flex flex-col gap-xs">
-                        <label class="font-label-md text-label-md text-on-surface-variant">MENSAGEM</label>
-                        <textarea class="w-full p-sm border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface-container-lowest outline-none transition-all resize-none" placeholder="Descreva sua solicitação em detalhes..." rows="5"></textarea>
+                        <label class="font-label-md text-label-md text-on-surface-variant" for="message">MENSAGEM</label>
+                        <textarea class="w-full p-sm border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface-container-lowest outline-none transition-all resize-none"
+                                  id="message"
+                                  placeholder="Descreva sua solicitação em detalhes..."
+                                  rows="5"
+                                  th:classappend="${#fields.hasErrors('message')} ? ' border-red-500' : ''"
+                                  th:field="*{message}"></textarea>
+                        <p th:errors="*{message}" class="text-sm text-red-600"></p>
                     </div>
                     <button class="bg-primary text-on-primary px-xl py-sm rounded-lg font-h3 hover:opacity-90 transition-all flex items-center justify-center gap-sm" type="submit">
                         Enviar Mensagem
@@ -92,6 +122,7 @@
                         <p class="font-body-md text-body-md font-bold text-on-surface">0800 555 1234</p>
                     </div>
                 </div>
+            </div>
         </div>
     </section>
 
