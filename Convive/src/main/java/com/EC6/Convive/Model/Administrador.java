@@ -13,4 +13,6 @@ import lombok.Setter;
 @Table(name = "Administrador")
 public class Administrador extends Moderador{
 
+    @Override
+    public String getTipoUsuario() { return "ADMIN"; }
 }

@@ -15,7 +15,7 @@ import java.util.UUID;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "Usuario")
-public class Usuario {
+public abstract class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -35,5 +35,7 @@ public class Usuario {
 
     @Column(name = "isInadimplente")
     private boolean isInadimplente;
+
+    public abstract String getTipoUsuario();
 
 }
