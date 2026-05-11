@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Convive - Home do Morador</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script th:src="@{/js/tailwindTheme.js}"></script>
+    <style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row">
+<nav class="md:hidden bg-surface-container-lowest flex justify-between items-center px-margin py-4 w-full shadow-sm sticky top-0 z-50">
+    <div class="text-h2 font-h2 text-primary">Convive</div>
+    <button class="text-primary p-2 focus:outline-none">
+        <span class="material-symbols-outlined" data-icon="menu">menu</span>
+    </button>
+</nav>
+
+<nav class="hidden md:flex flex-col h-screen p-md gap-base bg-background text-primary w-64 docked left-0 h-full fixed border-r border-outline-variant/30">
+    <div class="mb-lg px-2 flex items-center gap-sm">
+        <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary font-bold">
+            C
+        </div>
+        <div>
+            <div class="text-h3 font-h3 font-bold text-primary">Convive</div>
+            <div class="font-body-sm text-body-sm text-on-surface-variant">Portal do Morador</div>
+        </div>
+    </div>
+    <div class="flex-1 flex flex-col gap-xs">
+        <a class="flex items-center gap-md p-sm text-primary font-bold bg-surface-container-highest rounded-lg transition-transform duration-150" href="#">
+            <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+            <span class="font-body-sm text-body-sm">Início</span>
+        </a>
+        <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150" href="#">
+            <span class="material-symbols-outlined" data-icon="event_available">event_available</span>
+            <span class="font-body-sm text-body-sm">Minhas Reservas</span>
+        </a>
+        <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150" href="#">
+            <span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
+            <span class="font-body-sm text-body-sm">Ocorrências</span>
+        </a>
+    </div>
+    <div class="mt-auto flex flex-col gap-xs pt-md border-t border-outline-variant/30">
+        <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150" href="#">
+            <span class="material-symbols-outlined" data-icon="logout">logout</span>
+            <span class="font-body-sm text-body-sm">Sair</span>
+        </a>
+    </div>
+</nav>
+
+<main class="flex-1 md:ml-64 p-margin md:p-xl w-full max-w-7xl mx-auto flex flex-col gap-lg">
+
+    <header class="flex justify-between items-end border-b border-outline-variant/20 pb-md">
+        <div>
+            <h1 class="font-h1 text-h1 text-primary" th:text="'Olá, ' + ${usuario.nome} + '!'">Olá, Usuário!</h1>
+            <p class="font-body-lg text-body-lg text-on-surface-variant mt-sm">Veja as novidades do seu condomínio.</p>
+        </div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+
+        <section class="lg:col-span-8 flex flex-col gap-md">
+            <div class="flex items-center justify-between mb-sm">
+                <h2 class="font-h2 text-h2 text-primary">Mural de Avisos</h2>
+            </div>
+
+            <div th:if="${#lists.isEmpty(comunicados)}" class="p-md text-on-surface-variant bg-surface-container rounded-xl">
+                Nenhum comunicado no momento.
+            </div>
+
+            <article th:each="comunicado : ${comunicados}" class="bg-surface-container-lowest border border-[#E2E8F0] rounded-xl p-md shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow duration-300">
+                <div class="flex justify-between items-start mb-sm">
+                    <span class="inline-block bg-surface-container px-sm py-xs rounded-full font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">
+                        Comunicado
+                    </span>
+                    <span class="font-body-sm text-body-sm text-on-surface-variant" th:text="${#temporals.format(comunicado.publicadoEm, 'dd/MM/yyyy')}">Data</span>
+                </div>
+                <h3 class="font-h3 text-h3 text-on-surface mb-xs" th:text="${comunicado.titulo}">Título do Comunicado</h3>
+                <p class="font-body-md text-body-md text-on-surface-variant mb-md" th:text="${comunicado.conteudo}">
+                    Conteúdo do comunicado virá aqui.
+                </p>
+            </article>
+        </section>
+
+        <aside class="lg:col-span-4 flex flex-col gap-md">
+            <h2 class="font-h2 text-h2 text-primary mb-xs">Próximas Reservas</h2>
+
+            <div class="bg-surface-container-lowest border border-[#E2E8F0] rounded-xl p-md shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] flex flex-col gap-md">
+
+                <div th:if="${#lists.isEmpty(reservas)}" class="text-on-surface-variant text-sm text-center">
+                    Você não possui reservas futuras.
+                </div>
+
+                <div th:each="reserva : ${reservas}" class="flex gap-sm items-start pb-sm border-b border-outline-variant/20 last:border-0 last:pb-0">
+                    <div class="mt-1 bg-surface-container text-on-surface-variant rounded-full p-2 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[20px]" data-icon="event">event</span>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Reserva de Espaço</span>
+                        </div>
+                        <p class="font-body-sm text-body-sm text-on-surface font-medium" th:text="'De: ' + ${#temporals.format(reserva.inicio, 'dd/MM/yyyy')} + ' até ' + ${#temporals.format(reserva.fim, 'dd/MM/yyyy')}">Datas</p>
+
+                        <div class="mt-2 inline-flex items-center px-sm py-[2px] rounded-full font-label-md text-[10px] uppercase"
+                             th:classappend="${reserva.status.name() == 'APROVADO' ? 'bg-[#dcfce7] text-[#166534]' : (reserva.status.name() == 'PENDENTE' ? 'bg-[#fef3c7] text-[#92400e]' : 'bg-[#fee2e2] text-[#991b1b]')}"
+                             th:text="${reserva.status}">
+                            Status
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <button class="w-full mt-2 py-sm bg-primary text-on-primary rounded-lg font-body-sm text-body-sm hover:bg-primary/90 transition-colors flex items-center justify-center gap-xs">
+                <span class="material-symbols-outlined text-[18px]" data-icon="add">add</span> Nova Reserva
+            </button>
+        </aside>
+    </div>
+</main>
+</body>
+</html>
