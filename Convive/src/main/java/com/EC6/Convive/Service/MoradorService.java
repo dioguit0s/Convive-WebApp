@@ -19,19 +19,13 @@ public class MoradorService {
 
     private final MoradorRepository moradorRepository;
     private final UsuarioRepository usuarioRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final UsuarioService usuarioService;
 
     public Morador insert(Morador morador) {
 
-        if (usuarioRepository.existsByEmail(morador.getEmail())) {
-            throw new RuntimeException("E-mail já cadastrado no sistema.");
-        }
+        usuarioService.prepareToInsertUser(morador);
 
-        morador.setStatus("Ativo");
         morador.setInadimplente(false);
-
-        //criptografa a senha
-        morador.setSenhaHash(passwordEncoder.encode(morador.getSenhaHash()));
 
         return moradorRepository.save(morador);
     }

@@ -13,8 +13,12 @@ import java.util.UUID;
 public class AdministradorService {
 
     private final AdminstradorRepository adminRepository;
+    private final UsuarioService usuarioService;
 
     public Administrador insert(Administrador admin) {
+
+        usuarioService.prepareToInsertUser(admin);
+
         return adminRepository.save(admin);
     }
 

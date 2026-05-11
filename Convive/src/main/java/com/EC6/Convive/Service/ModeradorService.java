@@ -13,9 +13,13 @@ import java.util.UUID;
 public class ModeradorService {
 
     private final ModeradorRepository moderadorRepository;
+    private final UsuarioService usuarioService;
 
-    public Moderador insert(Moderador Moderador) {
-        return moderadorRepository.save(Moderador);
+    public Moderador insert(Moderador moderador) {
+
+        usuarioService.prepareToInsertUser(moderador);
+
+        return moderadorRepository.save(moderador);
     }
 
     public List<Moderador> listAll() {
