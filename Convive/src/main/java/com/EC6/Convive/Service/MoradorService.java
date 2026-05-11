@@ -6,6 +6,7 @@ import com.EC6.Convive.Repository.MoradorRepository;
 import com.EC6.Convive.Repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.beans.ConstructorProperties;
@@ -18,6 +19,7 @@ public class MoradorService {
 
     private final MoradorRepository moradorRepository;
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public Morador insert(Morador morador) {
 
@@ -27,6 +29,9 @@ public class MoradorService {
 
         morador.setStatus("Ativo");
         morador.setInadimplente(false);
+
+        //criptografa a senha
+        morador.setSenhaHash(passwordEncoder.encode(morador.getSenhaHash()));
 
         return moradorRepository.save(morador);
     }
