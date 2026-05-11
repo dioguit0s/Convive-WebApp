@@ -26,9 +26,14 @@ public class Reserva {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private StatusReserva status;
+    private StatusReserva status = StatusReserva.PENDENTE;
 
     @ManyToOne
     @JoinColumn(name = "reservadoPorId")
     private Usuario reservadoPor;
+
+    @ManyToOne
+    @JoinColumn(name = "areaReservada")
+    private AreaComum areaReservada;
+
 }

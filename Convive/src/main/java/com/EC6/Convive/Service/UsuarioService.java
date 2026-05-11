@@ -36,7 +36,12 @@ public class UsuarioService {
 
     public Usuario searchById(UUID id) {
         return usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario não encontrada com o ID: " + id));
+                .orElseThrow(() -> new RuntimeException("Usuario não encontrado com o ID: " + id));
+    }
+
+    public Usuario getByEmail(String email) {
+        return usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario não encontrado com o email: " + email));
     }
 
     public void delete(UUID id) {

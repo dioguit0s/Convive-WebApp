@@ -109,7 +109,7 @@
                         <p class="font-body-sm text-body-sm text-on-surface font-medium" th:text="'De: ' + ${#temporals.format(reserva.inicio, 'dd/MM/yyyy')} + ' até ' + ${#temporals.format(reserva.fim, 'dd/MM/yyyy')}">Datas</p>
 
                         <div class="mt-2 inline-flex items-center px-sm py-[2px] rounded-full font-label-md text-[10px] uppercase"
-                             th:classappend="${reserva.status.name() == 'APROVADO' ? 'bg-[#dcfce7] text-[#166534]' : (reserva.status.name() == 'PENDENTE' ? 'bg-[#fef3c7] text-[#92400e]' : 'bg-[#fee2e2] text-[#991b1b]')}"
+                             th:classappend="${reserva.status?.name() == 'APROVADO' ? 'bg-[#dcfce7] text-[#166534]' : (reserva.status?.name() == 'PENDENTE' ? 'bg-[#fef3c7] text-[#92400e]' : 'bg-[#fee2e2] text-[#991b1b]')}"
                              th:text="${reserva.status}">
                             Status
                         </div>
