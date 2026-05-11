@@ -1,6 +1,7 @@
 package com.EC6.Convive.Service;
 
 import com.EC6.Convive.Model.Reserva;
+import com.EC6.Convive.Model.Usuario;
 import com.EC6.Convive.Repository.ReservaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,5 +30,9 @@ public class ReservaService {
 
     public void delete(UUID id) {
         reservaRepository.deleteById(id);
+    }
+
+    public List<Reserva> listByUser(UUID id) {
+        return reservaRepository.findByReservadoPorId(id);
     }
 }

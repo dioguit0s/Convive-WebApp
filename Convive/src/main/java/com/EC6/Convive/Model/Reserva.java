@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -19,10 +20,10 @@ public class Reserva {
     private UUID id;
 
     @Column(name = "inicio")
-    private LocalDate inicio;
+    private LocalDateTime inicio;
 
     @Column(name = "fim")
-    private LocalDate fim;
+    private LocalDateTime fim;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")

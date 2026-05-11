@@ -32,7 +32,7 @@ public class MoradorHomeController {
 
         List<Comunicado> comunicados = comunicadoService.listAll();
 
-        List<Reserva> reservas = reservaService.listAll();
+        List<Reserva> reservas = reservaService.listByUser(usuario.getId());
 
         model.addAttribute("usuario", usuario);
         model.addAttribute("comunicados", comunicados);

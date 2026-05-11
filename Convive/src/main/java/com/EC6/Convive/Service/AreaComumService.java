@@ -30,4 +30,9 @@ public class AreaComumService {
     public void delete(UUID id) {
         areaComumRepository.deleteById(id);
     }
+
+    public AreaComum searchByName(String name) {
+        return areaComumRepository.findByNome(name)
+                .orElseThrow(() -> new RuntimeException("Area nao encontrada com esse nome: " + name));
+    }
 }
