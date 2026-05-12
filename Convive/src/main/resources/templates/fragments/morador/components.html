@@ -45,12 +45,18 @@
                 <span class="material-symbols-outlined" data-icon="notification_important">notification_important</span>
                 <span class="font-body-sm text-body-sm">Notificações</span>
             </a>
+            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"  href="#" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                <span class="material-symbols-outlined" data-icon="notification_important">notification_important</span>
+                <span class="font-body-sm text-body-sm">Gestão de usuarios</span>
+            </a>
         </div>
         <div class="mt-auto flex flex-col gap-xs pt-md border-t border-outline-variant/30">
-            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150" href="#">
-                <span class="material-symbols-outlined" data-icon="logout">logout</span>
-                <span class="font-body-sm text-body-sm">Sair</span>
-            </a>
+            <form th:action="@{/logout}" method="post" class="w-full">
+                <button type="submit" class="w-full flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150 text-left">
+                    <span class="material-symbols-outlined" data-icon="logout">logout</span>
+                    <span class="font-body-sm text-body-sm">Sair</span>
+                </button>
+            </form>
         </div>
     </nav>
 </th:block>

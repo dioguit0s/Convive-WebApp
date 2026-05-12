@@ -40,6 +40,18 @@
             <p class="font-body-md text-body-md text-on-surface-variant">Bem-vindo de volta</p>
         </div>
 
+        <div th:if="${param.logout}"
+             class="mt-md p-sm rounded-lg bg-secondary-container/20 text-on-secondary-container border border-on-secondary-container/30 font-body-sm text-center"
+             role="status">
+            Logout realizado com sucesso.
+        </div>
+
+        <div th:if="${param.error}"
+             class="mt-md p-sm rounded-lg bg-error-container/20 text-error border border-error/30 font-body-sm text-center"
+             role="alert">
+            E-mail ou senha inválidos.
+        </div>
+
         <form class="flex flex-col gap-md" th:action="@{/login}" method="post">
             <div class="flex flex-col gap-base">
                 <label class="font-label-md text-label-md text-on-surface uppercase" for="email">Email</label>
