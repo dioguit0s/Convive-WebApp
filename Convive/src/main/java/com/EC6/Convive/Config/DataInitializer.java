@@ -1,11 +1,9 @@
 package com.EC6.Convive.Config;
 
 import com.EC6.Convive.Model.*;
-import com.EC6.Convive.Repository.AreaComumRepository;
-import com.EC6.Convive.Repository.ModeradorRepository;
-import com.EC6.Convive.Repository.ReservaRepository;
-import com.EC6.Convive.Repository.UsuarioRepository;
+import com.EC6.Convive.Repository.*;
 import com.EC6.Convive.Service.AreaComumService;
+import com.EC6.Convive.Service.ComunicadoService;
 import com.EC6.Convive.Service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -27,6 +25,8 @@ public class DataInitializer implements CommandLineRunner {
     private final AreaComumRepository areaComumRepository;
     private final PasswordEncoder passwordEncoder;
     private final AreaComumService areaComumService;
+    private final ComunicadoRepository comunicadoRepository;
+    private final ComunicadoService comunicadoService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -67,6 +67,35 @@ public class DataInitializer implements CommandLineRunner {
             reserva.setAreaReservada(areaComumService.searchByName("Piscina"));
 
             reservaRepository.save(reserva);
+        }
+
+        if (comunicadoRepository.count() == 0) {
+
+            Moderador autor = moderadorRepository.findAll().get(0);
+
+            Comunicado aviso1 = new Comunicado();
+            aviso1.setTitulo("Manutenção da Piscina");
+            aviso1.setConteudo("Informamos que a piscina estará em manutenção nesta sexta-feira durante todo o dia. Agradecemos a compreensão de todos.");
+            aviso1.setPublicadoEm(LocalDateTime.now());
+            aviso1.setModerador(autor);
+
+            Comunicado aviso2 = new Comunicado();
+            aviso2.setTitulo("Festa de Verão do Condomínio");
+            aviso2.setConteudo("Não perca a nossa festa de verão no próximo sábado! Traga a família, haverá música, jogos e comida para todos.");
+            aviso2.setPublicadoEm(LocalDateTime.now().minusDays(1));
+            aviso2.setModerador(autor);
+
+            Comunicado aviso3 = new Comunicado();
+            aviso3.setTitulo("Novas Regras de Estacionamento");
+            aviso3.setConteudo("Por favor, reveja as novas regras de estacionamento para visitantes. É obrigatório identificar a matrícula do carro visitante na portaria.");
+            aviso3.setPublicadoEm(LocalDateTime.now().minusDays(3));
+            aviso3.setModerador(autor);
+
+            comunicadoRepository.save(aviso1);
+            comunicadoRepository.save(aviso2);
+            comunicadoRepository.save(aviso3);
+
+            System.out.println("3 Comunicados de teste criados com sucesso!");
         }
     }
 }

@@ -46,6 +46,14 @@
             <span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
             <span class="font-body-sm text-body-sm">Ocorrências</span>
         </a>
+        <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150" href="#">
+            <span class="material-symbols-outlined" data-icon="Newspaper">Newspaper</span>
+            <span class="font-body-sm text-body-sm">Comunicados</span>
+        </a>
+        <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150" href="#">
+            <span class="material-symbols-outlined" data-icon="notification_important">notification_important</span>
+            <span class="font-body-sm text-body-sm">Notificações</span>
+        </a>
     </div>
     <div class="mt-auto flex flex-col gap-xs pt-md border-t border-outline-variant/30">
         <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150" href="#">
@@ -75,11 +83,13 @@
                 Nenhum comunicado no momento.
             </div>
 
-            <article th:each="comunicado : ${comunicados}" class="bg-surface-container-lowest border border-[#E2E8F0] rounded-xl p-md shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow duration-300">
+            <article th:each="comunicado, iterStat : ${comunicados}"
+                     th:if="${iterStat.index < 3}"
+                     class="bg-surface-container-lowest border border-[#E2E8F0] rounded-xl p-md shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow duration-300">
                 <div class="flex justify-between items-start mb-sm">
-                    <span class="inline-block bg-surface-container px-sm py-xs rounded-full font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">
-                        Comunicado
-                    </span>
+            <span class="inline-block bg-surface-container px-sm py-xs rounded-full font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">
+                Comunicado
+            </span>
                     <span class="font-body-sm text-body-sm text-on-surface-variant" th:text="${#temporals.format(comunicado.publicadoEm, 'dd/MM/yyyy')}">Data</span>
                 </div>
                 <h3 class="font-h3 text-h3 text-on-surface mb-xs" th:text="${comunicado.titulo}">Título do Comunicado</h3>
@@ -87,6 +97,13 @@
                     Conteúdo do comunicado virá aqui.
                 </p>
             </article>
+
+            <div th:if="${#lists.size(comunicados) >= 3}" class="flex justify-center mt-sm">
+                <a th:href="@{/morador/comunicados}" class="inline-flex items-center gap-xs text-primary font-label-md text-label-md hover:underline transition-all">
+                    Ver todos os comunicados
+                    <span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+                </a>
+            </div>
         </section>
 
         <aside class="lg:col-span-4 flex flex-col gap-md">
