@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Convive - Home do Morador</title>
+    <title>Convive</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -17,7 +17,7 @@
 </head>
 <body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row">
 <nav class="md:hidden bg-surface-container-lowest flex justify-between items-center px-margin py-4 w-full shadow-sm sticky top-0 z-50">
-    <div class="text-h2 font-h2 text-primary">Convive</div>
+    <div class="text-h2 font-h2 text-primary" >Convive</div>
     <button class="text-primary p-2 focus:outline-none">
         <span class="material-symbols-outlined" data-icon="menu">menu</span>
     </button>
@@ -29,8 +29,8 @@
             C
         </div>
         <div>
-            <div class="text-h3 font-h3 font-bold text-primary">Convive</div>
-            <div class="font-body-sm text-body-sm text-on-surface-variant">Portal do Morador</div>
+            <div class="text-h3 font-h3 font-bold text-primary" th:text="${usuario.nome}">Convive</div>
+            <div class="font-body-sm text-body-sm text-on-surface-variant" th:text="${usuario.getTipoUsuario()}">Portal do Morador</div>
         </div>
     </div>
     <div class="flex-1 flex flex-col gap-xs">
