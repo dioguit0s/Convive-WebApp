@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -36,5 +35,11 @@ public class Reserva {
     @ManyToOne
     @JoinColumn(name = "areaReservada")
     private AreaComum areaReservada;
+
+    @Column(name = "convidados_estimados")
+    private Integer convidadosEstimados;
+
+    @Column(name = "observacoes", length = 2000)
+    private String observacoes;
 
 }

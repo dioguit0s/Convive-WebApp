@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<th:block th:fragment="navMorador (activeItem)">
+    <nav class="md:hidden bg-surface-container-lowest flex justify-between items-center px-margin py-4 w-full shadow-sm sticky top-0 z-50">
+        <div class="text-h2 font-h2 text-primary">Convive</div>
+        <button class="text-primary p-2 focus:outline-none" type="button">
+            <span class="material-symbols-outlined" data-icon="menu">menu</span>
+        </button>
+    </nav>
+
+    <nav class="hidden md:flex flex-col h-screen p-md gap-base bg-background text-primary w-64 docked left-0 h-full fixed border-r border-outline-variant/30">
+        <div class="mb-lg px-2 flex items-center gap-sm">
+            <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary font-bold">
+                C
+            </div>
+            <div>
+                <div class="text-h3 font-h3 font-bold text-primary" th:text="${usuario.nome}">Convive</div>
+                <div class="font-body-sm text-body-sm text-on-surface-variant" th:text="${usuario.getTipoUsuario()}">Portal do Morador</div>
+            </div>
+        </div>
+        <div class="flex-1 flex flex-col gap-xs">
+            <a class="flex items-center gap-md p-sm rounded-lg transition-transform duration-150"
+               th:href="@{/morador/home}"
+               th:classappend="${activeItem == 'home'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
+                <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                <span class="font-body-sm text-body-sm">Início</span>
+            </a>
+            <a class="flex items-center gap-md p-sm rounded-lg transition-transform duration-150"
+               th:href="@{/morador/reservas}"
+               th:classappend="${activeItem == 'reservas'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
+                <span class="material-symbols-outlined" data-icon="event_available">event_available</span>
+                <span class="font-body-sm text-body-sm">Minhas Reservas</span>
+            </a>
+            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150" href="#">
+                <span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
+                <span class="font-body-sm text-body-sm">Ocorrências</span>
+            </a>
+            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150" href="#">
+                <span class="material-symbols-outlined" data-icon="Newspaper">Newspaper</span>
+                <span class="font-body-sm text-body-sm">Comunicados</span>
+            </a>
+            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150" href="#">
+                <span class="material-symbols-outlined" data-icon="notification_important">notification_important</span>
+                <span class="font-body-sm text-body-sm">Notificações</span>
+            </a>
+        </div>
+        <div class="mt-auto flex flex-col gap-xs pt-md border-t border-outline-variant/30">
+            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150" href="#">
+                <span class="material-symbols-outlined" data-icon="logout">logout</span>
+                <span class="font-body-sm text-body-sm">Sair</span>
+            </a>
+        </div>
+    </nav>
+</th:block>
+
+</body>
+</html>
