@@ -14,4 +14,7 @@ public class Morador extends Usuario {
 
     @Column(name = "apartamento")
     private int apartamento;
+
+    @Override
+    public String getTipoUsuario() { return "MORADOR"; }
 }

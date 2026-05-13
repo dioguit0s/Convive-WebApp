@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Minhas reservas | Convive</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script th:src="@{/js/tailwindTheme.js}"></script>
+    <style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        #modal-nova-reserva::backdrop {
+            background-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row">
+<div th:replace="~{fragments/morador/components :: navMorador(activeItem='reservas')}"></div>
+
+<main id="morador-reservas-main" class="flex-1 md:ml-64 p-margin md:p-xl w-full max-w-7xl mx-auto flex flex-col gap-lg"
+      th:data-lista-vazia-servidor="${#lists.isEmpty(reservas)}"
+      th:data-csrf-parameter-name="${_csrf.parameterName}"
+      th:data-csrf-token="${_csrf.token}"
+      th:data-morador-reservas-base="@{/morador/reservas}">
+
+    <header class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-md border-b border-outline-variant/20 pb-md">
+        <div>
+            <h1 class="font-h1 text-h1 text-primary">Minhas reservas</h1>
+            <p class="font-body-lg text-body-lg text-on-surface-variant mt-sm">Consulte suas solicitações e os espaços comuns do condomínio.</p>
+        </div>
+        <button type="button" id="btn-nova-reserva"
+                class="shrink-0 py-sm px-md bg-primary text-on-primary rounded-lg font-body-sm text-body-sm hover:bg-primary/90 transition-colors flex items-center justify-center gap-xs">
+            <span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+            Nova reserva
+        </button>
+    </header>
+
+    <div th:if="${sucessoReserva}" class="p-md rounded-xl border border-outline-variant/30 bg-[#dcfce7] text-[#166534] font-body-sm text-body-sm" th:text="${sucessoReserva}">Sucesso</div>
+    <div th:if="${erroReserva}" class="p-md rounded-xl border border-outline-variant/30 bg-[#fee2e2] text-[#991b1b] font-body-sm text-body-sm" th:text="${erroReserva}">Erro</div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+
+        <div class="lg:col-span-8 flex flex-col gap-md order-1">
+
+            <section class="bg-surface-container-lowest border border-[#E2E8F0] rounded-xl p-md shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)]" aria-labelledby="titulo-calendario">
+                <div class="flex flex-wrap items-center justify-between gap-sm mb-md">
+                    <h2 id="titulo-calendario" class="font-h2 text-h2 text-primary">Semana</h2>
+                    <div class="flex items-center gap-xs">
+                        <button type="button" id="cal-semana-prev" class="p-2 rounded-lg border border-outline-variant/30 hover:bg-surface-container-high text-on-surface-variant" aria-label="Semana anterior">
+                            <span class="material-symbols-outlined text-[22px]">chevron_left</span>
+                        </button>
+                        <span id="cal-semana-label" class="font-body-md text-body-md text-on-surface min-w-[10rem] text-center">—</span>
+                        <button type="button" id="cal-semana-next" class="p-2 rounded-lg border border-outline-variant/30 hover:bg-surface-container-high text-on-surface-variant" aria-label="Próxima semana">
+                            <span class="material-symbols-outlined text-[22px]">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+                <div id="cal-dias-semana" class="grid grid-cols-7 gap-xs sm:gap-sm" role="group" aria-label="Dias da semana"></div>
+            </section>
+
+            <section aria-labelledby="titulo-lista-reservas">
+                <h2 id="titulo-lista-reservas" class="font-h2 text-h2 text-primary mb-sm">Suas reservas</h2>
+                <div id="lista-reservas-filtrada" class="flex flex-col gap-sm min-h-[5rem]"></div>
+            </section>
+
+            <div id="reservas-source" class="hidden" aria-hidden="true">
+                <div th:each="reserva : ${reservas}"
+                     th:if="${reserva.inicio != null}"
+                     class="reserva-row"
+                     th:attr="data-reserva-id=${reserva.id},
+                              data-inicio=${#temporals.format(reserva.inicio, 'yyyy-MM-dd''T''HH:mm:ss')},
+                              data-fim=${reserva.fim != null ? #temporals.format(reserva.fim, 'yyyy-MM-dd''T''HH:mm:ss') : ''},
+                              data-area=${reserva.areaReservada != null ? reserva.areaReservada.nome : 'Área'},
+                              data-status=${reserva.status}">
+                </div>
+            </div>
+        </div>
+
+        <aside class="lg:col-span-4 flex flex-col gap-md order-2 lg:order-2">
+            <section>
+                <h2 class="font-h2 text-h2 text-primary mb-sm">Espaços do condomínio</h2>
+                <div th:if="${#lists.isEmpty(areasComuns)}" class="p-md text-on-surface-variant bg-surface-container rounded-xl border border-[#E2E8F0]">
+                    Nenhuma área comum cadastrada no momento.
+                </div>
+                <div th:unless="${#lists.isEmpty(areasComuns)}" class="flex flex-col gap-sm">
+                    <article th:each="area : ${areasComuns}"
+                             class="bg-surface-container-lowest border border-[#E2E8F0] rounded-xl p-md shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] flex flex-wrap justify-between items-center gap-sm">
+                        <div class="flex gap-sm items-start">
+                            <div class="mt-0.5 bg-surface-container text-on-surface-variant rounded-full p-2 flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-[20px]" data-icon="location_city">location_city</span>
+                            </div>
+                            <div>
+                                <h3 class="font-h3 text-h3 text-on-surface" th:text="${area.nome}">Nome</h3>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">
+                                    Capacidade: <span th:text="${area.capacidade}">0</span> pessoas
+                                </p>
+                            </div>
+                        </div>
+                        <span th:if="${area.statusArea != null and area.statusArea.name() == 'ATIVA'}"
+                              class="inline-flex items-center px-sm py-xs rounded-full font-label-md text-label-md uppercase tracking-wider shrink-0 bg-[#dcfce7] text-[#166534]">Ativa</span>
+                        <span th:if="${area.statusArea != null and area.statusArea.name() == 'EM_MANUTENCAO'}"
+                              class="inline-flex items-center px-sm py-xs rounded-full font-label-md text-label-md uppercase tracking-wider shrink-0 bg-[#fef3c7] text-[#92400e]">Em manutenção</span>
+                        <span th:if="${area.statusArea == null}"
+                              class="inline-flex items-center px-sm py-xs rounded-full font-label-md text-label-md uppercase tracking-wider shrink-0 bg-surface-container text-on-surface-variant">—</span>
+                    </article>
+                </div>
+            </section>
+        </aside>
+    </div>
+</main>
+
+<dialog id="modal-nova-reserva"
+        class="m-0 p-0 max-w-none w-full max-h-[100dvh] h-full border-0 bg-transparent overflow-x-hidden overflow-y-auto overscroll-contain"
+        aria-labelledby="modal-nova-reserva-titulo" aria-modal="true">
+    <div id="modal-nova-reserva-overlay"
+         class="min-h-full w-full flex items-center justify-center bg-primary-container/40 backdrop-blur-[2px] p-md">
+        <div class="bg-surface-container-lowest rounded-xl shadow-[0_12px_24px_rgba(0,0,0,0.1)] w-full max-w-[600px] flex flex-col max-h-full overflow-hidden border border-outline-variant"
+             onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center p-md border-b border-surface-container-high bg-surface shrink-0">
+                <h2 id="modal-nova-reserva-titulo" class="font-h2 text-h2 text-primary">Nova Reserva</h2>
+                <button type="button" id="modal-nova-reserva-fechar" aria-label="Fechar modal"
+                        class="text-on-surface-variant hover:text-primary transition-colors p-xs rounded-lg hover:bg-surface-container-low">
+                    <span class="material-symbols-outlined" data-icon="close">close</span>
+                </button>
+            </div>
+            <form th:action="@{/morador/reservas}" method="post" id="form-nova-reserva" class="flex flex-col min-h-0 flex-1">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <div class="p-md overflow-y-auto bg-surface-bright flex flex-col gap-gutter">
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-label-md text-label-md text-on-surface-variant uppercase" for="nova-reserva-ambiente">Ambiente</label>
+                        <div class="relative">
+                            <select id="nova-reserva-ambiente" name="areaId" required
+                                    class="w-full appearance-none bg-surface-container-lowest border border-outline-variant rounded-lg px-sm py-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-tertiary-container focus:ring-1 focus:ring-tertiary-container transition-colors">
+                                <option disabled value="" selected>Selecione um ambiente...</option>
+                                <option th:each="area : ${areasComuns}"
+                                        th:if="${area.statusArea != null and area.statusArea.name() == 'ATIVA'}"
+                                        th:value="${area.id}"
+                                        th:text="${area.nome}">Área</option>
+                            </select>
+                            <span class="material-symbols-outlined absolute right-sm top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant" data-icon="expand_more">expand_more</span>
+                        </div>
+                        <p th:if="${#lists.isEmpty(areasComuns)}" class="font-body-sm text-body-sm text-error">Não há ambientes ativos para reserva.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+                        <div class="flex flex-col gap-xs">
+                            <label class="font-label-md text-label-md text-on-surface-variant uppercase" for="nova-reserva-data">Data</label>
+                            <input id="nova-reserva-data" name="dataReserva" type="date" required
+                                   class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-sm py-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-tertiary-container focus:ring-1 focus:ring-tertiary-container transition-colors"/>
+                        </div>
+                        <div class="flex flex-col gap-xs">
+                            <label class="font-label-md text-label-md text-on-surface-variant uppercase" for="nova-reserva-turno">Turno</label>
+                            <div class="relative">
+                                <select id="nova-reserva-turno" name="turno" required
+                                        class="w-full appearance-none bg-surface-container-lowest border border-outline-variant rounded-lg px-sm py-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-tertiary-container focus:ring-1 focus:ring-tertiary-container transition-colors">
+                                    <option disabled value="" selected>Selecione o turno...</option>
+                                    <option value="manha">Manhã (08:00 - 12:00)</option>
+                                    <option value="tarde">Tarde (13:00 - 17:00)</option>
+                                    <option value="noite">Noite (18:00 - 23:00)</option>
+                                    <option value="integral">Integral (08:00 - 23:00)</option>
+                                </select>
+                                <span class="material-symbols-outlined absolute right-sm top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant" data-icon="expand_more">expand_more</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-label-md text-label-md text-on-surface-variant uppercase" for="nova-reserva-convidados">Número de convidados (estimativa)</label>
+                        <input id="nova-reserva-convidados" name="convidadosEstimados" type="number" min="1"
+                               class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-sm py-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-tertiary-container focus:ring-1 focus:ring-tertiary-container transition-colors"
+                               placeholder="Opcional"/>
+                    </div>
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-label-md text-label-md text-on-surface-variant uppercase" for="nova-reserva-observacoes">Observações / motivo</label>
+                        <textarea id="nova-reserva-observacoes" name="observacoes" rows="4"
+                                  class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-sm py-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-tertiary-container focus:ring-1 focus:ring-tertiary-container transition-colors resize-none"
+                                  placeholder="Detalhes adicionais sobre o evento..."></textarea>
+                    </div>
+                </div>
+                <div class="flex justify-end items-center gap-sm p-md border-t border-surface-container-high bg-surface shrink-0">
+                    <button type="button" id="modal-nova-reserva-cancelar"
+                            class="px-md py-sm rounded-lg border border-outline-variant bg-transparent text-on-surface font-body-sm text-body-sm hover:bg-surface-container-low transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit" id="modal-nova-reserva-confirmar"
+                            th:disabled="${!temAreaAtiva}"
+                            th:classappend="${!temAreaAtiva} ? ' opacity-50 cursor-not-allowed' : ''"
+                            class="px-md py-sm rounded-lg border border-transparent bg-primary text-on-primary font-body-sm text-body-sm hover:bg-primary-container transition-colors shadow-sm">
+                        Confirmar reserva
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</dialog>
+
+<script th:src="@{/js/reservas-morador.js}" defer></script>
+</body>
+</html>

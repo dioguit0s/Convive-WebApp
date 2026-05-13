@@ -6,6 +6,7 @@ import com.EC6.Convive.Repository.MoradorRepository;
 import com.EC6.Convive.Repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.beans.ConstructorProperties;
@@ -18,14 +19,12 @@ public class MoradorService {
 
     private final MoradorRepository moradorRepository;
     private final UsuarioRepository usuarioRepository;
+    private final UsuarioService usuarioService;
 
     public Morador insert(Morador morador) {
 
-        if (usuarioRepository.existsByEmail(morador.getEmail())) {
-            throw new RuntimeException("E-mail já cadastrado no sistema.");
-        }
+        usuarioService.prepareToInsertUser(morador);
 
-        morador.setStatus("Ativo");
         morador.setInadimplente(false);
 
         return moradorRepository.save(morador);

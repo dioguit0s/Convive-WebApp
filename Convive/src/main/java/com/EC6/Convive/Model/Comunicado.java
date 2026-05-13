@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -25,7 +26,7 @@ public class Comunicado {
     private String conteudo;
 
     @Column(name = "publicadoEm")
-    private LocalDate publicadoEm;
+    private LocalDateTime publicadoEm;
 
     @ManyToOne
     @JoinColumn(name = "publicadoPor")

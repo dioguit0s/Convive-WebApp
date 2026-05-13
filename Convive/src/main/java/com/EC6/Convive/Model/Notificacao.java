@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -22,7 +22,7 @@ public class Notificacao {
     private String mensagem;
 
     @Column(name = "enviadaEm")
-    private LocalDate enviadaEm;
+    private LocalDateTime enviadaEm;
 
     @ManyToOne
     @JoinColumn(name = "enviadoPorId")
