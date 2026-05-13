@@ -19,6 +19,10 @@
   const cancelModalBtn = document.getElementById('modal-nova-reserva-cancelar');
 
   const listaVaziaServidor = main.dataset.listaVaziaServidor === 'true';
+  const csrfParam = main.getAttribute('data-csrf-parameter-name') || '';
+  const csrfToken = main.getAttribute('data-csrf-token') || '';
+  const moradorReservasBase =
+    main.getAttribute('data-morador-reservas-base') || '/morador/reservas';
 
   const WEEKDAY_LABELS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
@@ -49,6 +53,7 @@
     return Array.from(source.querySelectorAll('.reserva-row'))
       .map(function (el) {
         return {
+          id: el.getAttribute('data-reserva-id') || '',
           inicio: parseInicio(el.getAttribute('data-inicio')),
           fim: parseInicio(el.getAttribute('data-fim')),
           area: el.getAttribute('data-area') || '',
@@ -56,7 +61,7 @@
         };
       })
       .filter(function (r) {
-        return r.inicio !== null;
+        return r.inicio !== null && r.id;
       });
   }
 
@@ -145,6 +150,45 @@
       wrap.appendChild(left);
       wrap.appendChild(badge);
       article.appendChild(wrap);
+
+      if (r.id && csrfParam && csrfToken) {
+        const actions = document.createElement('div');
+        actions.className = 'flex justify-end pt-sm border-t border-outline-variant/20';
+        const form = document.createElement('form');
+        form.method = 'post';
+        form.action = moradorReservasBase + '/' + encodeURIComponent(r.id) + '/cancelar';
+        form.className = 'inline';
+
+        const hidden = document.createElement('input');
+        hidden.type = 'hidden';
+        hidden.name = csrfParam;
+        hidden.value = csrfToken;
+        form.appendChild(hidden);
+
+        const btn = document.createElement('button');
+        btn.type = 'submit';
+        btn.className =
+          'inline-flex items-center gap-xs px-sm py-xs rounded-lg border border-[#fecaca] bg-[#fef2f2] text-[#991b1b] font-body-sm text-body-sm hover:bg-[#fee2e2] transition-colors';
+        const iconCancel = document.createElement('span');
+        iconCancel.className = 'material-symbols-outlined text-[18px]';
+        iconCancel.setAttribute('aria-hidden', 'true');
+        iconCancel.textContent = 'delete';
+        btn.appendChild(iconCancel);
+        btn.appendChild(document.createTextNode(' Cancelar reserva'));
+        btn.addEventListener('click', function (e) {
+          if (
+            !window.confirm(
+              'Cancelar esta reserva? Ela será removida permanentemente.'
+            )
+          ) {
+            e.preventDefault();
+          }
+        });
+        form.appendChild(btn);
+        actions.appendChild(form);
+        article.appendChild(actions);
+      }
+
       listContainer.appendChild(article);
     });
   }

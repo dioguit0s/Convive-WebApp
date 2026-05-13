@@ -22,7 +22,10 @@
 <div th:replace="~{fragments/morador/components :: navMorador(activeItem='reservas')}"></div>
 
 <main id="morador-reservas-main" class="flex-1 md:ml-64 p-margin md:p-xl w-full max-w-7xl mx-auto flex flex-col gap-lg"
-      th:attr="data-lista-vazia-servidor=${#lists.isEmpty(reservas)}">
+      th:data-lista-vazia-servidor="${#lists.isEmpty(reservas)}"
+      th:data-csrf-parameter-name="${_csrf.parameterName}"
+      th:data-csrf-token="${_csrf.token}"
+      th:data-morador-reservas-base="@{/morador/reservas}">
 
     <header class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-md border-b border-outline-variant/20 pb-md">
         <div>
@@ -68,7 +71,8 @@
                 <div th:each="reserva : ${reservas}"
                      th:if="${reserva.inicio != null}"
                      class="reserva-row"
-                     th:attr="data-inicio=${#temporals.format(reserva.inicio, 'yyyy-MM-dd''T''HH:mm:ss')},
+                     th:attr="data-reserva-id=${reserva.id},
+                              data-inicio=${#temporals.format(reserva.inicio, 'yyyy-MM-dd''T''HH:mm:ss')},
                               data-fim=${reserva.fim != null ? #temporals.format(reserva.fim, 'yyyy-MM-dd''T''HH:mm:ss') : ''},
                               data-area=${reserva.areaReservada != null ? reserva.areaReservada.nome : 'Área'},
                               data-status=${reserva.status}">

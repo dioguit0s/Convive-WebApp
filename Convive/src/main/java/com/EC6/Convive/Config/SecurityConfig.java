@@ -26,8 +26,8 @@ public class SecurityConfig {
                         .requestMatchers("/", "/login", "/features", "/about", "/contact").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/img/**", "/h2-console/**").permitAll()
 
-                        .requestMatchers("/morador/**").hasAnyRole("MORADOR", "MODERADOR", "ADMIN")
-                        .requestMatchers("/moderador/**").hasAnyRole("MODERADOR", "ADMIN")
+                        .requestMatchers("/morador/**").hasAnyRole("MORADOR", "MODERADOR")
+                        .requestMatchers("/moderador/**").hasRole("MODERADOR")
 
                         .anyRequest().authenticated()
                 )
@@ -70,7 +70,7 @@ public class SecurityConfig {
 
             if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_MORADOR"))) {
                 redirectUrl = "/morador/home";
-            } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_MODERADOR") || a.getAuthority().equals("ROLE_ADMIN"))) {
+            } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_MODERADOR"))) {
                 redirectUrl = "/morador/home";
             }
 

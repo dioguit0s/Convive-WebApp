@@ -3,14 +3,12 @@ package com.EC6.Convive.Config;
 import com.EC6.Convive.Model.*;
 import com.EC6.Convive.Repository.*;
 import com.EC6.Convive.Service.AreaComumService;
-import com.EC6.Convive.Service.ComunicadoService;
 import com.EC6.Convive.Service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -26,24 +24,37 @@ public class DataInitializer implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final AreaComumService areaComumService;
     private final ComunicadoRepository comunicadoRepository;
-    private final ComunicadoService comunicadoService;
+    private final MoradorRepository moradorRepository;
 
     @Override
     public void run(String... args) throws Exception {
         if (usuarioRepository.count() == 0) {
 
-            Moderador admin = new Moderador();
-            admin.setNome("Administrador Teste");
-            admin.setEmail("admin@convive.com");
-            admin.setSenhaHash(passwordEncoder.encode("admin123"));
-            admin.setStatus("Ativo");
+            Moderador moderador = new Moderador();
+            moderador.setNome("Moderador");
+            moderador.setEmail("moderador@convive.com");
+            moderador.setSenhaHash(passwordEncoder.encode("moderador123"));
+            moderador.setStatus("Ativo");
 
-            moderadorRepository.save(admin);
+            Morador morador = new Morador();
+            morador.setNome("Morador");
+            morador.setApartamento(01);
+            morador.setSenhaHash(passwordEncoder.encode("123"));
+            morador.setStatus("Ativo");
+            morador.setEmail("morador@convive.com");
+
+            moderadorRepository.save(moderador);
+            moradorRepository.save(morador);
 
             System.out.println("-----------------------------------------");
-            System.out.println("USUÁRIO DE TESTE CRIADO:");
-            System.out.println("Login: admin@convive.com");
-            System.out.println("Senha: admin123");
+            System.out.println("USUÁRIO DE MODERADOR CRIADO:");
+            System.out.println("Login: moderador@convive.com");
+            System.out.println("Senha: moderador123");
+            System.out.println("-----------------------------------------");
+            System.out.println("-----------------------------------------");
+            System.out.println("USUÁRIO DE MORADOR CRIADO:");
+            System.out.println("Login: morador@convive.com");
+            System.out.println("Senha: 123");
             System.out.println("-----------------------------------------");
         }
 
@@ -57,9 +68,9 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         if (reservaRepository.count() == 0) {
-            Usuario user = usuarioService.getByEmail("admin@convive.com");
+            Usuario user = usuarioService.getByEmail("moderador@convive.com");
             LocalDateTime inicialDate = LocalDateTime.now();
-            LocalDateTime endDate = LocalDateTime.now();
+            LocalDateTime endDate = LocalDateTime.now().plusHours(2);
             Reserva reserva = new Reserva();
             reserva.setReservadoPor(user);
             reserva.setInicio(inicialDate);

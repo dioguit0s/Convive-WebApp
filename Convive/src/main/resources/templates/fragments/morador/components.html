@@ -45,7 +45,7 @@
                 <span class="material-symbols-outlined" data-icon="notification_important">notification_important</span>
                 <span class="font-body-sm text-body-sm">Notificações</span>
             </a>
-            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"  href="#" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"  href="#" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}">
                 <span class="material-symbols-outlined" data-icon="notification_important">notification_important</span>
                 <span class="font-body-sm text-body-sm">Gestão de usuarios</span>
             </a>

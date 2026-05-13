@@ -1,10 +1,6 @@
 package com.EC6.Convive.Controller;
 
-import com.EC6.Convive.Model.Usuario;
-import com.EC6.Convive.Model.Comunicado;
-import com.EC6.Convive.Model.AreaComum;
-import com.EC6.Convive.Model.Reserva;
-import com.EC6.Convive.Model.StatusArea;
+import com.EC6.Convive.Model.*;
 import com.EC6.Convive.Security.CustomUserDetails;
 import com.EC6.Convive.Service.AreaComumService;
 import com.EC6.Convive.Service.ComunicadoService;
@@ -16,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -151,8 +148,32 @@ public class MoradorHomeController {
             reserva.setObservacoes(obs.isEmpty() ? null : obs);
         }
 
+        if (reservaService.canAutoApproveNewBooking(usuario.getId(), area.getId(), inicio, fim)) {
+            reserva.setStatus(StatusReserva.APROVADO);
+            redirectAttributes.addFlashAttribute("sucessoReserva",
+                    "Reserva registrada e aprovada automaticamente.");
+        } else {
+            reserva.setStatus(StatusReserva.PENDENTE);
+            redirectAttributes.addFlashAttribute("sucessoReserva",
+                    "Sua solicitação de reserva foi registrada e está pendente de aprovação.");
+        }
+
         reservaService.insert(reserva);
-        redirectAttributes.addFlashAttribute("sucessoReserva", "Sua solicitação de reserva foi registrada e está pendente de aprovação.");
+        return "redirect:/morador/reservas";
+    }
+
+    @PostMapping("/reservas/{id}/cancelar")
+    public String cancelarReservaMorador(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable UUID id,
+            RedirectAttributes redirectAttributes
+    ) {
+        Usuario usuario = userDetails.getUsuario();
+        if (reservaService.deleteForUser(id, usuario.getId())) {
+            redirectAttributes.addFlashAttribute("sucessoReserva", "Reserva cancelada e removida.");
+        } else {
+            redirectAttributes.addFlashAttribute("erroReserva", "Não foi possível cancelar esta reserva.");
+        }
         return "redirect:/morador/reservas";
     }
 
