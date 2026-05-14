@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -31,5 +32,11 @@ public class Ocorrencia {
 
     @ManyToOne
     @JoinColumn(name = "feitaPorId")
-    private Morador morador;
+    private Usuario usuario;
+
+    @Column(name = "protocolo", unique = true)
+    private String protocolo;
+
+    @Column(name = "dataRegistro")
+    private LocalDateTime dataRegistro;
 }
