@@ -27,7 +27,7 @@ public class ComunicadoController {
     private final ComunicadoService comunicadoService;
 
     @GetMapping
-    public String listarComunicados(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+    public String listarComunicados(@AuthenticationPrincipal CustomUserDetails userDetails , Model model) {
 
         Usuario usuario = userDetails.getUsuario();
 

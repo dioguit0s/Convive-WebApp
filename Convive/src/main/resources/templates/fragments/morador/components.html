@@ -40,12 +40,12 @@
                 <span class="material-symbols-outlined" data-icon="Newspaper">Newspaper</span>
                 <span class="font-body-sm text-body-sm">Comunicados</span>
             </a>
-            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150" href="#">
+            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150" th:href="@{/morador/notificacoes}">
                 <span class="material-symbols-outlined" data-icon="notification_important">notification_important</span>
                 <span class="font-body-sm text-body-sm">Notificações</span>
             </a>
             <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"  href="#" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}">
-                <span class="material-symbols-outlined" data-icon="notification_important">notification_important</span>
+                <span class="material-symbols-outlined" data-icon="group">group</span>
                 <span class="font-body-sm text-body-sm">Gestão de usuarios</span>
             </a>
         </div>

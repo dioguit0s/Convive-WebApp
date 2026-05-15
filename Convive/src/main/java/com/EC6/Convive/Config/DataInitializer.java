@@ -25,6 +25,7 @@ public class DataInitializer implements CommandLineRunner {
     private final AreaComumService areaComumService;
     private final ComunicadoRepository comunicadoRepository;
     private final MoradorRepository moradorRepository;
+    private final NotificacaoRepository notificacaoRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -110,6 +111,44 @@ public class DataInitializer implements CommandLineRunner {
             comunicadoRepository.save(aviso3);
 
             System.out.println("3 Comunicados de teste criados com sucesso!");
+        }
+
+        if (notificacaoRepository.count() == 0) {
+            Moderador admin = moderadorRepository.findAll().get(0);
+            Morador residente = moradorRepository.findAll().get(0);
+
+            Notificacao n1 = new Notificacao();
+            n1.setEmitidoPor(admin);
+            n1.setMorador(residente);
+            n1.setApartamento(residente.getApartamento());
+            n1.setTitulo("Aviso de Som Alto");
+            n1.setDescricao("Recebemos relatos de som alto após as 22h. Solicitamos atenção ao regimento interno.");
+            n1.setGravidade(GravidadeNotificacao.BAIXA);
+            n1.setDataEnvio(LocalDateTime.now().minusDays(5));
+            notificacaoRepository.save(n1);
+
+            Notificacao n2 = new Notificacao();
+            n2.setEmitidoPor(admin);
+            n2.setMorador(residente);
+            n2.setApartamento(residente.getApartamento());
+            n2.setTitulo("Obstrução de Área Comum");
+            n2.setDescricao("Identificamos objetos pessoais deixados no corredor. Favor liberar a passagem.");
+            n2.setGravidade(GravidadeNotificacao.MEDIA);
+            n2.setDataEnvio(LocalDateTime.now().minusDays(2));
+            notificacaoRepository.save(n2);
+
+            Notificacao n3 = new Notificacao();
+            n3.setEmitidoPor(admin);
+            n3.setMorador(residente);
+            n3.setApartamento(residente.getApartamento());
+            n3.setTitulo("Dano ao Elevador");
+            n3.setDescricao("Constatamos avaria no elevador durante sua mudança. Este aviso serve como última etapa antes da multa.");
+            n3.setGravidade(GravidadeNotificacao.ALTA);
+            n3.setDataEnvio(LocalDateTime.now().minusHours(5));
+            n3.setGerouMulta(false);
+            notificacaoRepository.save(n3);
+
+            System.out.println("3 Notificações de teste (Baixa, Média, Alta) criadas com sucesso!");
         }
     }
 }
