@@ -32,19 +32,26 @@
                 <span class="material-symbols-outlined" data-icon="event_available">event_available</span>
                 <span class="font-body-sm text-body-sm">Minhas Reservas</span>
             </a>
-            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150" th:href="@{/morador/ocorrencias}">
+            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"
+               th:href="@{/morador/ocorrencias}"
+               th:classappend="${activeItem == 'ocorrencias'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
                 <span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
                 <span class="font-body-sm text-body-sm">Ocorrências</span>
             </a>
-            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150" th:href="@{/morador/comunicados}">
+            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"
+               th:href="@{/morador/comunicados}"
+               th:classappend="${activeItem == 'comunicados'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
                 <span class="material-symbols-outlined" data-icon="Newspaper">Newspaper</span>
                 <span class="font-body-sm text-body-sm">Comunicados</span>
             </a>
-            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150" th:href="@{/morador/notificacoes}">
+            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"
+               th:href="@{/morador/notificacoes}"
+               th:classappend="${activeItem == 'notificacoes'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
                 <span class="material-symbols-outlined" data-icon="notification_important">notification_important</span>
                 <span class="font-body-sm text-body-sm">Notificações</span>
             </a>
-            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"  href="#" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}">
+            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"
+               href="#" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}">
                 <span class="material-symbols-outlined" data-icon="group">group</span>
                 <span class="font-body-sm text-body-sm">Gestão de usuarios</span>
             </a>
