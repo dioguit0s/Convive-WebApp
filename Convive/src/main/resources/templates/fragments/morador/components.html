@@ -27,8 +27,7 @@
                 <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
                 <span class="font-body-sm text-body-sm">Início</span>
             </a>
-            <a class="flex items-center gap-md p-sm rounded-lg transition-transform duration-150"
-               th:href="@{/morador/reservas}"
+            <a class="flex items-center gap-md p-sm rounded-lg transition-transform duration-150" th:href="@{/morador/reservas}"
                th:classappend="${activeItem == 'reservas'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
                 <span class="material-symbols-outlined" data-icon="event_available">event_available</span>
                 <span class="font-body-sm text-body-sm">Minhas Reservas</span>
@@ -37,7 +36,7 @@
                 <span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
                 <span class="font-body-sm text-body-sm">Ocorrências</span>
             </a>
-            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150" href="#">
+            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150" th:href="@{/morador/comunicados}">
                 <span class="material-symbols-outlined" data-icon="Newspaper">Newspaper</span>
                 <span class="font-body-sm text-body-sm">Comunicados</span>
             </a>

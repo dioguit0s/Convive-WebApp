@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Mural de Avisos - Convive</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script th:src="@{/js/tailwindTheme.js}"></script>
+    <script th:src="@{/js/comunicados.js}"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        #modal-detalhes-comunicado::backdrop {
+            background-color: transparent;
+        }
+    </style>
+</head>
+
+<dialog id="modal-novo-comunicado" class="m-0 p-0 max-w-none w-full max-h-[100dvh] h-full border-0 bg-transparent overflow-x-hidden overflow-y-auto overscroll-contain">
+    <div class="min-h-full w-full flex items-center justify-center bg-primary-container/40 backdrop-blur-[2px] p-md" onclick="document.getElementById('modal-novo-comunicado').close()">
+        <div class="bg-surface-container-lowest rounded-xl shadow-lg w-full max-w-[600px] flex flex-col max-h-full border border-outline-variant" onclick="event.stopPropagation()">
+
+            <div class="flex justify-between items-center p-md border-b border-surface-container-high">
+                <h2 class="font-h2 text-h2 text-primary">Novo Comunicado</h2>
+                <button type="button" onclick="document.getElementById('modal-novo-comunicado').close()" class="text-on-surface-variant hover:text-primary">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <form th:action="@{/morador/comunicados}" method="post" class="flex flex-col">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <div class="p-md flex flex-col gap-4">
+                    <div>
+                        <label class="block font-label-md text-on-surface-variant mb-1">Título</label>
+                        <input type="text" name="titulo" required class="w-full rounded-lg border-outline-variant bg-surface text-on-surface">
+                    </div>
+                    <div>
+                        <label class="block font-label-md text-on-surface-variant mb-1">Tipo</label>
+                        <select name="tipo" required class="w-full rounded-lg border-outline-variant bg-surface text-on-surface">
+                            <option value="Geral">Geral</option>
+                            <option value="Eventos">Eventos</option>
+                            <option value="Obras">Obras</option>
+                            <option value="Reunião">Reunião</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-label-md text-on-surface-variant mb-1">Conteúdo</label>
+                        <textarea name="conteudo" rows="4" required class="w-full rounded-lg border-outline-variant bg-surface text-on-surface"></textarea>
+                    </div>
+                </div>
+                <div class="flex justify-end p-md border-t border-surface-container-high gap-2">
+                    <button type="button" onclick="document.getElementById('modal-novo-comunicado').close()" class="px-4 py-2 rounded-lg text-on-surface">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-primary text-on-primary">Publicar</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</dialog>
+
+<body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row">
+
+<div th:replace="~{fragments/morador/components :: navMorador(activeItem='comunicados')}"></div>
+
+<main class="flex-1 md:ml-64 p-margin md:p-xl w-full max-w-7xl mx-auto flex flex-col min-h-screen">
+    <div class="w-full pb-xl">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-md mb-margin border-b border-outline-variant/20 pb-md">
+            <div>
+                <h1 class="font-h1 text-h1 text-primary">Mural de Avisos</h1>
+                <p class="font-body-lg text-body-lg text-on-surface-variant mt-sm">Fique por dentro das comunicações oficiais e eventos do seu condomínio.</p>
+            </div>
+
+            <button th:if="${#authorization.expression('hasRole(''MODERADOR'')')}" id="btnNovoComunicado" onclick="abrirModalNovoComunicado()"
+                    class="bg-primary text-on-primary font-body-sm text-body-sm font-medium px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 whitespace-nowrap shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">add</span>
+                Novo Aviso
+            </button>
+        </div>
+
+        <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-4 mb-margin shadow-[0_4px_12px_-4px_rgba(0,0,0,0.02)] flex flex-col md:flex-row gap-4">
+            <div class="relative flex-1">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                <input id="searchInput" onkeyup="filtrarComunicados()" class="w-full bg-background border border-outline-variant/50 rounded-lg pl-10 pr-4 py-2.5 font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-tertiary-container focus:ring-1 focus:ring-tertiary-container transition-all placeholder:text-on-surface-variant/70" placeholder="Buscar avisos..." type="text"/>
+            </div>
+
+            <div class="flex gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-hide">
+                <button type="button" onclick="selecionarFiltro(this, 'Todos')" class="filtro-btn px-4 py-2 rounded-full bg-surface-container-highest text-primary font-label-md text-label-md whitespace-nowrap border border-outline-variant/20 hover:bg-surface-container-high transition-colors">Todos</button>
+                <button type="button" onclick="selecionarFiltro(this, 'Reunião')" class="filtro-btn px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md whitespace-nowrap border border-outline-variant/50 hover:bg-surface-container-high transition-colors">Reunião</button>
+                <button type="button" onclick="selecionarFiltro(this, 'Obras')" class="filtro-btn px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md whitespace-nowrap border border-outline-variant/50 hover:bg-surface-container-high transition-colors">Obras</button>
+                <button type="button" onclick="selecionarFiltro(this, 'Eventos')" class="filtro-btn px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md whitespace-nowrap border border-outline-variant/50 hover:bg-surface-container-high transition-colors">Eventos</button>
+                <button type="button" onclick="selecionarFiltro(this, 'Geral')" class="filtro-btn px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md whitespace-nowrap border border-outline-variant/50 hover:bg-surface-container-high transition-colors">Geral</button>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(comunicados)}" class="p-md text-on-surface-variant bg-surface-container rounded-xl text-center border border-[#E2E8F0] mt-sm">
+            <span class="material-symbols-outlined text-[40px] text-on-surface-variant/40 block mb-sm mx-auto" data-icon="inbox">inbox</span>
+            <p class="font-body-md text-body-md">Nenhum aviso publicado no momento.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md" id="comunicadosGrid">
+
+            <div th:each="comunicado : ${comunicados}"
+                 class="comunicado-card bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-[0_4px_12px_-4px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow group flex flex-col h-full"
+                 th:data-titulo="${comunicado.titulo}"
+                 th:data-tipo="${comunicado.tipo.name()}">
+
+                <div class="p-md flex-1 flex flex-col">
+                    <div class="flex justify-between items-start mb-4">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full font-label-md text-label-md tracking-wider uppercase"
+                                  th:classappend="${comunicado.tipo.name() == 'Eventos' ? 'bg-tertiary-fixed text-on-tertiary-fixed' : (comunicado.tipo.name() == 'Obras' ? 'bg-[#fef08a] text-[#713f12]' : 'bg-surface-container-high text-on-surface')}"
+                                  th:text="${comunicado.tipo}">GERAL</span>
+                    </div>
+
+                    <h3 class="font-h3 text-h3 text-on-surface mb-2 group-hover:text-primary transition-colors" th:text="${comunicado.titulo}">Título</h3>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-3 mb-4 flex-1" th:text="${comunicado.conteudo}">Resumo do conteúdo...</p>
+
+                    <div class="flex items-center gap-2 text-on-surface-variant/80 font-body-sm text-body-sm mb-4">
+                        <span class="material-symbols-outlined text-[16px]">schedule</span>
+                        <span th:text="${#temporals.format(comunicado.publicadoEm, 'dd/MM/yyyy HH:mm')}">Data</span>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-outline-variant/20 mt-auto">
+                        <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-md text-[10px]"
+                                      th:text="${#strings.substring(comunicado.moderador.nome, 0, 1)}">A</span>
+                            <span class="font-body-sm text-body-sm text-on-surface font-medium truncate max-w-[120px]" th:text="${comunicado.moderador.nome}">Nome do Admin</span>
+                        </div>
+
+                        <button class="text-primary font-body-sm text-body-sm font-semibold hover:text-on-tertiary-container transition-colors flex items-center gap-1"
+                                onclick="abrirModalComunicado(this)"
+                                th:data-titulo="${comunicado.titulo}"
+                                th:data-id="${comunicado.id}"
+                                th:data-conteudo="${comunicado.conteudo}"
+                                th:data-autor="${comunicado.moderador.nome}"
+                                th:data-data="${#temporals.format(comunicado.publicadoEm, 'dd/MM/yyyy HH:mm')}"
+                                th:data-tipo="${comunicado.tipo}">
+                            Ler mais <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<dialog id="modal-detalhes-comunicado" class="m-0 p-0 max-w-none w-full max-h-[100dvh] h-full border-0 bg-transparent overflow-x-hidden overflow-y-auto overscroll-contain" aria-labelledby="modal-detalhes-titulo" aria-modal="true">
+    <div class="min-h-full w-full flex items-center justify-center bg-primary-container/40 backdrop-blur-[2px] p-md" onclick="document.getElementById('modal-detalhes-comunicado').close()">
+        <div class="bg-surface-container-lowest rounded-xl shadow-[0_12px_24px_rgba(0,0,0,0.1)] w-full max-w-[700px] flex flex-col max-h-full overflow-hidden border border-outline-variant" onclick="event.stopPropagation()">
+
+            <div class="flex justify-between items-start p-md border-b border-surface-container-high bg-surface shrink-0">
+                <div class="flex flex-col gap-1">
+                    <span id="modal-tipo" class="inline-flex items-center px-3 py-1 rounded-full font-label-md text-label-md tracking-wider uppercase bg-surface-container-high text-on-surface w-fit">TIPO</span>
+                    <h2 id="modal-titulo" class="font-h2 text-h2 text-primary mt-2">Título do Comunicado</h2>
+                </div>
+                <button type="button" onclick="document.getElementById('modal-detalhes-comunicado').close()" class="text-on-surface-variant hover:text-primary transition-colors p-xs rounded-lg hover:bg-surface-container-low">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div class="p-md overflow-y-auto bg-surface-bright flex flex-col gap-gutter">
+                <div class="flex items-center justify-between bg-surface-container-low p-sm rounded-lg border border-outline-variant/30">
+                    <div class="flex flex-col">
+                        <span class="font-label-md text-label-md text-on-surface-variant uppercase">Publicado por</span>
+                        <span id="modal-autor" class="font-body-md text-body-md text-on-surface font-medium">Autor</span>
+                    </div>
+                    <div class="flex flex-col items-end">
+                        <span class="font-label-md text-label-md text-on-surface-variant uppercase">Data da publicação</span>
+                        <span id="modal-data" class="font-body-md text-body-md text-on-surface font-medium">Data</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-xs mt-2">
+                    <p id="modal-conteudo" class="font-body-md text-body-md text-on-surface whitespace-pre-wrap leading-relaxed"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-end p-md border-t border-surface-container-high bg-surface shrink-0 gap-2">
+                <form id="form-excluir-comunicado" th:action="@{/morador/comunicados/excluir}" method="post" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}">
+
+                    <input type="hidden" name="id" id="comunicado-id-excluir" value="" />
+
+                    <button type="submit"
+                            onclick="return confirm('Tem certeza que deseja excluir este aviso?')"
+                            class="px-md py-sm rounded-lg bg-red-600 text-white font-body-sm text-body-sm hover:bg-red-700 transition-colors shadow-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                        Excluir
+                    </button>
+                </form>
+
+                <button type="button" onclick="document.getElementById('modal-detalhes-comunicado').close()"
+                        class="px-md py-sm rounded-lg bg-primary text-on-primary font-body-sm text-body-sm hover:bg-primary/90 transition-colors shadow-sm">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+</dialog>
+
+</body>
+</html>

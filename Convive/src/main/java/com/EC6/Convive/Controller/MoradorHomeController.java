@@ -45,7 +45,7 @@ public class MoradorHomeController {
     public String dashboardMorador(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         Usuario usuario = userDetails.getUsuario();
 
-        List<Comunicado> comunicados = comunicadoService.listAll();
+        List<Comunicado> comunicados = comunicadoService.findAllOrderByDate();
 
         List<Reserva> reservas = reservaService.listByUser(usuario.getId());
 

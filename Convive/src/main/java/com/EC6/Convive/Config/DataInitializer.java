@@ -89,18 +89,21 @@ public class DataInitializer implements CommandLineRunner {
             aviso1.setConteudo("Informamos que a piscina estará em manutenção nesta sexta-feira durante todo o dia. Agradecemos a compreensão de todos.");
             aviso1.setPublicadoEm(LocalDateTime.now());
             aviso1.setModerador(autor);
+            aviso1.setTipo(TipoComunicado.Obras);
 
             Comunicado aviso2 = new Comunicado();
             aviso2.setTitulo("Festa de Verão do Condomínio");
             aviso2.setConteudo("Não perca a nossa festa de verão no próximo sábado! Traga a família, haverá música, jogos e comida para todos.");
             aviso2.setPublicadoEm(LocalDateTime.now().minusDays(1));
             aviso2.setModerador(autor);
+            aviso2.setTipo(TipoComunicado.Eventos);
 
             Comunicado aviso3 = new Comunicado();
             aviso3.setTitulo("Novas Regras de Estacionamento");
             aviso3.setConteudo("Por favor, reveja as novas regras de estacionamento para visitantes. É obrigatório identificar a matrícula do carro visitante na portaria.");
             aviso3.setPublicadoEm(LocalDateTime.now().minusDays(3));
             aviso3.setModerador(autor);
+            aviso3.setTipo(TipoComunicado.Geral);
 
             comunicadoRepository.save(aviso1);
             comunicadoRepository.save(aviso2);
