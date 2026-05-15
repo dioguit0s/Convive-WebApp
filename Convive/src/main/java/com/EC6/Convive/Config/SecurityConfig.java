@@ -38,6 +38,12 @@ public class SecurityConfig {
                         .successHandler(customAuthenticationSuccessHandler())
                         .permitAll()
                 )
+                .rememberMe(remember -> remember
+                        .key("chave-secreta-unica-do-projeto-convive")
+                        .userDetailsService(userDetailsService)
+                        .rememberMeParameter("remember-me")
+                        .tokenValiditySeconds(7 * 24 * 60 * 60)
+                )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
