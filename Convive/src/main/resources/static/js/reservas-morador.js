@@ -49,21 +49,23 @@
   }
 
   function loadReservas() {
-    if (!source) return [];
-    return Array.from(source.querySelectorAll('.reserva-row'))
-      .map(function (el) {
-        return {
-          id: el.getAttribute('data-reserva-id') || '',
-          inicio: parseInicio(el.getAttribute('data-inicio')),
-          fim: parseInicio(el.getAttribute('data-fim')),
-          area: el.getAttribute('data-area') || '',
-          status: el.getAttribute('data-status') || ''
-        };
-      })
-      .filter(function (r) {
-        return r.inicio !== null && r.id;
-      });
-  }
+      if (!source) return [];
+      return Array.from(source.querySelectorAll('.reserva-row'))
+        .map(function (el) {
+          return {
+            id: el.getAttribute('data-reserva-id') || '',
+            inicio: parseInicio(el.getAttribute('data-inicio')),
+            fim: parseInicio(el.getAttribute('data-fim')),
+            area: el.getAttribute('data-area') || '',
+            status: el.getAttribute('data-status') || '',
+            convidados: el.getAttribute('data-convidados') || 'Não informado',
+            observacoes: el.getAttribute('data-observacoes') || 'Nenhuma observação'
+          };
+        })
+        .filter(function (r) {
+          return r.inicio !== null && r.id;
+        });
+    }
 
   function badgeClasses(status) {
     if (status === 'APROVADO') return 'bg-[#dcfce7] text-[#166534]';
@@ -124,8 +126,7 @@
     filtered.forEach(function (r) {
       const article = document.createElement('article');
       article.className =
-        'bg-surface-container-lowest border border-[#E2E8F0] rounded-xl p-md shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)]';
-      const wrap = document.createElement('div');
+'bg-surface-container-lowest border border-[#E2E8F0] rounded-xl p-md shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-surface-container-high transition-all cursor-pointer';      const wrap = document.createElement('div');
       wrap.className =
         'flex flex-wrap justify-between items-start gap-sm mb-sm';
       const left = document.createElement('div');
@@ -150,6 +151,24 @@
       wrap.appendChild(left);
       wrap.appendChild(badge);
       article.appendChild(wrap);
+
+      article.addEventListener('click', function(e) {
+                if (e.target.closest('button') || e.target.closest('form')) {
+                    return;
+                }
+
+                document.getElementById('detalhe-reserva-area').innerText = r.area;
+
+                document.getElementById('detalhe-reserva-status').innerHTML =
+                    `<span class="inline-flex items-center px-sm py-[2px] rounded-full font-label-md text-[10px] uppercase ${badgeClasses(r.status)}">${r.status}</span>`;
+
+                document.getElementById('detalhe-reserva-inicio').innerText = fmt.format(r.inicio);
+                document.getElementById('detalhe-reserva-fim').innerText = r.fim && !Number.isNaN(r.fim.getTime()) ? fmt.format(r.fim) : 'Não definido';
+                document.getElementById('detalhe-reserva-convidados').innerText = r.convidados;
+                document.getElementById('detalhe-reserva-observacoes').innerText = r.observacoes;
+
+                document.getElementById('modal-detalhes-reserva').showModal();
+            });
 
       if (r.id && csrfParam && csrfToken) {
         const actions = document.createElement('div');

@@ -66,6 +66,13 @@ public class DataInitializer implements CommandLineRunner {
             newArea.setStatusArea(StatusArea.ATIVA);
 
             areaComumRepository.save(newArea);
+
+            AreaComum newArea2 = new AreaComum();
+            newArea2.setCapacidade(5);
+            newArea2.setNome("Quadra");
+            newArea2.setStatusArea(StatusArea.EM_MANUTENCAO);
+
+            areaComumRepository.save(newArea2);
         }
 
         if (reservaRepository.count() == 0) {
