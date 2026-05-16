@@ -1,0 +1,57 @@
+name: Deploy Convive
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: 📥 Checkout do código
+        uses: actions/checkout@v4
+
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: 🔨 Build do projeto (Maven)
+        run: |
+          cd Convive
+          chmod +x mvnw
+          ./mvnw clean package -DskipTests
+
+      - name: 📦 Atualizar o JAR em produção
+        run: |
+          cp Convive/target/*.jar /opt/convive/convive.jar
+
+      - name: 🚀 Reiniciar a aplicação
+        run: |
+          sudo systemctl restart convive.service
+          
+      - name: ⏳ Aguardar inicialização do Spring Boot
+        run: |
+          # O Spring Boot leva alguns segundos para subir e possivelmente falhar.
+          # Vamos dar 20 segundos de margem antes de inspecionar.
+          echo "Aguardando o Spring Boot iniciar..."
+          sleep 20
+
+      - name: 🔍 Verificar status e capturar logs em caso de erro
+        run: |
+          # Checa se o serviço está rodando perfeitamente
+          if ! systemctl is-active --quiet convive.service; then
+            echo "❌ CRÍTICO: O serviço convive.service falhou ao iniciar ou caiu logo em seguida!"
+            echo "====================== INÍCIO DOS LOGS ======================"
+            
+            # Puxa as últimas 100 linhas de erro do console do Java
+            journalctl -u convive.service -n 100 --no-pager
+            
+            echo "======================= FIM DOS LOGS ========================"
+            exit 1 # Força o GitHub Actions a marcar este step como FALHO ❌
+          else
+            echo "✅ Aplicação iniciada e rodando com sucesso na porta 8085!"
+          fi
