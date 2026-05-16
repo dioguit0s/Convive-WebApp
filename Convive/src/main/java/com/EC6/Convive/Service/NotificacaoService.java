@@ -1,8 +1,11 @@
 package com.EC6.Convive.Service;
 
 import com.EC6.Convive.Model.Notificacao;
+import com.EC6.Convive.Model.Usuario;
 import com.EC6.Convive.Repository.NotificacaoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +16,7 @@ import java.util.UUID;
 public class NotificacaoService {
 
     private final NotificacaoRepository notificacaoRepository;
+    private final UserDetailsService userDetails;
 
     public Notificacao insert(Notificacao Notificacao) {
         return notificacaoRepository.save(Notificacao);
@@ -20,6 +24,10 @@ public class NotificacaoService {
 
     public List<Notificacao> listAll() {
         return notificacaoRepository.findAll();
+    }
+
+    public List<Notificacao> listAllByUserId(UUID user) {
+        return notificacaoRepository.getAllByMoradorId(user);
     }
 
     public Notificacao searchById(UUID id) {

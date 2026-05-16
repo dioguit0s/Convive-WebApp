@@ -31,4 +31,9 @@ public class Comunicado {
     @ManyToOne
     @JoinColumn(name = "publicadoPor")
     private Moderador moderador;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo")
+    private TipoComunicado tipo = TipoComunicado.Geral;
+
 }

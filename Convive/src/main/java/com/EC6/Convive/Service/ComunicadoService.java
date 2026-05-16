@@ -30,4 +30,9 @@ public class ComunicadoService {
     public void delete(UUID id) {
         comunicadoRepository.deleteById(id);
     }
+
+    public List<Comunicado> findAllOrderByDate() {
+        return comunicadoRepository.getAllByPublicadoEmNotNullOrderByPublicadoEmDesc();
+
+    }
 }

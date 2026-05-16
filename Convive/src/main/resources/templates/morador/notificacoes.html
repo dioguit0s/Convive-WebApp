@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Notificações e Alertas | Convive</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script th:src="@{/js/tailwindTheme.js}"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row antialiased">
+
+<div th:replace="~{fragments/morador/components :: navMorador(activeItem='notificacoes')}"></div>
+
+<main class="flex-1 md:ml-64 p-margin md:p-xl w-full max-w-5xl mx-auto flex flex-col min-h-screen">
+    <header class="mb-lg border-b border-outline-variant/20 pb-md">
+        <h1 class="font-h1 text-h1 text-primary">Notificações e Alertas</h1>
+        <p class="font-body-lg text-body-lg text-on-surface-variant mt-sm">Histórico de advertências formais emitidas pela administração.</p>
+    </header>
+
+    <div th:if="${#lists.isEmpty(notificacoes)}" class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-xl flex flex-col items-center justify-center text-center shadow-[0_4px_12px_rgba(0,0,0,0.02)] mt-lg">
+        <span class="material-symbols-outlined text-[48px] text-primary-fixed-dim mb-md">task_alt</span>
+        <h3 class="font-h3 text-h3 text-on-surface mb-xs">Nenhuma advertência registrada</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant max-w-md">Parabéns! Você não possui notificações ou alertas ativos. Agradecemos por manter a harmonia na comunidade.</p>
+    </div>
+
+    <div th:unless="${#lists.isEmpty(notificacoes)}" class="space-y-md">
+        <article th:each="notificacao : ${notificacoes}" class="bg-surface-container-lowest border border-outline-variant/30 rounded-lg p-md shadow-[0_4px_12px_rgba(0,0,0,0.02)] flex flex-col md:flex-row gap-md items-start relative overflow-hidden group">
+
+            <div class="absolute left-0 top-0 bottom-0 w-1"
+                 th:classappend="${notificacao.gravidade.name() == 'ALTA' ? 'bg-error' : (notificacao.gravidade.name() == 'MEDIA' ? 'bg-[#ff8f00]' : 'bg-on-tertiary-container')}"></div>
+
+            <div class="flex-1 w-full pl-2">
+                <div class="flex flex-wrap justify-between items-start gap-sm mb-sm">
+                    <div class="flex items-center gap-sm flex-wrap">
+
+                        <span class="font-label-md text-label-md px-sm py-xs rounded-full uppercase tracking-wider"
+                              th:classappend="${notificacao.gravidade.name() == 'ALTA' ? 'bg-error-container text-on-error-container' : (notificacao.gravidade.name() == 'MEDIA' ? 'bg-[#fff8e1] text-[#ff8f00]' : 'bg-tertiary-fixed text-on-tertiary-fixed')}"
+                              th:text="${notificacao.gravidade.descricao}">ALTA</span>
+
+                        <span class="font-data-tabular text-data-tabular text-on-surface-variant" th:text="${'#WARN-' + #strings.substring(notificacao.id, 0, 8)}">#WARN-550e8400</span>
+
+                        <span th:if="${notificacao.gerouMulta}" class="font-label-md text-label-md bg-error text-on-error px-sm py-xs rounded-full uppercase tracking-wider flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[14px]">request_quote</span> Multa Aplicada
+                        </span>
+                    </div>
+
+                    <time class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                        <span th:text="${#temporals.format(notificacao.dataEnvio, 'dd MMM yyyy')}">15 Out 2026</span>
+                    </time>
+                </div>
+
+                <h3 class="font-h3 text-h3 text-on-surface mb-xs" th:text="${notificacao.titulo}">Título da Notificação</h3>
+                <p class="font-body-md text-body-md text-on-surface-variant mb-md" th:text="${notificacao.descricao}">Descrição detalhada da infração virá aqui...</p>
+
+                <p th:if="${notificacao.dataOcorrencia != null}" class="font-body-sm text-body-sm text-on-surface-variant mb-md flex items-center gap-xs">
+                    <span class="material-symbols-outlined text-[16px]">schedule</span>
+                    Infração ocorrida em: <span class="font-medium" th:text="${#temporals.format(notificacao.dataOcorrencia, 'dd/MM/yyyy HH:mm')}"></span>
+                </p>
+
+                <div class="flex items-center gap-xs mt-auto pt-sm border-t border-surface-container">
+                    <span class="material-symbols-outlined text-[18px] text-on-surface-variant">person</span>
+                    <span class="font-body-sm text-body-sm text-on-surface-variant">Emitido por: <span class="font-medium text-on-surface" th:text="${notificacao.emitidoPor.nome}">Administração</span></span>
+                </div>
+            </div>
+        </article>
+    </div>
+</main>
+</body>
+</html>
