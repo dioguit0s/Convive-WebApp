@@ -23,14 +23,14 @@ public class NotificacaoServiceTest {
     @Test
     void notificacaoService_Insert_Sucesso() {
         Notificacao notificacao = new Notificacao();
-        notificacao.setMensagem("Nova reserva criada");
+        notificacao.setDescricao("Nova reserva criada");
 
         when(notificacaoRepository.save(notificacao)).thenReturn(notificacao);
 
         Notificacao salva = notificacaoService.insert(notificacao);
 
         assertNotNull(salva);
-        assertEquals("Nova reserva criada", salva.getMensagem());
+        assertEquals("Nova reserva criada", salva.getDescricao());
         verify(notificacaoRepository, times(1)).save(notificacao);
     }
 
