@@ -1,0 +1,26 @@
+name: CI - Verificação de Código e Testes
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout do código
+        uses: actions/checkout@v4
+
+      - name: ☕ Setup Java 23
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '23'
+          cache: 'maven'
+
+      - name: 🔨 Compilar e testar projeto (Maven)
+        run: |
+          cd Convive
+          chmod +x mvnw
+          ./mvnw clean test
