@@ -47,7 +47,7 @@ public class MoradorHomeControllerTest {
 
     @Test
     void moradorHomeController_Dashboard_Sucesso() {
-        when(comunicadoService.listAll()).thenReturn(List.of(new Comunicado()));
+        when(comunicadoService.findAllOrderByDate()).thenReturn(List.of(new Comunicado()));
         when(reservaService.listByUser(usuarioMock.getId())).thenReturn(List.of(new Reserva()));
 
         String view = moradorHomeController.dashboardMorador(userDetails, model);

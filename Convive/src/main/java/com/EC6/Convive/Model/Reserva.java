@@ -42,4 +42,7 @@ public class Reserva {
     @Column(name = "observacoes", length = 2000)
     private String observacoes;
 
+    @Column(name = "motivo_rejeicao", length = 1000)
+    private String motivoRejeicao;
+
 }

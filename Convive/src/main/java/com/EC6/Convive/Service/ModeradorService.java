@@ -3,6 +3,7 @@ package com.EC6.Convive.Service;
 import com.EC6.Convive.Model.Moderador;
 import com.EC6.Convive.Repository.ModeradorRepository;
 import lombok.RequiredArgsConstructor;
+import org.h2.engine.Mode;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,5 +34,9 @@ public class ModeradorService {
 
     public void delete(UUID id) {
         moderadorRepository.deleteById(id);
+    }
+
+    public List<Moderador> getAllActiveMods() {
+        return moderadorRepository.findAllByStatus("Ativo");
     }
 }

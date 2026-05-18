@@ -7,6 +7,7 @@
   const weekLabel = document.getElementById('cal-semana-label');
   const prevBtn = document.getElementById('cal-semana-prev');
   const nextBtn = document.getElementById('cal-semana-next');
+  const todayBtn = document.getElementById('cal-today');
   const daysContainer = document.getElementById('cal-dias-semana');
   const listContainer = document.getElementById('lista-reservas-filtrada');
   const source = document.getElementById('reservas-source');
@@ -62,7 +63,8 @@
             area: el.getAttribute('data-area') || '',
             status: el.getAttribute('data-status') || '',
             convidados: el.getAttribute('data-convidados') || 'Não informado',
-            observacoes: el.getAttribute('data-observacoes') || 'Nenhuma observação'
+            observacoes: el.getAttribute('data-observacoes') || 'Nenhuma observação',
+            motivo: el.getAttribute('data-motivo') || 'Nenhum motivo de rejeição'
           };
         })
         .filter(function (r) {
@@ -169,6 +171,17 @@
                 document.getElementById('detalhe-reserva-fim').innerText = r.fim && !Number.isNaN(r.fim.getTime()) ? fmt.format(r.fim) : 'Não definido';
                 document.getElementById('detalhe-reserva-convidados').innerText = r.convidados;
                 document.getElementById('detalhe-reserva-observacoes').innerText = r.observacoes;
+
+                const containerMotivo = document.getElementById('container-motivo-rejeicao');
+                                const textMotivo = document.getElementById('detalhe-reserva-motivo');
+
+                                if (r.status === 'REPROVADO' && r.motivo && r.motivo !== 'Nenhum motivo de rejeição' && r.motivo.trim() !== '') {
+                                    textMotivo.innerText = r.motivo;
+                                    containerMotivo.classList.remove('hidden');
+                                } else {
+                                    containerMotivo.classList.add('hidden');
+                                    textMotivo.innerText = '';
+                                }
 
                 document.getElementById('modal-detalhes-reserva').showModal();
             });
@@ -291,6 +304,15 @@
       renderList();
     });
   }
+
+  if (todayBtn) {
+      todayBtn.addEventListener('click', function () {
+        selectedDate = startOfLocalDay(new Date());
+        weekStart = mondayOfWeek(selectedDate);
+        renderWeek();
+        renderList();
+      });
+    }
 
   function toInputDateLocal(d) {
     var y = d.getFullYear();
