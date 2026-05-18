@@ -2,8 +2,10 @@ package com.EC6.Convive.Service;
 
 import com.EC6.Convive.Model.AreaComum;
 import com.EC6.Convive.Repository.AreaComumRepository;
+import com.EC6.Convive.Repository.ReservaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,6 +15,7 @@ import java.util.UUID;
 public class AreaComumService {
 
     private final AreaComumRepository areaComumRepository;
+    private final ReservaRepository reservaRepository;
 
     public AreaComum insert(AreaComum areaComum) {
         return areaComumRepository.save(areaComum);
@@ -27,7 +30,9 @@ public class AreaComumService {
                 .orElseThrow(() -> new RuntimeException("Área Comum não encontrada com o ID: " + id));
     }
 
+    @Transactional
     public void delete(UUID id) {
+        reservaRepository.deleteAllReservasWithThisArea(id);
         areaComumRepository.deleteById(id);
     }
 
