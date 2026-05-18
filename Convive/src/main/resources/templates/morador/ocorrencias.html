@@ -43,6 +43,41 @@
         </button>
     </header>
 
+    <div class="flex flex-col xl:flex-row justify-between xl:items-center gap-md mb-sm border-b border-outline-variant/20 pb-sm">
+        <h2 class="font-h2 text-h2 text-primary shrink-0">Minhas Ocorrências</h2>
+
+        <div class="flex flex-wrap items-center gap-sm w-full xl:w-auto">
+            <div class="relative flex-1 min-w-[200px]">
+                <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+                <input id="filtro-busca-ocorrencia"
+                       class="w-full pl-[36px] pr-sm py-1.5 bg-surface-container-lowest rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-sm font-body-sm text-on-surface placeholder:text-outline outline-none transition-colors"
+                       placeholder="Buscar por protocolo ou descrição..."
+                       type="text"/>
+            </div>
+
+            <select id="filtro-prioridade-ocorrencia" class="bg-surface-container-lowest border border-outline-variant text-on-surface text-body-sm font-body-sm rounded-lg pl-sm pr-10 py-1.5 focus:border-primary outline-none">
+                <option value="ALL">Todas Prioridades</option>
+                <option value="ALTA">Alta</option>
+                <option value="MEDIA">Média</option>
+                <option value="BAIXA">Baixa</option>
+                <option value="NAO_DEFINIDA">Não Definida</option>
+            </select>
+
+            <select id="filtro-status-ocorrencia" class="bg-surface-container-lowest border border-outline-variant text-on-surface text-body-sm font-body-sm rounded-lg pl-sm pr-10 py-1.5 focus:border-primary outline-none">
+                <option value="ALL">Todos os status</option>
+                <option value="REGISTRADA">Registrada</option>
+                <option value="EM_ANALISE">Em Análise</option>
+                <option value="RESOLVIDA">Resolvida</option>
+                <option value="REJEITADA">Rejeitada</option>
+            </select>
+
+            <select id="filtro-ordenacao-ocorrencia" class="bg-surface-container-lowest border border-outline-variant text-on-surface text-body-sm font-body-sm rounded-lg pl-sm pr-10 py-1.5 focus:border-primary outline-none">
+                <option value="DESC">Mais Recentes</option>
+                <option value="ASC">Mais Antigas</option>
+            </select>
+        </div>
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
 
         <div class="lg:col-span-12 flex flex-col gap-md">
@@ -67,11 +102,12 @@
                 <div class="flex flex-col gap-xs" th:unless="${#lists.isEmpty(ocorrencias)}">
 
                     <article th:each="ocorrencia : ${ocorrencias}"
-                             class="grid grid-cols-1 md:grid-cols-12 gap-sm items-center p-sm rounded-lg hover:bg-surface-container-low transition-colors border border-transparent hover:border-surface-container-high cursor-pointer"
+                             class="ocorrencia-card grid grid-cols-1 md:grid-cols-12 gap-sm items-center p-sm rounded-lg hover:bg-surface-container-low transition-colors border border-transparent hover:border-surface-container-high cursor-pointer"
                              onclick="abrirConsulta(this)"
                              th:data-id="${ocorrencia.id}"
                              th:data-protocolo="${ocorrencia.protocolo}"
                              th:data-data="${#temporals.format(ocorrencia.dataRegistro, 'dd/MM/yyyy HH:mm')}"
+                             th:data-data-sort="${#temporals.format(ocorrencia.dataRegistro, 'yyyyMMddHHmmss')}"
                              th:data-prioridade="${ocorrencia.prioridade}"
                              th:data-status="${ocorrencia.status}"
                              th:data-descricao="${ocorrencia.descricao}"
