@@ -34,11 +34,6 @@ public class ReservaService {
         reservaRepository.deleteById(id);
     }
 
-    /**
-     * Remove a reserva somente se pertencer ao usuário indicado.
-     *
-     * @return true se excluiu; false se não existir ou não for do usuário
-     */
     public boolean deleteForUser(UUID reservaId, UUID usuarioId) {
         Optional<Reserva> reserva = reservaRepository.findByIdAndReservadoPor_Id(reservaId, usuarioId);
         if (reserva.isEmpty()) {
