@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Convive - Painel de Reservas</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <script th:src="@{/js/tailwindTheme.js}"></script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        dialog::backdrop {
+            background-color: rgba(19, 27, 46, 0.4);
+            backdrop-filter: blur(2px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md h-screen w-full overflow-hidden">
+
+<div th:replace="~{fragments/morador/components :: navMorador(activeItem='triagemReservas')}"></div>
+
+
+<main class="flex-1 overflow-y-auto bg-background relative md:ml-64">
+    <div class="max-w-[1200px] mx-auto px-margin py-lg flex flex-col gap-lg">
+
+        <div th:if="${sucesso}" class="p-sm rounded-lg bg-[#dcfce7] text-[#166534] font-body-sm" th:text="${sucesso}"></div>
+        <div th:if="${erro}" class="p-sm rounded-lg bg-[#fee2e2] text-[#991b1b] font-body-sm" th:text="${erro}"></div>
+
+        <header class="flex justify-between items-end">
+            <div>
+                <h1 class="font-h1 text-h1 text-on-background mb-xs">Gestão de Reservas</h1>
+                <p class="font-body-md text-body-md text-on-surface-variant">Analise e gerencie as solicitações de espaços comuns.</p>
+            </div>
+        </header>
+
+        <div class="flex border-b border-outline-variant w-full">
+            <button onclick="mudarAba('PENDENTE')" id="tab-PENDENTE" class="tab-btn px-md py-sm font-label-md text-label-md uppercase transition-colors tracking-wide border-b-2 border-primary text-primary">
+                Pendentes
+            </button>
+            <button onclick="mudarAba('APROVADO')" id="tab-APROVADO" class="tab-btn px-md py-sm font-label-md text-label-md uppercase text-on-surface-variant hover:text-on-surface transition-colors tracking-wide">
+                Aprovadas
+            </button>
+            <button onclick="mudarAba('REPROVADO')" id="tab-REPROVADO" class="tab-btn px-md py-sm font-label-md text-label-md uppercase text-on-surface-variant hover:text-on-surface transition-colors tracking-wide">
+                Canceladas/Rejeitadas
+            </button>
+        </div>
+
+        <div id="container-reservas" class="flex flex-col gap-md">
+
+            <div th:if="${#lists.isEmpty(reservas)}" class="p-md text-center text-on-surface-variant bg-surface-container rounded-xl">
+                Nenhuma reserva encontrada.
+            </div>
+
+            <article th:each="reserva : ${reservas}" th:data-status="${reserva.status.name()}" class="reserva-card bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm flex flex-col gap-md relative overflow-hidden group">
+                <div class="absolute left-0 top-0 bottom-0 w-[4px]"
+                     th:classappend="${reserva.status.name() == 'PENDENTE' ? 'bg-[#fef08a]' : (reserva.status.name() == 'APROVADO' ? 'bg-[#dcfce7]' : 'bg-[#fee2e2]')}"></div>
+
+                <div class="flex justify-between items-start pl-xs">
+                    <div class="flex gap-sm items-center">
+                        <div class="w-12 h-12 rounded-full overflow-hidden border border-outline-variant shrink-0 bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-h3">
+                            <span th:text="${reserva.reservadoPor?.nome != null and !reserva.reservadoPor.nome.isEmpty() ? #strings.substring(reserva.reservadoPor.nome, 0, 1) : 'U'}">U</span>
+                        </div>
+                        <div>
+                            <h3 class="font-h3 text-h3 text-on-surface" th:text="${reserva.reservadoPor?.nome ?: 'Morador Desconhecido'}">Nome do Morador</h3>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-xs">
+                                <span class="material-symbols-outlined text-[16px]">mail</span>
+                                <span th:text="${reserva.reservadoPor?.email ?: 'Sem e-mail cadastrado'}">Email</span>
+                            </p>
+                        </div>
+                    </div>
+                    <span class="bg-surface-container-highest text-on-surface font-label-md text-label-md px-3 py-1.5 rounded-full uppercase tracking-wider flex items-center gap-xs" th:text="${reserva.status}">
+                            PENDENTE
+                        </span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-sm bg-surface-container-low rounded-lg p-sm pl-md">
+                    <div class="flex flex-col gap-xs">
+                        <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Ambiente</span>
+                        <div class="flex items-center gap-xs text-on-surface">
+                            <span class="material-symbols-outlined text-[20px] text-primary">meeting_room</span>
+                            <span class="font-data-tabular text-data-tabular text-base" th:text="${reserva.areaReservada?.nome ?: 'Área não definida'}">Área</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-xs">
+                        <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Data do Evento</span>
+                        <div class="flex items-center gap-xs text-on-surface">
+                            <span class="material-symbols-outlined text-[20px] text-primary">calendar_today</span>
+                            <span class="font-data-tabular text-data-tabular text-base" th:text="${#temporals.format(reserva.inicio, 'dd/MM/yyyy')}">Data</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-xs">
+                        <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Horário</span>
+                        <div class="flex items-center gap-xs text-on-surface">
+                            <span class="material-symbols-outlined text-[20px] text-primary">schedule</span>
+                            <span class="font-data-tabular text-data-tabular text-base" th:text="${#temporals.format(reserva.inicio, 'HH:mm')} + ' às ' + ${#temporals.format(reserva.fim, 'HH:mm')}">Horário</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${reserva.observacoes != null}" class="px-sm text-on-surface-variant bg-surface-container-lowest border border-surface-variant rounded-lg p-sm italic font-body-sm flex gap-sm items-start">
+                    <span class="material-symbols-outlined text-[18px] shrink-0 mt-[2px]">chat</span>
+                    <p th:text="${reserva.observacoes}">Observações</p>
+                </div>
+
+                <div th:if="${reserva.status.name() == 'REPROVADO' and reserva.motivoRejeicao != null}" class="px-sm text-[#991b1b] bg-[#fef2f2] border border-[#fecaca] rounded-lg p-sm font-body-sm flex gap-sm items-start">
+                    <span class="material-symbols-outlined text-[18px] shrink-0 mt-[2px]">info</span>
+                    <div>
+                        <strong>Motivo da Rejeição:</strong>
+                        <p th:text="${reserva.motivoRejeicao}"></p>
+                    </div>
+                </div>
+
+                <div th:if="${reserva.status.name() == 'PENDENTE'}" class="flex justify-end items-center gap-sm mt-xs pt-sm border-t border-surface-container-high pl-xs">
+                    <button type="button" th:data-id="${reserva.id}" onclick="abrirModalRejeicao(this.getAttribute('data-id'))" class="px-md py-sm rounded-lg border border-outline text-on-surface font-label-md uppercase hover:bg-surface-container-high transition-colors flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-[18px]">close</span> Rejeitar
+                    </button>
+
+                    <form th:action="@{/moderador/triagemReservas/aprovar}" method="post">
+                        <input type="hidden" name="id" th:value="${reserva.id}">
+                        <button type="submit" class="px-md py-sm rounded-lg bg-primary text-on-primary font-label-md uppercase hover:opacity-90 transition-opacity flex items-center gap-xs shadow-sm">
+                            <span class="material-symbols-outlined text-[18px]">check</span> Aprovar
+                        </button>
+                    </form>
+                </div>
+            </article>
+        </div>
+    </div>
+</main>
+
+<dialog id="modal-rejeicao" class="m-0 p-0 max-w-none w-full max-h-[100dvh] h-full border-0 bg-transparent overflow-x-hidden overflow-y-auto">
+    <div class="min-h-full w-full flex items-center justify-center p-md" onclick="document.getElementById('modal-rejeicao').close()">
+        <div class="bg-surface-container-lowest rounded-xl shadow-lg w-full max-w-[500px] flex flex-col border border-outline-variant" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center p-md border-b border-surface-container-high">
+                <h2 class="font-h2 text-h2 text-primary">Rejeitar Reserva</h2>
+                <button type="button" onclick="document.getElementById('modal-rejeicao').close()" class="text-on-surface-variant hover:text-primary p-xs rounded-lg">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <form th:action="@{/moderador/triagemReservas/rejeitar}" method="post" class="flex flex-col">
+                <input type="hidden" name="id" id="rejeicao-reserva-id">
+                <div class="p-md flex flex-col gap-xs">
+                    <label class="font-label-md uppercase text-on-surface-variant">Motivo da Rejeição (Visível para o morador)</label>
+                    <textarea name="motivo" required rows="4" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-sm py-sm font-body-md text-on-surface focus:ring-1 focus:ring-primary resize-none" placeholder="Explique por que a reserva não pode ser aprovada..."></textarea>
+                </div>
+                <div class="flex justify-end p-md border-t border-surface-container-high gap-sm bg-surface">
+                    <button type="button" onclick="document.getElementById('modal-rejeicao').close()" class="px-md py-sm rounded-lg border border-outline-variant bg-transparent font-body-sm hover:bg-surface-container-low">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-md py-sm rounded-lg bg-error text-on-error font-body-sm shadow-sm hover:opacity-90">
+                        Confirmar Rejeição
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</dialog>
+
+<script th:src="@{/js/triagemReservas.js}"></script>
+
+</body>
+</html>

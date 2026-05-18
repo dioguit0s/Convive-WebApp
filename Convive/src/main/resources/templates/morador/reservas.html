@@ -76,6 +76,7 @@
                   data-fim=${reserva.fim != null ? #temporals.format(reserva.fim, 'yyyy-MM-dd''T''HH:mm:ss') : ''},
                   data-area=${reserva.areaReservada != null ? reserva.areaReservada.nome : 'Área'},
                   data-status=${reserva.status},
+                  data-motivo=${reserva.motivoRejeicao != null ? reserva.motivoRejeicao : ''},
                   data-convidados=${reserva.convidadosEstimados != null ? reserva.convidadosEstimados : 'Não informado'},
                   data-observacoes=${reserva.observacoes != null ? reserva.observacoes : 'Nenhuma observação'}">
                 </div>
@@ -245,6 +246,12 @@
                         <p id="detalhe-reserva-observacoes" class="font-body-sm text-body-sm text-on-surface whitespace-pre-wrap"></p>
                     </div>
                 </div>
+                <div id="container-motivo-rejeicao" class="flex flex-col gap-xs mt-4 hidden">
+                    <label class="font-label-md text-label-md text-error uppercase">Motivo da Rejeição</label>
+                    <div class="bg-[#fef2f2] p-sm rounded-lg border border-[#fecaca]">
+                        <p id="detalhe-reserva-motivo" class="font-body-sm text-[#991b1b]"></p>
+                    </div>
+                </div>
             </div>
 
             <div class="flex justify-end p-md border-t border-surface-container-high bg-surface">
@@ -253,6 +260,7 @@
                 </button>
             </div>
         </div>
+
     </div>
 </dialog>
 

@@ -59,7 +59,8 @@
             area: el.getAttribute('data-area') || '',
             status: el.getAttribute('data-status') || '',
             convidados: el.getAttribute('data-convidados') || 'Não informado',
-            observacoes: el.getAttribute('data-observacoes') || 'Nenhuma observação'
+            observacoes: el.getAttribute('data-observacoes') || 'Nenhuma observação',
+            motivo: el.getAttribute('data-motivo') || 'Nenhum motivo de rejeição'
           };
         })
         .filter(function (r) {
@@ -166,6 +167,17 @@
                 document.getElementById('detalhe-reserva-fim').innerText = r.fim && !Number.isNaN(r.fim.getTime()) ? fmt.format(r.fim) : 'Não definido';
                 document.getElementById('detalhe-reserva-convidados').innerText = r.convidados;
                 document.getElementById('detalhe-reserva-observacoes').innerText = r.observacoes;
+
+                const containerMotivo = document.getElementById('container-motivo-rejeicao');
+                                const textMotivo = document.getElementById('detalhe-reserva-motivo');
+
+                                if (r.status === 'REPROVADO' && r.motivo && r.motivo !== 'Nenhum motivo de rejeição' && r.motivo.trim() !== '') {
+                                    textMotivo.innerText = r.motivo;
+                                    containerMotivo.classList.remove('hidden');
+                                } else {
+                                    containerMotivo.classList.add('hidden');
+                                    textMotivo.innerText = '';
+                                }
 
                 document.getElementById('modal-detalhes-reserva').showModal();
             });
