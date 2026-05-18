@@ -2,10 +2,7 @@ package com.EC6.Convive.Controller;
 
 import com.EC6.Convive.Model.*;
 import com.EC6.Convive.Security.CustomUserDetails;
-import com.EC6.Convive.Service.AreaComumService;
-import com.EC6.Convive.Service.ComunicadoService;
-import com.EC6.Convive.Service.ReservaService;
-import com.EC6.Convive.Service.UsuarioService;
+import com.EC6.Convive.Service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -22,11 +19,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.UUID;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -40,6 +34,8 @@ public class MoradorHomeController {
     private final ReservaService reservaService;
     private final UsuarioService usuarioService;
     private final AreaComumService areaComumService;
+    private final ModeradorService moderadorService;
+    private final ContactMailService contactMailService;
 
     @GetMapping("/home")
     public String dashboardMorador(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
@@ -154,6 +150,30 @@ public class MoradorHomeController {
                     "Reserva registrada e aprovada automaticamente.");
         } else {
             reserva.setStatus(StatusReserva.PENDENTE);
+
+            //envia email para moderador
+            ContactMessageModel model = new ContactMessageModel();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM ");
+            List<Moderador> allMods = moderadorService.getAllActiveMods();
+            model.setSubject("Nova reserva pendente de aprovação");
+            model.setMessage("""
+                    Verifique a pagina de triagem de Reservas para aprovar ou rejeitar a nova reserva
+                    Detalhes:
+                    Area da Reserva: %s
+                    Morador: %s
+                    Data da Reserva: %s
+                    Observação: %s
+                    """.formatted(  reserva.getAreaReservada().getNome(),
+                                    reserva.getReservadoPor().getNome(),
+                                    reserva.getInicio().format(formatter),
+                                    reserva.getObservacoes())
+                    );
+            for(Moderador mod : allMods) {
+                model.setEmail(mod.getEmail());
+                model.setFullName(mod.getNome());
+                contactMailService.sendToOutside(model);
+            }
+
             redirectAttributes.addFlashAttribute("sucessoReserva",
                     "Sua solicitação de reserva foi registrada e está pendente de aprovação.");
         }
