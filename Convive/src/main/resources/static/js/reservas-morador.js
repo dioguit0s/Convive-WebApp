@@ -17,6 +17,9 @@
   const openModalBtn = document.getElementById('btn-nova-reserva');
   const closeModalBtn = document.getElementById('modal-nova-reserva-fechar');
   const cancelModalBtn = document.getElementById('modal-nova-reserva-cancelar');
+  const selectAmbiente = document.getElementById('nova-reserva-ambiente');
+  const inputConvidados = document.getElementById('nova-reserva-convidados');
+  const divErroModal = document.getElementById('modal-erro-reserva');
 
   const listaVaziaServidor = main.dataset.listaVaziaServidor === 'true';
   const csrfParam = main.getAttribute('data-csrf-parameter-name') || '';
@@ -329,6 +332,56 @@
       }
     });
   }
+
+  if (formNovaReserva) {
+      formNovaReserva.addEventListener('submit', function (e) {
+        if (divErroModal) {
+          divErroModal.classList.add('hidden');
+          divErroModal.textContent = '';
+        }
+
+        const selectedOption = selectAmbiente.options[selectAmbiente.selectedIndex];
+
+        if (selectedOption && selectedOption.hasAttribute('data-capacidade')) {
+          const capacidade = parseInt(selectedOption.getAttribute('data-capacidade'), 10);
+          const convidados = parseInt(inputConvidados.value, 10);
+
+          if (!isNaN(capacidade) && !isNaN(convidados) && convidados > capacidade) {
+            e.preventDefault();
+
+            if (divErroModal) {
+              divErroModal.textContent = 'O número de convidados não pode exceder a capacidade do ambiente (' + capacidade + ').';
+              divErroModal.classList.remove('hidden');
+
+              document.querySelector('#form-nova-reserva .overflow-y-auto').scrollTop = 0;
+            }
+          }
+          else if (!isNaN(convidados) && convidados < 1) {
+            e.preventDefault();
+            if (divErroModal) {
+              divErroModal.textContent = 'O número de convidados deve ser pelo menos 1.';
+              divErroModal.classList.remove('hidden');
+              document.querySelector('#form-nova-reserva .overflow-y-auto').scrollTop = 0;
+            }
+          }
+        }
+      });
+    }
+    if (openModalBtn && modal && typeof modal.showModal === 'function') {
+        openModalBtn.addEventListener('click', function () {
+          if (formNovaReserva) {
+            formNovaReserva.reset();
+          }
+          if (inputDataReserva) {
+            inputDataReserva.value = toInputDateLocal(selectedDate);
+          }
+          if (divErroModal) {
+              divErroModal.classList.add('hidden');
+              divErroModal.textContent = '';
+          }
+          modal.showModal();
+        });
+      }
 
   renderWeek();
   renderList();

@@ -132,15 +132,18 @@
             <form th:action="@{/morador/reservas}" method="post" id="form-nova-reserva" class="flex flex-col min-h-0 flex-1">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                 <div class="p-md overflow-y-auto bg-surface-bright flex flex-col gap-gutter">
+                    <div id="modal-erro-reserva" class="hidden p-sm rounded-lg bg-[#fee2e2] text-[#991b1b] font-body-sm border border-[#fecaca] shadow-sm mb-2"></div>
                     <div class="flex flex-col gap-xs">
                         <label class="font-label-md text-label-md text-on-surface-variant uppercase" for="nova-reserva-ambiente">Ambiente</label>
                         <div class="relative">
                             <select id="nova-reserva-ambiente" name="areaId" required
                                     class="w-full appearance-none bg-surface-container-lowest border border-outline-variant rounded-lg px-sm py-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-tertiary-container focus:ring-1 focus:ring-tertiary-container transition-colors">
                                 <option disabled value="" selected>Selecione um ambiente...</option>
+
                                 <option th:each="area : ${areasComuns}"
                                         th:if="${area.statusArea != null and area.statusArea.name() == 'ATIVA'}"
                                         th:value="${area.id}"
+                                        th:data-capacidade="${area.capacidade}"
                                         th:text="${area.nome}">Área</option>
                             </select>
                             <span class="material-symbols-outlined absolute right-sm top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant" data-icon="expand_more">expand_more</span>
