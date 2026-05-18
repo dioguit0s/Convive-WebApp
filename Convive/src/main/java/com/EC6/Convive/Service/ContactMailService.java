@@ -76,7 +76,6 @@ public class ContactMailService {
             helper.setTo(dto.getEmail());
             helper.setReplyTo(dto.getEmail());
             helper.setSubject("[Convive Contato] " + dto.getSubject());
-            helper.setText(buildBody(dto), false);
         } catch (jakarta.mail.MessagingException e) {
             log.error("Contato: falha ao montar MIME | causa={}", e.getMessage(), e);
             throw new MailPreparationException("Falha ao montar a mensagem.", e);
