@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="20e65014-3048-487a-87c2-8d5925c0f14b" name="Changes" comment="" />
+    <list default="true" id="20e65014-3048-487a-87c2-8d5925c0f14b" name="Changes" comment="feat: add CI pipeline to check for errors before deploy on main" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -19,12 +19,12 @@
     &quot;assignee&quot;: &quot;leonardorosario&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/dioguit0s/Convive-WebApp.git",
-    "accountId": "766b02ae-d045-437e-9398-a91ddf7fd8d0"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/dioguit0s/Convive-WebApp.git&quot;,
+    &quot;accountId&quot;: &quot;766b02ae-d045-437e-9398-a91ddf7fd8d0&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -33,17 +33,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/leobr/OneDrive/Documentos/Convive-APP/Convive-WebApp/Convive&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "feat/ReservaModFLow",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/grupotaak/Documents/Convive-WebApp",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -61,9 +61,22 @@
       <updated>1778019841968</updated>
       <workItem from="1778019842998" duration="24000" />
     </task>
+    <task id="LOCAL-00001" summary="feat: add CI pipeline to check for errors before deploy on main">
+      <option name="closed" value="true" />
+      <created>1779122232497</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1779122232497</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat: add CI pipeline to check for errors before deploy on main" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add CI pipeline to check for errors before deploy on main" />
   </component>
 </project>
