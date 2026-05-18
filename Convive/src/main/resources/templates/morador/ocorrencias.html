@@ -69,6 +69,7 @@
                     <article th:each="ocorrencia : ${ocorrencias}"
                              class="grid grid-cols-1 md:grid-cols-12 gap-sm items-center p-sm rounded-lg hover:bg-surface-container-low transition-colors border border-transparent hover:border-surface-container-high cursor-pointer"
                              onclick="abrirConsulta(this)"
+                             th:data-id="${ocorrencia.id}"
                              th:data-protocolo="${ocorrencia.protocolo}"
                              th:data-data="${#temporals.format(ocorrencia.dataRegistro, 'dd/MM/yyyy HH:mm')}"
                              th:data-prioridade="${ocorrencia.prioridade}"
@@ -207,7 +208,17 @@
                 </div>
             </div>
 
-            <div class="flex justify-end p-md border-t border-surface-container-high bg-surface">
+            <div class="flex justify-end p-md border-t border-surface-container-high bg-surface gap-2">
+                <form id="form-excluir-ocorrencia" th:action="@{/morador/ocorrencias/excluir}" method="post">
+                    <input type="hidden" name="id" id="ocorrencia-id-excluir" value="" />
+                    <button type="submit"
+                            onclick="return confirm('Tem a certeza que deseja apagar esta ocorrência?')"
+                            class="px-md py-sm rounded-lg bg-red-600 text-white font-body-sm text-body-sm hover:bg-red-700 transition-colors shadow-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                        Apagar
+                    </button>
+                </form>
+
                 <button type="button" onclick="document.getElementById('modal-detalhes-ocorrencia').close()" class="px-md py-sm rounded-lg bg-primary text-on-primary font-body-sm text-body-sm hover:bg-primary/90 transition-colors shadow-sm">
                     Fechar
                 </button>

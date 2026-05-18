@@ -40,18 +40,29 @@ public class OcorrenciaController {
             RedirectAttributes redirectAttributes
     ) {
         try {
-            Usuario usuarioLogado = userDetails.getUsuario(); // Pega o usuário genérico (Morador ou Moderador)
+            Usuario usuarioLogado = userDetails.getUsuario();
 
             Ocorrencia novaOcorrencia = new Ocorrencia();
             novaOcorrencia.setDescricao(descricao);
             novaOcorrencia.setPrioridade(prioridade);
             novaOcorrencia.setStatus(StatusOcorrencia.REGISTRADA);
-            novaOcorrencia.setUsuario(usuarioLogado); // Atribui o usuário logado sem necessidade de cast
+            novaOcorrencia.setUsuario(usuarioLogado);
 
             ocorrenciaService.insert(novaOcorrencia);
             redirectAttributes.addFlashAttribute("sucessoOcorrencia", "Ocorrência registrada com sucesso!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("erroOcorrencia", "Erro ao registrar: " + e.getMessage());
+        }
+        return "redirect:/morador/ocorrencias";
+    }
+
+    @PostMapping("/excluir")
+    public String excluirOcorrencia(@RequestParam UUID id, RedirectAttributes redirectAttributes) {
+        try {
+            ocorrenciaService.delete(id);
+            redirectAttributes.addFlashAttribute("sucessoOcorrencia", "Ocorrência eliminada com sucesso.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("erroOcorrencia", "Erro ao eliminar a ocorrência.");
         }
         return "redirect:/morador/ocorrencias";
     }
