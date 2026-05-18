@@ -7,6 +7,7 @@
   const weekLabel = document.getElementById('cal-semana-label');
   const prevBtn = document.getElementById('cal-semana-prev');
   const nextBtn = document.getElementById('cal-semana-next');
+  const todayBtn = document.getElementById('cal-today');
   const daysContainer = document.getElementById('cal-dias-semana');
   const listContainer = document.getElementById('lista-reservas-filtrada');
   const source = document.getElementById('reservas-source');
@@ -300,6 +301,15 @@
       renderList();
     });
   }
+
+  if (todayBtn) {
+      todayBtn.addEventListener('click', function () {
+        selectedDate = startOfLocalDay(new Date());
+        weekStart = mondayOfWeek(selectedDate);
+        renderWeek();
+        renderList();
+      });
+    }
 
   function toInputDateLocal(d) {
     var y = d.getFullYear();
