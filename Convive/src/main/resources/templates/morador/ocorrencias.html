@@ -74,7 +74,8 @@
                              th:data-data="${#temporals.format(ocorrencia.dataRegistro, 'dd/MM/yyyy HH:mm')}"
                              th:data-prioridade="${ocorrencia.prioridade}"
                              th:data-status="${ocorrencia.status}"
-                             th:data-descricao="${ocorrencia.descricao}">
+                             th:data-descricao="${ocorrencia.descricao}"
+                             th:data-comentario="${ocorrencia.respostaModerador}">
                         <div class="md:col-span-3 flex flex-col md:block">
                             <span class="md:hidden font-label-md text-label-md text-on-surface-variant uppercase mb-1">Protocolo</span>
                             <span class="font-data-tabular text-data-tabular text-on-surface" th:text="${'#' + ocorrencia.protocolo}">#2026-0001</span>
@@ -190,6 +191,12 @@
                     <label class="font-label-md text-label-md text-on-surface-variant uppercase">Descrição do Problema</label>
                     <div class="bg-surface-container-low p-sm rounded-lg border border-outline-variant/30">
                         <p id="detalhe-descricao" class="font-body-sm text-body-sm text-on-surface whitespace-pre-wrap"></p>
+                    </div>
+                </div>
+                <div id="container-comentario-moderador" class="flex flex-col gap-xs mt-4 hidden">
+                    <label class="font-label-md text-label-md text-error uppercase">Comentario Moderador</label>
+                    <div class="bg-[#fef2f2] p-sm rounded-lg border border-[#fecaca]">
+                        <p id="detalhe-comentario-moderador" class="font-body-sm text-[#991b1b]"></p>
                     </div>
                 </div>
             </div>
