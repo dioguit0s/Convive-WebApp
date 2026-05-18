@@ -38,6 +38,9 @@ public class OcorrenciaService {
         return ocorrenciaRepository.save(ocorrencia);
     }
 
+    public Ocorrencia update(Ocorrencia ocorrencia) {
+        return ocorrenciaRepository.save(ocorrencia);
+    }
     public List<Ocorrencia> listAll() {
         return ocorrenciaRepository.findAll();
     }

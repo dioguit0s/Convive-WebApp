@@ -39,4 +39,7 @@ public class Ocorrencia {
 
     @Column(name = "dataRegistro")
     private LocalDateTime dataRegistro;
+
+    @Column(name = "respostaModerador", length = 2000)
+    private String respostaModerador;
 }

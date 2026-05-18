@@ -36,7 +36,6 @@ public class OcorrenciaController {
     public String registrarNovaOcorrencia(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestParam String descricao,
-            @RequestParam Prioridade prioridade,
             RedirectAttributes redirectAttributes
     ) {
         try {
@@ -44,7 +43,7 @@ public class OcorrenciaController {
 
             Ocorrencia novaOcorrencia = new Ocorrencia();
             novaOcorrencia.setDescricao(descricao);
-            novaOcorrencia.setPrioridade(prioridade);
+            novaOcorrencia.setPrioridade(Prioridade.NAO_DEFINIDA);
             novaOcorrencia.setStatus(StatusOcorrencia.REGISTRADA);
             novaOcorrencia.setUsuario(usuarioLogado);
 
