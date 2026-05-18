@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Ops! Ocorreu um erro - Convive</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script th:src="@{/js/tailwindTheme.js}"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+
+<div th:replace="~{fragments/public/components :: navbar}"></div>
+
+<main class="flex-grow flex items-center justify-center p-margin">
+    <div class="max-w-2xl w-full bg-surface-container-lowest border border-outline-variant shadow-[0_8px_30px_rgba(0,0,0,0.04)] rounded-xl p-xl text-center flex flex-col items-center gap-md relative overflow-hidden">
+
+        <div class="absolute top-0 left-0 w-full h-2 bg-error"></div>
+
+        <div class="w-16 h-16 rounded-full bg-error-container text-error flex items-center justify-center mb-sm mt-sm">
+            <span class="material-symbols-outlined text-[32px]">warning</span>
+        </div>
+
+        <h1 class="font-display text-display text-primary">Ops! Algo deu errado.</h1>
+        <p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+            Encontramos um problema inesperado ao processar sua solicitação. Mas não se preocupe, nossa equipe de suporte pode investigar isso para você!
+        </p>
+
+        <div class="bg-surface-container-low border border-outline-variant/50 rounded-lg p-md w-full text-left mt-sm">
+            <p class="font-label-md text-label-md text-on-surface-variant uppercase mb-3 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">bug_report</span>
+                Informe esses dados ao suporte
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm bg-surface-container-lowest p-sm rounded border border-outline-variant/30">
+                <div>
+                    <span class="font-body-sm text-body-sm text-on-surface-variant block">Código de Erro:</span>
+                    <span class="font-data-tabular text-h3 text-error font-bold tracking-wider" th:text="${codigoErro ?: 'ERR-UNKW'}">ERR-XXXX</span>
+                </div>
+                <div>
+                    <span class="font-body-sm text-body-sm text-on-surface-variant block">Data e Hora:</span>
+                    <span class="font-data-tabular text-body-md text-on-surface font-medium" th:text="${dataHora ?: 'N/A'}">01/01/2026 12:00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4 mt-md w-full sm:w-auto">
+            <a th:href="@{/}" class="flex-1 sm:flex-none px-xl py-sm rounded-lg bg-primary text-on-primary font-body-md text-body-md hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-[20px]">home</span> Voltar ao Início
+            </a>
+            <a th:href="@{/contact}" class="flex-1 sm:flex-none px-xl py-sm rounded-lg border border-outline-variant text-on-surface font-body-md text-body-md hover:bg-surface-container-low transition-colors flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-[20px]">support_agent</span> Falar com Suporte
+            </a>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/public/components :: footer}"></div>
+
+</body>
+</html>
