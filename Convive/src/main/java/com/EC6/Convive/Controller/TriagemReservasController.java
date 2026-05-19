@@ -68,7 +68,7 @@ public class TriagemReservasController {
         mensagem.setMessage(corpo);
 
         try {
-            //contactMailService.sendToOutside(mensagem);
+            contactMailService.sendToOutside(mensagem);
         } catch (Exception e) {
             System.err.println("Erro ao enviar e-mail de rejeição: " + e.getMessage());
         }

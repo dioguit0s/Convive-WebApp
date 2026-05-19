@@ -56,7 +56,7 @@ public class OcorrenciaService {
         for(Moderador mod : allMods) {
             model.setEmail(mod.getEmail());
             model.setFullName(mod.getNome());
-            //contactMailService.sendToOutside(model);
+            contactMailService.sendToOutside(model);
         }
 
         return ocorrenciaRepository.save(ocorrencia);
