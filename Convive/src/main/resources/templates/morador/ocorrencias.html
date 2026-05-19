@@ -43,6 +43,41 @@
         </button>
     </header>
 
+    <div class="flex flex-col xl:flex-row justify-between xl:items-center gap-md mb-sm border-b border-outline-variant/20 pb-sm">
+        <h2 class="font-h2 text-h2 text-primary shrink-0">Minhas Ocorrências</h2>
+
+        <div class="flex flex-wrap items-center gap-sm w-full xl:w-auto">
+            <div class="relative flex-1 min-w-[200px]">
+                <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+                <input id="filtro-busca-ocorrencia"
+                       class="w-full pl-[36px] pr-sm py-1.5 bg-surface-container-lowest rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-sm font-body-sm text-on-surface placeholder:text-outline outline-none transition-colors"
+                       placeholder="Buscar por protocolo ou descrição..."
+                       type="text"/>
+            </div>
+
+            <select id="filtro-prioridade-ocorrencia" class="bg-surface-container-lowest border border-outline-variant text-on-surface text-body-sm font-body-sm rounded-lg pl-sm pr-10 py-1.5 focus:border-primary outline-none">
+                <option value="ALL">Todas Prioridades</option>
+                <option value="ALTA">Alta</option>
+                <option value="MEDIA">Média</option>
+                <option value="BAIXA">Baixa</option>
+                <option value="NAO_DEFINIDA">Não Definida</option>
+            </select>
+
+            <select id="filtro-status-ocorrencia" class="bg-surface-container-lowest border border-outline-variant text-on-surface text-body-sm font-body-sm rounded-lg pl-sm pr-10 py-1.5 focus:border-primary outline-none">
+                <option value="ALL">Todos os status</option>
+                <option value="REGISTRADA">Registrada</option>
+                <option value="EM_ANALISE">Em Análise</option>
+                <option value="RESOLVIDA">Resolvida</option>
+                <option value="REJEITADA">Rejeitada</option>
+            </select>
+
+            <select id="filtro-ordenacao-ocorrencia" class="bg-surface-container-lowest border border-outline-variant text-on-surface text-body-sm font-body-sm rounded-lg pl-sm pr-10 py-1.5 focus:border-primary outline-none">
+                <option value="DESC">Mais Recentes</option>
+                <option value="ASC">Mais Antigas</option>
+            </select>
+        </div>
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
 
         <div class="lg:col-span-12 flex flex-col gap-md">
@@ -67,14 +102,17 @@
                 <div class="flex flex-col gap-xs" th:unless="${#lists.isEmpty(ocorrencias)}">
 
                     <article th:each="ocorrencia : ${ocorrencias}"
-                             class="grid grid-cols-1 md:grid-cols-12 gap-sm items-center p-sm rounded-lg hover:bg-surface-container-low transition-colors border border-transparent hover:border-surface-container-high cursor-pointer"
+                             class="ocorrencia-card grid grid-cols-1 md:grid-cols-12 gap-sm items-center p-sm rounded-lg hover:bg-surface-container-low transition-colors border border-transparent hover:border-surface-container-high cursor-pointer"
                              onclick="abrirConsulta(this)"
                              th:data-id="${ocorrencia.id}"
                              th:data-protocolo="${ocorrencia.protocolo}"
                              th:data-data="${#temporals.format(ocorrencia.dataRegistro, 'dd/MM/yyyy HH:mm')}"
+                             th:data-data-sort="${#temporals.format(ocorrencia.dataRegistro, 'yyyyMMddHHmmss')}"
                              th:data-prioridade="${ocorrencia.prioridade}"
                              th:data-status="${ocorrencia.status}"
-                             th:data-descricao="${ocorrencia.descricao}">
+                             th:data-descricao="${ocorrencia.descricao}"
+                             th:data-comentario="${ocorrencia.respostaModerador}"
+                             th:data-evidencia="${ocorrencia.urlEvidencia != null ? ocorrencia.urlEvidencia : ''}">
                         <div class="md:col-span-3 flex flex-col md:block">
                             <span class="md:hidden font-label-md text-label-md text-on-surface-variant uppercase mb-1">Protocolo</span>
                             <span class="font-data-tabular text-data-tabular text-on-surface" th:text="${'#' + ocorrencia.protocolo}">#2026-0001</span>
@@ -122,31 +160,21 @@
                 </button>
             </div>
 
-            <form th:action="@{/morador/ocorrencias}" method="post" class="flex flex-col min-h-0 flex-1">
+            <form th:action="@{/morador/ocorrencias}" method="post" class="flex flex-col min-h-0 flex-1" enctype="multipart/form-data">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
                 <div class="p-md overflow-y-auto bg-surface-bright flex flex-col gap-gutter">
-
-                    <div class="flex flex-col gap-xs">
-                        <label class="font-label-md text-label-md text-on-surface-variant uppercase" for="prioridade">Nível de Prioridade</label>
-                        <div class="relative">
-                            <select id="prioridade" name="prioridade" required class="w-full appearance-none bg-surface-container-lowest border border-outline-variant rounded-lg px-sm py-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-tertiary-container focus:ring-1 focus:ring-tertiary-container transition-colors">
-                                <option disabled value="" selected>Selecione a prioridade...</option>
-                                <option value="BAIXA">Baixa</option>
-                                <option value="MEDIA">Média</option>
-                                <option value="ALTA">Alta</option>
-                            </select>
-                            <span class="material-symbols-outlined absolute right-sm top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant" data-icon="expand_more">expand_more</span>
-                        </div>
-                    </div>
-
                     <div class="flex flex-col gap-xs">
                         <label class="font-label-md text-label-md text-on-surface-variant uppercase" for="descricao">Descrição do Problema</label>
                         <textarea id="descricao" name="descricao" rows="5" required
                                   class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-sm py-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-tertiary-container focus:ring-1 focus:ring-tertiary-container transition-colors resize-none"
                                   placeholder="Informe o local exato e detalhe o que aconteceu..."></textarea>
                     </div>
-
+                </div>
+                <div class="flex flex-col gap-xs mt-sm">
+                    <label class="font-label-md text-label-md text-on-surface-variant uppercase" for="imagemEvidencia">Anexar Evidência (Opcional)</label>
+                    <input type="file" id="imagemEvidencia" name="imagemEvidencia" accept="image/png, image/jpeg, image/jpg"
+                           class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-sm py-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-tertiary-container focus:ring-1 focus:ring-tertiary-container transition-colors" />
                 </div>
 
                 <div class="flex justify-end items-center gap-sm p-md border-t border-surface-container-high bg-surface shrink-0">
@@ -204,6 +232,19 @@
                     <label class="font-label-md text-label-md text-on-surface-variant uppercase">Descrição do Problema</label>
                     <div class="bg-surface-container-low p-sm rounded-lg border border-outline-variant/30">
                         <p id="detalhe-descricao" class="font-body-sm text-body-sm text-on-surface whitespace-pre-wrap"></p>
+                    </div>
+                </div>
+
+                <div id="container-evidencia" class="flex flex-col gap-xs mt-4 hidden">
+                    <label class="font-label-md text-label-md text-on-surface-variant uppercase">Evidência Anexada</label>
+                    <div class="border border-outline-variant/30 rounded-lg overflow-hidden max-w-sm">
+                        <img id="detalhe-evidencia-img" src="" alt="Evidência" class="w-full h-auto object-cover cursor-pointer hover:opacity-90" onclick="window.open(this.src, '_blank')">
+                    </div>
+                </div>
+                <div id="container-comentario-moderador" class="flex flex-col gap-xs mt-4 hidden">
+                    <label class="font-label-md text-label-md text-error uppercase">Comentario Moderador</label>
+                    <div class="bg-[#fef2f2] p-sm rounded-lg border border-[#fecaca]">
+                        <p id="detalhe-comentario-moderador" class="font-body-sm text-[#991b1b]"></p>
                     </div>
                 </div>
             </div>

@@ -51,19 +51,23 @@
                 <span class="font-body-sm text-body-sm">Notificações</span>
             </a>
             <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"
-               href="#" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}"
-                th:classappend="${activeItem == 'gestaoUser'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
-
-
-                <span class="material-symbols-outlined" data-icon="group">group</span>
-                <span class="font-body-sm text-body-sm">Gestão de usuarios</span>
+               th:href="@{/moderador/triagemOcorrencias}" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}"
+               th:classappend="${activeItem == 'triagemOcorrencias'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
+                <span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
+                <span class="font-body-sm text-body-sm">Triagem de ocorrências</span>
             </a>
             <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"
-               href="/moderador/triagemReservas" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}"
+               th:href="@{/moderador/triagemReservas}" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}"
                th:classappend="${activeItem == 'triagemReservas'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
 
-            <span class="material-symbols-outlined" data-icon="group">group</span>
+            <span class="material-symbols-outlined" data-icon="edit_calendar">edit_calendar</span>
                 <span class="font-body-sm text-body-sm">Triagem de reservas</span>
+            </a>
+            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"
+               href="#" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}"
+               th:classappend="${activeItem == 'gestaoUser'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
+                <span class="material-symbols-outlined" data-icon="group">group</span>
+                <span class="font-body-sm text-body-sm">Gestão de usuarios</span>
             </a>
         </div>
         <div class="mt-auto flex flex-col gap-xs pt-md border-t border-outline-variant/30">
