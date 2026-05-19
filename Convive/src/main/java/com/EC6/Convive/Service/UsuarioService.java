@@ -1,8 +1,11 @@
 package com.EC6.Convive.Service;
 
+import com.EC6.Convive.Model.Morador;
 import com.EC6.Convive.Model.Usuario;
 import com.EC6.Convive.Repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,5 +49,12 @@ public class UsuarioService {
 
     public void delete(UUID id) {
         usuarioRepository.deleteById(id);
+    }
+
+    public Page<Usuario> findPaginatedAndFiltered(String search, Pageable pageable) {
+        if (search != null && !search.trim().isEmpty()) {
+            return usuarioRepository.findByNomeContainingIgnoreCaseOrEmailContainingIgnoreCase(search, search, pageable);
+        }
+        return usuarioRepository.findAll(pageable);
     }
 }

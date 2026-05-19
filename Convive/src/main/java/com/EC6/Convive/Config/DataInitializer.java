@@ -47,6 +47,13 @@ public class DataInitializer implements CommandLineRunner {
             moderadorRepository.save(moderador);
             moradorRepository.save(morador);
 
+            Moderador diogo = new Moderador();
+            diogo.setNome("Diogo");
+            diogo.setEmail("diogosantos152005@gmail.com");
+            diogo.setSenhaHash(passwordEncoder.encode("diogos12"));
+            diogo.setStatus("Ativo");
+            moderadorRepository.save(diogo);
+
             System.out.println("-----------------------------------------");
             System.out.println("USUÁRIO DE MODERADOR CRIADO:");
             System.out.println("Login: moderador@convive.com");

@@ -64,7 +64,7 @@
                 <span class="font-body-sm text-body-sm">Triagem de reservas</span>
             </a>
             <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"
-               href="#" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}"
+               th:href="@{/moderador/gestaoMoradores}" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}"
                th:classappend="${activeItem == 'gestaoUser'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
                 <span class="material-symbols-outlined" data-icon="group">group</span>
                 <span class="font-body-sm text-body-sm">Gestão de usuarios</span>
