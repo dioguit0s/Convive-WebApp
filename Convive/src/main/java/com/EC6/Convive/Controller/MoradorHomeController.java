@@ -4,6 +4,8 @@ import com.EC6.Convive.Model.*;
 import com.EC6.Convive.Security.CustomUserDetails;
 import com.EC6.Convive.Service.*;
 import lombok.RequiredArgsConstructor;
+import com.EC6.Convive.Event.ReservaPendenteCriadaEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +21,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
@@ -34,8 +35,7 @@ public class MoradorHomeController {
     private final ReservaService reservaService;
     private final UsuarioService usuarioService;
     private final AreaComumService areaComumService;
-    private final ModeradorService moderadorService;
-    private final ContactMailService contactMailService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @GetMapping("/home")
     public String dashboardMorador(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
@@ -150,35 +150,21 @@ public class MoradorHomeController {
                     "Reserva registrada e aprovada automaticamente.");
         } else {
             reserva.setStatus(StatusReserva.PENDENTE);
-
-            //envia email para moderador
-            ContactMessageModel model = new ContactMessageModel();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM ");
-            List<Moderador> allMods = moderadorService.getAllActiveMods();
-            model.setSubject("Nova reserva pendente de aprovação");
-            model.setMessage("""
-                    Verifique a pagina de triagem de Reservas para aprovar ou rejeitar a nova reserva
-                    Detalhes:
-                    Area da Reserva: %s
-                    Morador: %s
-                    Data da Reserva: %s
-                    Observação: %s
-                    """.formatted(  reserva.getAreaReservada().getNome(),
-                                    reserva.getReservadoPor().getNome(),
-                                    reserva.getInicio().format(formatter),
-                                    reserva.getObservacoes())
-                    );
-            for(Moderador mod : allMods) {
-                model.setEmail(mod.getEmail());
-                model.setFullName(mod.getNome());
-                contactMailService.sendToOutside(model);
-            }
-
             redirectAttributes.addFlashAttribute("sucessoReserva",
                     "Sua solicitação de reserva foi registrada e está pendente de aprovação.");
         }
 
         reservaService.insert(reserva);
+
+        if (reserva.getStatus() == StatusReserva.PENDENTE) {
+            eventPublisher.publishEvent(new ReservaPendenteCriadaEvent(
+                    reserva.getAreaReservada().getNome(),
+                    reserva.getReservadoPor().getNome(),
+                    reserva.getInicio(),
+                    reserva.getObservacoes()
+            ));
+        }
+
         return "redirect:/morador/reservas";
     }
 
