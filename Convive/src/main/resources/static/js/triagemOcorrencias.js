@@ -34,6 +34,20 @@ function selecionarOcorrencia(card) {
     else if (prioridade === 'MEDIA') badge.classList.add('bg-surface-container-highest', 'text-on-surface');
     else if (prioridade === 'BAIXA') badge.classList.add('bg-surface-container-low', 'text-on-surface-variant', 'border', 'border-outline-variant');
     else badge.classList.add('bg-surface', 'text-outline', 'border', 'border-outline-variant');
+
+        const urlEvidencia = card.getAttribute('data-evidencia');
+        const containerEvidencia = document.getElementById('container-evidencia');
+        const imgEvidencia = document.getElementById('detalhe-evidencia-img');
+
+        if (containerEvidencia && imgEvidencia) {
+            if (urlEvidencia && urlEvidencia.trim() !== '') {
+                imgEvidencia.src = urlEvidencia;
+                containerEvidencia.classList.remove('hidden');
+            } else {
+                imgEvidencia.src = '';
+                containerEvidencia.classList.add('hidden');
+            }
+        }
 }
 
 function filtrarOcorrencias() {

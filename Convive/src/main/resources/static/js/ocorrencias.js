@@ -24,6 +24,20 @@ function abrirConsulta(elemento) {
     if (inputExcluir) inputExcluir.value = id;
     if (campoComentarioModerador) campoComentarioModerador.innerText = comentarioModerador;
 
+    const urlEvidencia = elemento.getAttribute('data-evidencia');
+    const containerEvidencia = document.getElementById('container-evidencia');
+    const imgEvidencia = document.getElementById('detalhe-evidencia-img');
+
+    if (containerEvidencia && imgEvidencia) {
+        if (urlEvidencia && urlEvidencia.trim() !== '') {
+            imgEvidencia.src = urlEvidencia;
+            containerEvidencia.classList.remove('hidden');
+        } else {
+            imgEvidencia.src = '';
+            containerEvidencia.classList.add('hidden');
+        }
+    }
+
 if (comentarioModerador && comentarioModerador.trim() !== '') {
         if (campoComentarioModerador) campoComentarioModerador.innerText = comentarioModerador;
         if (containerComentario) containerComentario.classList.remove('hidden');
@@ -31,6 +45,7 @@ if (comentarioModerador && comentarioModerador.trim() !== '') {
         if (campoComentarioModerador) campoComentarioModerador.innerText = '';
         if (containerComentario) containerComentario.classList.add('hidden');
     }
+
 
 
     const modal = document.getElementById('modal-detalhes-ocorrencia');

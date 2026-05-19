@@ -86,7 +86,8 @@
                      th:data-descricao="${ocorrencia.descricao}"
                      th:data-resposta="${ocorrencia.respostaModerador ?: ''}"
                      th:data-data-sort="${#temporals.format(ocorrencia.dataRegistro, 'yyyyMMddHHmmss')}"
-                     th:data-morador="${ocorrencia.usuario.nome}">
+                     th:data-morador="${ocorrencia.usuario.nome}"
+                     th:data-evidencia="${ocorrencia.urlEvidencia != null ? ocorrencia.urlEvidencia : ''}">
 
                     <div class="flex justify-between items-start mb-sm">
                         <div class="flex items-center gap-sm">
@@ -118,7 +119,7 @@
                 <p class="font-body-md text-body-md mt-2">Clique em um card na fila de análise para visualizar os detalhes e gerenciar o chamado.</p>
             </div>
 
-            <form id="form-detalhes" th:action="@{/moderador/triagemOcorrencias/atualizar}" method="post" class="hidden flex-col flex-1 min-h-0 w-full">
+            <form id="form-detalhes" th:action="@{/moderador/triagemOcorrencias/atualizar}" method="post" class="hidden flex-col flex-1 min-h-0 w-full overflow-y-auto">
                 <input type="hidden" name="id" id="detalhe-id">
 
                 <div class="bg-surface-container-low p-md border-b border-outline-variant flex justify-between items-start shrink-0">
@@ -133,9 +134,15 @@
                     <div class="flex flex-col items-end gap-sm">
                         <span id="detalhe-data" class="text-body-sm font-body-sm text-outline"></span>
                     </div>
+                    <div id="container-evidencia" class="flex flex-col gap-xs mt-4 hidden">
+                        <label class="font-label-md text-label-md text-on-surface-variant uppercase">Evidência Anexada</label>
+                        <div class="border border-outline-variant/30 rounded-lg overflow-hidden max-w-sm">
+                            <img id="detalhe-evidencia-img" src="" alt="Evidência" class="w-full h-auto object-cover cursor-pointer hover:opacity-90" onclick="window.open(this.src, '_blank')">
+                        </div>
+                    </div>
                 </div>
 
-                <div class="flex-1 overflow-y-auto p-md flex flex-col gap-lg">
+                <div class="flex-1  p-md flex flex-col gap-lg">
 
                     <section>
                         <h4 class="text-label-md font-label-md text-on-surface-variant uppercase mb-sm">Descrição do Problema</h4>
