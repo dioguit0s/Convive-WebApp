@@ -40,10 +40,10 @@
       </form>
     </div>
 
-    <a th:href="@{/moderador/gestaoMoradores/novo}" class="w-full sm:w-auto bg-primary text-on-primary px-md py-[10px] rounded-lg font-label-md text-label-md uppercase hover:bg-primary/90 transition-colors shadow-sm flex items-center justify-center gap-xs">
+    <button onclick="abrirModalNovo()" class="w-full sm:w-auto bg-primary text-on-primary px-md py-[10px] rounded-lg font-label-md text-label-md uppercase hover:bg-primary/90 transition-colors shadow-sm flex items-center justify-center gap-xs">
       <span class="material-symbols-outlined text-[18px]">add</span>
       Novo Cadastro
-    </a>
+    </button>
   </div>
 
   <section class="px-margin pb-xl flex-1 flex flex-col">
@@ -68,7 +68,7 @@
               <span class="font-medium" th:text="${morador.nome}">Maria Silva</span>
             </td>
 
-            <td class="py-sm px-md" th:text="${morador.tipoUsuario == 'MORADOR' ? morador.apartamento : 'Admin'}">101</td>
+            <td class="py-sm px-md" th:text="${morador.tipoUsuario == 'MORADOR' ? morador.apartamento : (morador.apartamento != null ? morador.apartamento : 'Admin/Sem Unidade')}">101</td>
 
             <td class="py-sm px-md" th:text="${morador.email}">email@example.com</td>
 
@@ -82,7 +82,7 @@
                       th:data-id="${morador.id}"
                       th:data-nome="${morador.nome}"
                       th:data-email="${morador.email}"
-                      th:data-apartamento="${morador.tipoUsuario == 'MORADOR' ? morador.apartamento : ''}"
+                      th:data-apartamento="${morador.tipoUsuario == 'MORADOR' ? morador.apartamento : (morador.tipoUsuario == 'MODERADOR' ? morador.apartamento : '')}"
                       th:data-tipo="${morador.tipoUsuario == 'MORADOR' ? 'morador' : 'moderador'}"
                       onclick="abrirModal(this)">
                 <span class="material-symbols-outlined" data-icon="edit">edit</span>
@@ -151,11 +151,65 @@
       </div>
 
       <div class="mt-md flex justify-end gap-sm">
+        <div class="mt-md flex justify-between items-center w-full">
+          <button type="button" onclick="confirmarExclusao()" class="text-error hover:bg-error-container/20 px-sm py-[10px] rounded-lg font-label-md text-label-md uppercase transition-colors flex items-center gap-xs">
+            <span class="material-symbols-outlined text-[18px]">delete</span>
+            Excluir
+          </button>
         <button type="button" onclick="fecharModal()" class="px-md py-[10px] rounded-lg font-label-md text-on-surface-variant hover:bg-surface-container transition-colors">
           Cancelar
         </button>
         <button type="submit" class="bg-primary text-on-primary px-md py-[10px] rounded-lg font-label-md hover:bg-primary/90 transition-colors">
           Salvar Alterações
+        </button>
+      </div>
+      </div>
+    </form>
+  </div>
+</div>
+<form id="formExcluirUsuario" th:action="@{/moderador/gestaoMoradores/excluir}" method="post" class="hidden">
+  <input type="hidden" id="delete-id" name="id" />
+</form>
+<div id="modalNovoCadastro" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+  <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-lg w-full max-w-md">
+    <h2 class="font-h2 text-h2 text-primary mb-md">Novo Cadastro</h2>
+
+    <form th:action="@{/moderador/gestaoMoradores/novo}" method="post" class="flex flex-col gap-sm">
+
+      <div>
+        <label class="block font-label-md text-on-surface-variant mb-1">Nome Completo</label>
+        <input type="text" name="nome" required class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary bg-surface text-on-surface">
+      </div>
+
+      <div>
+        <label class="block font-label-md text-on-surface-variant mb-1">E-mail</label>
+        <input type="email" name="email" required class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary bg-surface text-on-surface">
+      </div>
+
+      <div>
+        <label class="block font-label-md text-on-surface-variant mb-1">Senha Provisória</label>
+        <input type="password" name="senha" required class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary bg-surface text-on-surface">
+      </div>
+
+      <div>
+        <label class="block font-label-md text-on-surface-variant mb-1">Tipo de Usuário</label>
+        <select name="tipo" class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary bg-surface text-on-surface">
+          <option value="MORADOR">Morador</option>
+          <option value="MODERADOR">Moderador</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block font-label-md text-on-surface-variant mb-1">Número do Apartamento <span class="text-xs text-outline font-normal">(Opcional para Moderadores)</span></label>
+        <input type="number" name="apartamento" class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary bg-surface text-on-surface">
+      </div>
+
+      <div class="mt-md flex justify-end gap-sm">
+        <button type="button" onclick="fecharModalNovo()" class="px-md py-[10px] rounded-lg font-label-md text-on-surface-variant hover:bg-surface-container transition-colors">
+          Cancelar
+        </button>
+        <button type="submit" class="bg-primary text-on-primary px-md py-[10px] rounded-lg font-label-md hover:bg-primary/90 transition-colors">
+          Cadastrar
         </button>
       </div>
     </form>

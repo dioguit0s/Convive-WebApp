@@ -1,5 +1,6 @@
 package com.EC6.Convive.Model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -12,6 +13,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "Moderador")
 public class Moderador extends Usuario {
+
+    @Column(name = "apartamento", nullable = true)
+    private Integer apartamento;
 
     @Override
     public String getTipoUsuario() { return "MODERADOR"; }
