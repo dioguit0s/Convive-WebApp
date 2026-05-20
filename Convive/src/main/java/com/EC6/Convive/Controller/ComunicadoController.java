@@ -7,12 +7,14 @@ import com.EC6.Convive.Model.Usuario;
 import com.EC6.Convive.Repository.ComunicadoRepository;
 import com.EC6.Convive.Security.CustomUserDetails;
 import com.EC6.Convive.Service.ComunicadoService;
+import com.EC6.Convive.Service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
@@ -25,6 +27,7 @@ import java.util.UUID;
 public class ComunicadoController {
 
     private final ComunicadoService comunicadoService;
+    private final FileStorageService fileStorageService;
 
     @GetMapping
     public String listarComunicados(@AuthenticationPrincipal CustomUserDetails userDetails , Model model) {
@@ -41,6 +44,7 @@ public class ComunicadoController {
     @PostMapping
     public String criarComunicado(@AuthenticationPrincipal CustomUserDetails userDetails,
                                   @ModelAttribute Comunicado comunicado,
+                                  @RequestParam(value = "imagem", required = false) MultipartFile imagem,
                                   RedirectAttributes redirectAttributes) {
 
         Usuario usuario = userDetails.getUsuario();
@@ -48,6 +52,19 @@ public class ComunicadoController {
         if (usuario instanceof Moderador) {
             comunicado.setModerador((Moderador) usuario);
             comunicado.setPublicadoEm(LocalDateTime.now());
+
+            try {
+                // Lógica de salvamento da imagem
+                if (imagem != null && !imagem.isEmpty()) {
+                    String urlImagem = fileStorageService.salvarImagemComunicado(imagem);
+                    comunicado.setUrlImagem(urlImagem);
+                }
+
+                comunicadoService.insert(comunicado);
+                redirectAttributes.addFlashAttribute("sucesso", "Aviso publicado com sucesso!");
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("erro", "Erro ao publicar aviso: " + e.getMessage());
+            }
 
             comunicadoService.insert(comunicado);
             redirectAttributes.addFlashAttribute("sucesso", "Aviso publicado com sucesso!");

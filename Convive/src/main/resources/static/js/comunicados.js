@@ -44,12 +44,22 @@ function abrirModalComunicado(elemento) {
     const autor = elemento.getAttribute('data-autor');
     const data = elemento.getAttribute('data-data');
     const tipo = elemento.getAttribute('data-tipo');
+    const imagem = elemento.getAttribute('data-imagem'); // Pega a URL da imagem
 
     document.getElementById('modal-titulo').innerText = titulo;
     document.getElementById('modal-conteudo').innerText = conteudo;
     document.getElementById('modal-autor').innerText = autor;
     document.getElementById('modal-data').innerText = data;
     document.getElementById('modal-tipo').innerText = tipo;
+
+    const imgElement = document.getElementById('modal-imagem');
+    if (imagem && imagem !== 'null' && imagem.trim() !== '') {
+        imgElement.src = imagem;
+        imgElement.classList.remove('hidden');
+    } else {
+        imgElement.src = '';
+        imgElement.classList.add('hidden');
+    }
 
     const inputExcluir = document.getElementById('comunicado-id-excluir');
     if (inputExcluir) {
