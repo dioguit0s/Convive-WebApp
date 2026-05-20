@@ -130,11 +130,10 @@ class PasswordResetServiceTest {
 
     @Test
     void resetPassword_mismatch_throws() {
-        PasswordResetToken token = validToken("reset-token");
-        when(tokenRepository.findByTokenAndUsedAtIsNull("reset-token")).thenReturn(Optional.of(token));
-
         assertThrows(IllegalArgumentException.class,
                 () -> passwordResetService.resetPassword("reset-token", "newpassword1", "different"));
+
+        verify(tokenRepository, never()).findByTokenAndUsedAtIsNull(any());
     }
 
     @Test
