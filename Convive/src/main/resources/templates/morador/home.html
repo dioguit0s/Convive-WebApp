@@ -51,7 +51,7 @@
 
                 <img th:if="${comunicado.urlImagem != null}"
                      th:src="${comunicado.urlImagem}"
-                     class="w-full h-32 object-contain bg-surface-container-low rounded-lg mb-sm"
+                     class="w-full h-auto min-h-[150px] max-h-[280px] object-contain bg-surface-container-lowest rounded-lg mb-sm border border-outline-variant/30 shadow-sm"
                      alt="Capa do aviso" />
 
                 <h3 class="font-h3 text-h3 text-on-surface mb-xs" th:text="${comunicado.titulo}">Título do Comunicado</h3>
