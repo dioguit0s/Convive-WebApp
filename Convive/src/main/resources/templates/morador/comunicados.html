@@ -108,22 +108,19 @@
             <p class="font-body-md text-body-md">Nenhum aviso publicado no momento.</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md" id="comunicadosGrid">
+        <div class="columns-1 md:columns-2 lg:columns-3 gap-md" id="comunicadosGrid">
 
             <div th:each="comunicado : ${comunicados}"
-                 class="comunicado-card bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-[0_4px_12px_-4px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow group flex flex-col h-full"
+                 class="comunicado-card bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-[0_4px_12px_-4px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow group flex flex-col break-inside-avoid mb-md"
                  th:data-titulo="${comunicado.titulo}"
                  th:data-tipo="${comunicado.tipo.name()}">
 
                 <img th:if="${comunicado.urlImagem != null}"
                      th:src="${comunicado.urlImagem}"
-                     class="w-full h-40 object-cover"
+                     class="w-full h-auto min-h-[150px] max-h-[280px] object-contain bg-surface-container-lowest border-b border-outline-variant/30"
                      alt="Imagem de capa do evento" />
 
-                <div class="p-md flex-1 flex flex-col">
-                    <div class="flex justify-between items-start mb-4">
-
-                <div class="p-md flex-1 flex flex-col">
+                <div class="p-md flex flex-col">
                     <div class="flex justify-between items-start mb-4">
                             <span class="inline-flex items-center px-3 py-1 rounded-full font-label-md text-label-md tracking-wider uppercase"
                                   th:classappend="${comunicado.tipo.name() == 'Eventos' ? 'bg-tertiary-fixed text-on-tertiary-fixed' : (comunicado.tipo.name() == 'Obras' ? 'bg-[#fef08a] text-[#713f12]' : 'bg-surface-container-high text-on-surface')}"
@@ -131,7 +128,8 @@
                     </div>
 
                     <h3 class="font-h3 text-h3 text-on-surface mb-2 group-hover:text-primary transition-colors" th:text="${comunicado.titulo}">Título</h3>
-                    <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-3 mb-4 flex-1" th:text="${comunicado.conteudo}">Resumo do conteúdo...</p>
+
+                    <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-3 mb-4" th:text="${comunicado.conteudo}">Resumo do conteúdo...</p>
 
                     <div class="flex items-center gap-2 text-on-surface-variant/80 font-body-sm text-body-sm mb-4">
                         <span class="material-symbols-outlined text-[16px]">schedule</span>
@@ -153,11 +151,13 @@
                                 th:data-autor="${comunicado.moderador.nome}"
                                 th:data-data="${#temporals.format(comunicado.publicadoEm, 'dd/MM/yyyy HH:mm')}"
                                 th:data-tipo="${comunicado.tipo}"
-                                th:data-imagem="${comunicado.urlImagem}"> Ler mais <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                                th:data-imagem="${comunicado.urlImagem}">
+                            Ler mais <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                         </button>
                     </div>
                 </div>
-                </div>
+            </div>
+
         </div>
     </div>
 </main>
