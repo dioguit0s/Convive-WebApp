@@ -39,4 +39,13 @@ public class ModeradorService {
     public List<Moderador> getAllActiveMods() {
         return moderadorRepository.findAllByStatus("Ativo");
     }
+
+    public Moderador update(UUID id, Moderador moderadorAtualizado) {
+        Moderador moderadorExistente = searchById(id);
+        moderadorExistente.setNome(moderadorAtualizado.getNome());
+        moderadorExistente.setEmail(moderadorAtualizado.getEmail());
+        moderadorExistente.setApartamento(moderadorAtualizado.getApartamento());
+
+        return moderadorRepository.save(moderadorExistente);
+    }
 }

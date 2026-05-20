@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Gestão de Moradores - Convive Admin</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script th:src="@{/js/tailwindTheme.js}"></script>
+</head>
+<body class="bg-background flex min-h-screen font-body-md text-on-background selection:bg-primary-container selection:text-on-primary-container">
+
+<div th:replace="~{fragments/morador/components :: navMorador(activeItem='gestaoUser')}"></div>
+
+<main class="flex-1 flex flex-col w-full min-h-screen md:ml-64 relative">
+
+  <header class="px-margin pt-lg pb-md flex flex-col gap-sm">
+    <h1 class="font-h1 text-h1 text-on-surface">Gestão de Moradores</h1>
+    <p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Acesse, filtre e gerencie o cadastro de todos os residentes do condomínio. Cadastre novos moradores ou edite informações existentes.</p>
+
+    <div th:if="${sucesso}" class="bg-secondary-container text-on-secondary-container p-4 rounded-lg">
+      <span th:text="${sucesso}"></span>
+    </div>
+    <div th:if="${erro}" class="bg-error-container text-on-error-container p-4 rounded-lg">
+      <span th:text="${erro}"></span>
+    </div>
+  </header>
+
+  <div class="px-margin pb-md flex flex-col sm:flex-row items-center justify-between gap-md">
+
+    <div class="flex items-center gap-sm w-full sm:w-auto">
+      <form th:action="@{/moderador/gestaoMoradores}" method="get" class="flex gap-sm w-full">
+        <div class="relative flex-1 sm:w-80">
+          <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">search</span>
+          <input name="search" th:value="${search}" class="w-full pl-lg pr-sm py-[10px] bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-sm" placeholder="Buscar por nome ou e-mail..." type="text"/>
+        </div>
+        <button type="submit" class="hidden sm:block bg-surface-container-high px-sm rounded-lg hover:bg-surface-variant transition">Filtrar</button>
+      </form>
+    </div>
+
+    <button onclick="abrirModalNovo()" class="w-full sm:w-auto bg-primary text-on-primary px-md py-[10px] rounded-lg font-label-md text-label-md uppercase hover:bg-primary/90 transition-colors shadow-sm flex items-center justify-center gap-xs">
+      <span class="material-symbols-outlined text-[18px]">add</span>
+      Novo Cadastro
+    </button>
+  </div>
+
+  <section class="px-margin pb-xl flex-1 flex flex-col">
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.02)] flex flex-col flex-1 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse min-w-[800px]">
+          <thead>
+          <tr class="border-b border-outline-variant bg-surface-container-low/50">
+            <th class="py-sm px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Nome</th>
+            <th class="py-sm px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Unidade</th>
+            <th class="py-sm px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">E-mail</th>
+            <th class="py-sm px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Status</th>
+            <th class="py-sm px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">Ação</th>
+          </tr>
+          </thead>
+          <tbody class="divide-y divide-outline-variant/60 font-data-tabular text-data-tabular text-on-surface">
+
+          <tr th:each="morador : ${moradorPage.content}" class="hover:bg-surface-container-low/30 transition-colors group">
+            <td class="py-sm px-md flex items-center gap-sm">
+              <div class="w-8 h-8 rounded-full bg-surface-container-highest text-primary flex items-center justify-center font-bold text-[12px]"
+                   th:text="${#strings.substring(morador.nome,0,1)}">M</div>
+              <span class="font-medium" th:text="${morador.nome}">Maria Silva</span>
+            </td>
+
+            <td class="py-sm px-md" th:text="${morador.tipoUsuario == 'MORADOR' ? morador.apartamento : (morador.apartamento != null ? morador.apartamento : 'Admin/Sem Unidade')}">101</td>
+
+            <td class="py-sm px-md" th:text="${morador.email}">email@example.com</td>
+
+            <td class="py-sm px-md">
+              <span th:if="${!morador.inadimplente}" class="inline-flex items-center px-2 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-[10px] uppercase leading-none">Adimplente</span>
+              <span th:if="${morador.inadimplente}" class="inline-flex items-center px-2 py-1 rounded-full bg-error-container text-on-error-container font-label-md text-[10px] uppercase leading-none">Inadimplente</span>
+            </td>
+
+            <td class="py-sm px-md text-right">
+              <button class="text-on-surface-variant hover:text-primary transition-colors p-xs rounded hover:bg-surface-container-low opacity-0 group-hover:opacity-100 focus:opacity-100"
+                      th:data-id="${morador.id}"
+                      th:data-nome="${morador.nome}"
+                      th:data-email="${morador.email}"
+                      th:data-apartamento="${morador.tipoUsuario == 'MORADOR' ? morador.apartamento : (morador.tipoUsuario == 'MODERADOR' ? morador.apartamento : '')}"
+                      th:data-tipo="${morador.tipoUsuario == 'MORADOR' ? 'morador' : 'moderador'}"
+                      onclick="abrirModal(this)">
+                <span class="material-symbols-outlined" data-icon="edit">edit</span>
+              </button>
+            </td>
+          </tr>
+
+          <tr th:if="${#lists.isEmpty(moradorPage.content)}">
+            <td colspan="5" class="py-md text-center text-on-surface-variant">Nenhum morador encontrado.</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-auto border-t border-outline-variant/60 bg-surface px-md py-sm flex items-center justify-between" th:if="${moradorPage.totalPages > 0}">
+                    <span class="font-body-sm text-body-sm text-on-surface-variant"
+                          th:text="'Mostrando página ' + (${moradorPage.number} + 1) + ' de ' + ${moradorPage.totalPages} + ' (' + ${moradorPage.totalElements} + ' registros)'">
+                    </span>
+
+        <div class="flex items-center gap-xs">
+          <a th:if="${moradorPage.hasPrevious()}"
+             th:href="@{/moderador/gestaoMoradores(page=${moradorPage.number - 1}, search=${search})}"
+             class="p-xs rounded text-outline hover:bg-surface-container hover:text-on-surface transition-colors">
+            <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+          </a>
+
+          <span th:each="i : ${#numbers.sequence(0, moradorPage.totalPages - 1)}">
+                            <a th:href="@{/moderador/gestaoMoradores(page=${i}, search=${search})}"
+                               th:text="${i + 1}"
+                               th:classappend="${i == moradorPage.number} ? 'bg-primary text-on-primary font-medium' : 'hover:bg-surface-container text-on-surface-variant'"
+                               class="w-8 h-8 rounded font-body-sm text-body-sm flex items-center justify-center transition-colors">
+                            </a>
+                        </span>
+
+          <a th:if="${moradorPage.hasNext()}"
+             th:href="@{/moderador/gestaoMoradores(page=${moradorPage.number + 1}, search=${search})}"
+             class="p-xs rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+            <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="modalEdicao" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+  <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-lg w-full max-w-md">
+    <h2 class="font-h2 text-h2 text-primary mb-md">Editar Morador</h2>
+
+    <form th:action="@{/moderador/gestaoMoradores/editar}" method="post" class="flex flex-col gap-sm">
+      <input type="hidden" id="edit-id" name="id" />
+
+      <div>
+        <label class="block font-label-md text-on-surface-variant mb-1">Nome Completo</label>
+        <input type="text" id="edit-nome" name="nome" required class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary bg-surface text-on-surface">
+      </div>
+
+      <div>
+        <label class="block font-label-md text-on-surface-variant mb-1">E-mail</label>
+        <input type="email" id="edit-email" name="email" required class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary bg-surface text-on-surface">
+      </div>
+
+      <div>
+        <label class="block font-label-md text-on-surface-variant mb-1">Número do Apartamento</label>
+        <input type="text" id="edit-apartamento" name="apartamento" required class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary bg-surface text-on-surface">
+      </div>
+
+      <div class="mt-md flex justify-end gap-sm">
+        <div class="mt-md flex justify-between items-center w-full">
+          <button type="button" onclick="confirmarExclusao()" class="text-error hover:bg-error-container/20 px-sm py-[10px] rounded-lg font-label-md text-label-md uppercase transition-colors flex items-center gap-xs">
+            <span class="material-symbols-outlined text-[18px]">delete</span>
+            Excluir
+          </button>
+        <button type="button" onclick="fecharModal()" class="px-md py-[10px] rounded-lg font-label-md text-on-surface-variant hover:bg-surface-container transition-colors">
+          Cancelar
+        </button>
+        <button type="submit" class="bg-primary text-on-primary px-md py-[10px] rounded-lg font-label-md hover:bg-primary/90 transition-colors">
+          Salvar Alterações
+        </button>
+      </div>
+      </div>
+    </form>
+  </div>
+</div>
+<form id="formExcluirUsuario" th:action="@{/moderador/gestaoMoradores/excluir}" method="post" class="hidden">
+  <input type="hidden" id="delete-id" name="id" />
+</form>
+<div id="modalNovoCadastro" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+  <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-lg w-full max-w-md">
+    <h2 class="font-h2 text-h2 text-primary mb-md">Novo Cadastro</h2>
+
+    <form th:action="@{/moderador/gestaoMoradores/novo}" method="post" class="flex flex-col gap-sm">
+
+      <div>
+        <label class="block font-label-md text-on-surface-variant mb-1">Nome Completo</label>
+        <input type="text" name="nome" required class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary bg-surface text-on-surface">
+      </div>
+
+      <div>
+        <label class="block font-label-md text-on-surface-variant mb-1">E-mail</label>
+        <input type="email" name="email" required class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary bg-surface text-on-surface">
+      </div>
+
+      <div>
+        <label class="block font-label-md text-on-surface-variant mb-1">Senha Provisória</label>
+        <input type="password" name="senha" required class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary bg-surface text-on-surface">
+      </div>
+
+      <div>
+        <label class="block font-label-md text-on-surface-variant mb-1">Tipo de Usuário</label>
+        <select name="tipo" class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary bg-surface text-on-surface">
+          <option value="MORADOR">Morador</option>
+          <option value="MODERADOR">Moderador</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block font-label-md text-on-surface-variant mb-1">Número do Apartamento <span class="text-xs text-outline font-normal">(Opcional para Moderadores)</span></label>
+        <input type="number" name="apartamento" class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary bg-surface text-on-surface">
+      </div>
+
+      <div class="mt-md flex justify-end gap-sm">
+        <button type="button" onclick="fecharModalNovo()" class="px-md py-[10px] rounded-lg font-label-md text-on-surface-variant hover:bg-surface-container transition-colors">
+          Cancelar
+        </button>
+        <button type="submit" class="bg-primary text-on-primary px-md py-[10px] rounded-lg font-label-md hover:bg-primary/90 transition-colors">
+          Cadastrar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script th:src="@{/js/gestaoMoradores.js}"></script>
+
+</body>
+</html>

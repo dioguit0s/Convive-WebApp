@@ -6,6 +6,8 @@ import com.EC6.Convive.Repository.MoradorRepository;
 import com.EC6.Convive.Repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -41,5 +43,22 @@ public class MoradorService {
 
     public void delete(UUID id) {
         moradorRepository.deleteById(id);
+    }
+
+    public Page<Morador> findPaginatedAndFiltered(String search, Pageable pageable) {
+        if (search != null && !search.trim().isEmpty()) {
+            return moradorRepository.findByNomeContainingIgnoreCaseOrEmailContainingIgnoreCase(search, search, pageable);
+        }
+        return moradorRepository.findAll(pageable);
+    }
+
+    public Morador update(UUID id, Morador moradorAtualizado) {
+        Morador moradorExistente = searchById(id);
+
+        moradorExistente.setNome(moradorAtualizado.getNome());
+        moradorExistente.setEmail(moradorAtualizado.getEmail());
+        moradorExistente.setApartamento(moradorAtualizado.getApartamento());
+
+        return moradorRepository.save(moradorExistente);
     }
 }
