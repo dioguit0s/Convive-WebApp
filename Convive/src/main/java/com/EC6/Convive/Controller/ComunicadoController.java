@@ -9,6 +9,7 @@ import com.EC6.Convive.Security.CustomUserDetails;
 import com.EC6.Convive.Service.ComunicadoService;
 import com.EC6.Convive.Service.FileStorageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -30,14 +31,18 @@ public class ComunicadoController {
     private final FileStorageService fileStorageService;
 
     @GetMapping
-    public String listarComunicados(@AuthenticationPrincipal CustomUserDetails userDetails , Model model) {
+    public String listarComunicados(@RequestParam(defaultValue = "0") int page,
+                                    @AuthenticationPrincipal CustomUserDetails userDetails , Model model) {
 
         Usuario usuario = userDetails.getUsuario();
 
-        List<Comunicado> comunicados = comunicadoService.findAllOrderByDate();
+        Page<Comunicado> comunicadosPage = comunicadoService.findPaginated(page, 10);
 
         model.addAttribute("usuario", usuario);
-        model.addAttribute("comunicados", comunicados);
+        model.addAttribute("comunicados", comunicadosPage.getContent());
+        model.addAttribute("paginaAtual", page);
+        model.addAttribute("totalPaginas", comunicadosPage.getTotalPages());
+
         return "morador/comunicados";
     }
 
@@ -85,4 +90,14 @@ public class ComunicadoController {
         }
         return "redirect:/morador/comunicados";
     }
+
+    @GetMapping("/mais")
+    public String carregarMais(@RequestParam(defaultValue = "1") int page, Model model) {
+        Page<Comunicado> comunicadosPage = comunicadoService.findPaginated(page, 10);
+        model.addAttribute("comunicados", comunicadosPage.getContent());
+
+        // O segredo está aqui: o Spring retornará apenas o fragmento 'listagemCards'
+        return "morador/comunicados :: listagemCards";
+    }
+
 }

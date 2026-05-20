@@ -72,3 +72,53 @@ function abrirModalComunicado(elemento) {
 function abrirModalNovoComunicado() {
     document.getElementById('modal-novo-comunicado').showModal();
 }
+
+async function carregarMaisComunicados() {
+    const btn = document.getElementById('btnCarregarMais');
+    const icon = document.getElementById('iconCarregarMais');
+    const texto = document.getElementById('textoCarregarMais');
+
+    let paginaAtual = parseInt(btn.getAttribute('data-pagina-atual'));
+    let totalPaginas = parseInt(btn.getAttribute('data-total-paginas'));
+
+    let proximaPagina = paginaAtual + 1;
+
+    if (proximaPagina >= totalPaginas) return;
+
+    icon.classList.add('animate-spin');
+    texto.innerText = "Carregando...";
+    btn.disabled = true;
+
+    try {
+        const response = await fetch(`/morador/comunicados/mais?page=${proximaPagina}`);
+
+        if (response.ok) {
+            const fragmentoHtml = await response.text();
+
+            const grid = document.getElementById('comunicadosGrid');
+            grid.insertAdjacentHTML('beforeend', fragmentoHtml);
+
+            btn.setAttribute('data-pagina-atual', proximaPagina);
+
+            if (proximaPagina + 1 >= totalPaginas) {
+                document.getElementById('containerCarregarMais').style.display = 'none';
+            } else {
+                restaurarBotaoCarregarMais(btn, icon, texto);
+            }
+
+            filtrarComunicados();
+        } else {
+            console.error('Falha ao carregar novos comunicados.');
+            restaurarBotaoCarregarMais(btn, icon, texto);
+        }
+    } catch (error) {
+        console.error('Erro na requisição AJAX:', error);
+        restaurarBotaoCarregarMais(btn, icon, texto);
+    }
+}
+
+function restaurarBotaoCarregarMais(btn, icon, texto) {
+    texto.innerText = "Carregar mais avisos";
+    icon.classList.remove('animate-spin');
+    btn.disabled = false;
+}

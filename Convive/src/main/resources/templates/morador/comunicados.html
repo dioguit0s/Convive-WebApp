@@ -110,54 +110,71 @@
 
         <div class="columns-1 md:columns-2 lg:columns-3 gap-md" id="comunicadosGrid">
 
-            <div th:each="comunicado : ${comunicados}"
-                 class="comunicado-card bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-[0_4px_12px_-4px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow group flex flex-col break-inside-avoid mb-md"
-                 th:data-titulo="${comunicado.titulo}"
-                 th:data-tipo="${comunicado.tipo.name()}">
+                <th:block th:fragment="listagemCards">
 
-                <img th:if="${comunicado.urlImagem != null}"
-                     th:src="${comunicado.urlImagem}"
-                     class="w-full h-auto min-h-[150px] max-h-[280px] object-contain bg-surface-container-lowest border-b border-outline-variant/30"
-                     alt="Imagem de capa do evento" />
+                    <div th:each="comunicado : ${comunicados}"
+                         class="comunicado-card bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-[0_4px_12px_-4px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow group flex flex-col break-inside-avoid mb-md"
+                         th:data-titulo="${comunicado.titulo}"
+                         th:data-tipo="${comunicado.tipo.name()}">
 
-                <div class="p-md flex flex-col">
-                    <div class="flex justify-between items-start mb-4">
-                            <span class="inline-flex items-center px-3 py-1 rounded-full font-label-md text-label-md tracking-wider uppercase"
-                                  th:classappend="${comunicado.tipo.name() == 'Eventos' ? 'bg-tertiary-fixed text-on-tertiary-fixed' : (comunicado.tipo.name() == 'Obras' ? 'bg-[#fef08a] text-[#713f12]' : 'bg-surface-container-high text-on-surface')}"
-                                  th:text="${comunicado.tipo}">GERAL</span>
-                    </div>
+                        <img th:if="${comunicado.urlImagem != null}"
+                             th:src="${comunicado.urlImagem}"
+                             class="w-full h-auto min-h-[150px] max-h-[280px] object-contain bg-surface-container-lowest border-b border-outline-variant/30"
+                             alt="Imagem de capa do evento" />
 
-                    <h3 class="font-h3 text-h3 text-on-surface mb-2 group-hover:text-primary transition-colors" th:text="${comunicado.titulo}">Título</h3>
+                        <div class="p-md flex flex-col">
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full font-label-md text-label-md tracking-wider uppercase"
+                                      th:classappend="${comunicado.tipo.name() == 'Eventos' ? 'bg-tertiary-fixed text-on-tertiary-fixed' : (comunicado.tipo.name() == 'Obras' ? 'bg-[#fef08a] text-[#713f12]' : 'bg-surface-container-high text-on-surface')}"
+                                      th:text="${comunicado.tipo}">GERAL</span>
+                            </div>
 
-                    <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-3 mb-4" th:text="${comunicado.conteudo}">Resumo do conteúdo...</p>
+                            <h3 class="font-h3 text-h3 text-on-surface mb-2 group-hover:text-primary transition-colors" th:text="${comunicado.titulo}">Título</h3>
 
-                    <div class="flex items-center gap-2 text-on-surface-variant/80 font-body-sm text-body-sm mb-4">
-                        <span class="material-symbols-outlined text-[16px]">schedule</span>
-                        <span th:text="${#temporals.format(comunicado.publicadoEm, 'dd/MM/yyyy HH:mm')}">Data</span>
-                    </div>
+                            <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-3 mb-4" th:text="${comunicado.conteudo}">Resumo do conteúdo...</p>
 
-                    <div class="flex items-center justify-between pt-4 border-t border-outline-variant/20 mt-auto">
-                        <div class="flex items-center gap-2">
-                                <span class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-md text-[10px]"
-                                      th:text="${#strings.substring(comunicado.moderador.nome, 0, 1)}">A</span>
-                            <span class="font-body-sm text-body-sm text-on-surface font-medium truncate max-w-[120px]" th:text="${comunicado.moderador.nome}">Nome do Admin</span>
+                            <div class="flex items-center gap-2 text-on-surface-variant/80 font-body-sm text-body-sm mb-4">
+                                <span class="material-symbols-outlined text-[16px]">schedule</span>
+                                <span th:text="${#temporals.format(comunicado.publicadoEm, 'dd/MM/yyyy HH:mm')}">Data</span>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-4 border-t border-outline-variant/20 mt-auto">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-md text-[10px]"
+                                          th:text="${#strings.substring(comunicado.moderador.nome, 0, 1)}">A</span>
+                                    <span class="font-body-sm text-body-sm text-on-surface font-medium truncate max-w-[120px]" th:text="${comunicado.moderador.nome}">Nome do Admin</span>
+                                </div>
+
+                                <button class="text-primary font-body-sm text-body-sm font-semibold hover:text-on-tertiary-container transition-colors flex items-center gap-1"
+                                        onclick="abrirModalComunicado(this)"
+                                        th:data-titulo="${comunicado.titulo}"
+                                        th:data-id="${comunicado.id}"
+                                        th:data-conteudo="${comunicado.conteudo}"
+                                        th:data-autor="${comunicado.moderador.nome}"
+                                        th:data-data="${#temporals.format(comunicado.publicadoEm, 'dd/MM/yyyy HH:mm')}"
+                                        th:data-tipo="${comunicado.tipo}"
+                                        th:data-imagem="${comunicado.urlImagem}">
+                                    Ler mais <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                                </button>
+                            </div>
                         </div>
-
-                        <button class="text-primary font-body-sm text-body-sm font-semibold hover:text-on-tertiary-container transition-colors flex items-center gap-1"
-                                onclick="abrirModalComunicado(this)"
-                                th:data-titulo="${comunicado.titulo}"
-                                th:data-id="${comunicado.id}"
-                                th:data-conteudo="${comunicado.conteudo}"
-                                th:data-autor="${comunicado.moderador.nome}"
-                                th:data-data="${#temporals.format(comunicado.publicadoEm, 'dd/MM/yyyy HH:mm')}"
-                                th:data-tipo="${comunicado.tipo}"
-                                th:data-imagem="${comunicado.urlImagem}">
-                            Ler mais <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-                        </button>
                     </div>
-                </div>
+
+                </th:block>
             </div>
 
+            <div th:if="${totalPaginas > 1}" class="w-full flex justify-center mt-lg pb-xl" id="containerCarregarMais">
+                <button id="btnCarregarMais"
+                        th:data-pagina-atual="${paginaAtual}"
+                        th:data-total-paginas="${totalPaginas}"
+                        onclick="carregarMaisComunicados()"
+                        class="px-6 py-3 rounded-full bg-surface-container border border-outline-variant/30 text-on-surface font-label-lg text-label-lg hover:bg-surface-container-highest transition-colors shadow-sm flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[20px]" id="iconCarregarMais">refresh</span>
+                    <span id="textoCarregarMais">Carregar mais avisos</span>
+                </button>
+            </div>
+
+        </div>
         </div>
     </div>
 </main>
