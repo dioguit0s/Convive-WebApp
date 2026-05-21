@@ -24,7 +24,6 @@ public class DashboardModeradorController {
                             Model model) {
         DashboardDataDto data = dashboardService.buildDashboard(mes);
 
-        model.addAttribute("usuario", userDetails.getUsuario());
         model.addAttribute("dashboard", data);
         model.addAttribute("chartOcorrencias", data.getChartOcorrenciasStatus());
         model.addAttribute("chartReservas", data.getChartReservasPorArea());

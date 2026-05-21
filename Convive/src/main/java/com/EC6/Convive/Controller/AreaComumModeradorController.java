@@ -31,7 +31,6 @@ public class AreaComumModeradorController {
 
         Page<AreaComum> areaPage = areaComumService.findPaginated(page, size);
 
-        model.addAttribute("usuario", userDetails.getUsuario());
         model.addAttribute("areaPage", areaPage);
         model.addAttribute("areas", areaPage.getContent());
         model.addAttribute("statusOptions", StatusArea.values());

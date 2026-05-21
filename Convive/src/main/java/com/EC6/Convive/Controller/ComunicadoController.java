@@ -35,11 +35,8 @@ public class ComunicadoController {
     public String listarComunicados(@RequestParam(defaultValue = "0") int page,
                                     @AuthenticationPrincipal CustomUserDetails userDetails , Model model) {
 
-        Usuario usuario = userDetails.getUsuario();
-
         Page<Comunicado> comunicadosPage = comunicadoService.findPaginated(page, PaginationConstants.DEFAULT_PAGE_SIZE);
 
-        model.addAttribute("usuario", usuario);
         model.addAttribute("comunicados", comunicadosPage.getContent());
         model.addAttribute("paginaAtual", page);
         model.addAttribute("totalPaginas", comunicadosPage.getTotalPages());

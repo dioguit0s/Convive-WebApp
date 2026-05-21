@@ -38,7 +38,6 @@ public class OcorrenciaController {
         Page<Ocorrencia> ocorrenciasPage = ocorrenciaService.findPaginatedByUser(
                 usuario.getId(), page, PaginationConstants.DEFAULT_PAGE_SIZE, busca, status, prioridade, ordem);
 
-        model.addAttribute("usuario", usuario);
         model.addAttribute("ocorrencias", ocorrenciasPage.getContent());
         model.addAttribute("paginaAtual", page);
         model.addAttribute("totalPaginas", ocorrenciasPage.getTotalPages());

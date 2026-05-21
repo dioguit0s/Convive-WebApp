@@ -35,7 +35,6 @@ public class AdvertenciaModeradorController {
 
     @GetMapping("/nova")
     public String formulario(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
-        model.addAttribute("usuario", userDetails.getUsuario());
         model.addAttribute("gravidades", GravidadeNotificacao.values());
         return "moderador/novaAdvertencia";
     }

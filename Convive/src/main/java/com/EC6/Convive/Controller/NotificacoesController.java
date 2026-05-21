@@ -31,7 +31,6 @@ public class NotificacoesController {
         Page<Notificacao> notificacoesPage = notificacaoService.findPaginatedByUser(
                 usuario.getId(), page, PaginationConstants.DEFAULT_PAGE_SIZE);
 
-        model.addAttribute("usuario", usuario);
         model.addAttribute("notificacoes", notificacoesPage.getContent());
         model.addAttribute("paginaAtual", page);
         model.addAttribute("totalPaginas", notificacoesPage.getTotalPages());
