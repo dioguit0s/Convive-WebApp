@@ -79,13 +79,24 @@
             </button>
         </div>
         <div class="px-2 flex items-center gap-sm pb-sm border-b border-outline-variant/30">
-            <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary font-bold overflow-hidden shrink-0">
-                <span th:if="${usuario?.fotoPerfil == null}" th:text="${usuario?.nome != null ? usuario.nome.substring(0,1).toUpperCase() : 'C'}">C</span>
-                <img th:if="${usuario?.fotoPerfil != null}" th:src="${usuario.fotoPerfil}" alt="Foto de Perfil" class="w-full h-full object-cover"/>
-            </div>
-            <div class="min-w-0">
+            <form th:action="@{/perfil/upload-foto}" method="post" enctype="multipart/form-data" id="formFotoPerfilMobile" class="m-0 shrink-0">
+                <label class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary font-bold overflow-hidden cursor-pointer relative group transition-all"
+                       aria-label="Alterar foto de perfil">
+                    <span th:if="${usuario?.fotoPerfil == null}" th:text="${usuario?.nome != null ? usuario.nome.substring(0,1).toUpperCase() : 'C'}">C</span>
+                    <img th:if="${usuario?.fotoPerfil != null}" th:src="${usuario.fotoPerfil}" alt="Foto de Perfil" class="relative z-0 w-full h-full object-cover"/>
+                    <div th:if="${usuario?.fotoPerfil == null}" class="absolute inset-0 z-10 bg-black/40 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-white text-sm" style="font-size: 18px;">upload</span>
+                    </div>
+                    <div th:if="${usuario?.fotoPerfil != null}" class="absolute bottom-0 right-0 z-10 w-4 h-4 rounded-full bg-primary border-2 border-background flex items-center justify-center shadow-sm">
+                        <span class="material-symbols-outlined text-on-primary" style="font-size: 11px;">edit</span>
+                    </div>
+                    <input type="file" name="foto" accept="image/*" class="hidden" onchange="this.form.submit()">
+                </label>
+            </form>
+            <div class="min-w-0 flex-1">
                 <div class="text-h3 font-h3 font-bold text-primary truncate" th:text="${usuario?.nome ?: 'Administrador'}">Convive</div>
                 <div class="font-body-sm text-body-sm text-on-surface-variant truncate" th:text="${usuario != null ? usuario.getTipoUsuario() : 'Portal de Gestão'}">Portal</div>
+                <span class="font-body-sm text-body-sm text-on-surface-variant/80">Toque na foto para alterar</span>
             </div>
         </div>
         <div class="flex-1 flex flex-col gap-xs overflow-y-auto">
@@ -110,7 +121,7 @@
                     <div class="absolute inset-0 bg-black/40 hidden group-hover:flex items-center justify-center transition-opacity">
                         <span class="material-symbols-outlined text-white text-sm" style="font-size: 18px;">upload</span>
                     </div>
-                    <input type="file" name="foto" accept="image/*" class="hidden" onchange="document.getElementById('formFotoPerfil').submit();">
+                    <input type="file" name="foto" accept="image/*" class="hidden" onchange="this.form.submit()">
                 </label>
             </form>
             <div>
