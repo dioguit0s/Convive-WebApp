@@ -7,7 +7,11 @@ import com.EC6.Convive.Model.Notificacao;
 import com.EC6.Convive.Security.CustomUserDetails;
 import com.EC6.Convive.Service.MoradorService;
 import com.EC6.Convive.Service.NotificacaoService;
+import com.EC6.Convive.Util.PaginationConstants;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -32,9 +36,21 @@ public class AdvertenciaModeradorController {
     @GetMapping("/nova")
     public String formulario(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         model.addAttribute("usuario", userDetails.getUsuario());
-        model.addAttribute("moradores", moradorService.listAll());
         model.addAttribute("gravidades", GravidadeNotificacao.values());
         return "moderador/novaAdvertencia";
+    }
+
+    @GetMapping("/moradores")
+    public String buscarMoradores(
+            @RequestParam(required = false) String q,
+            @RequestParam(defaultValue = "0") int page,
+            Model model) {
+        Pageable pageable = PageRequest.of(page, PaginationConstants.DEFAULT_PAGE_SIZE);
+        Page<Morador> moradoresPage = moradorService.findPaginatedAndFiltered(q, pageable);
+        model.addAttribute("moradores", moradoresPage.getContent());
+        model.addAttribute("hasMore", moradoresPage.hasNext());
+        model.addAttribute("paginaAtual", page);
+        return "moderador/novaAdvertencia :: moradorOpcoes";
     }
 
     @PostMapping("/nova")

@@ -49,31 +49,32 @@
         <div class="flex flex-wrap items-center gap-sm w-full xl:w-auto">
             <div class="relative flex-1 min-w-[200px]">
                 <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
-                <input id="filtro-busca-ocorrencia"
+                <input id="filtro-busca-ocorrencia" th:value="${busca}"
+                       onkeyup="debounceAplicarFiltrosMorador()"
                        class="w-full pl-[36px] pr-sm py-1.5 bg-surface-container-lowest rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-sm font-body-sm text-on-surface placeholder:text-outline outline-none transition-colors"
                        placeholder="Buscar por protocolo ou descrição..."
                        type="text"/>
             </div>
 
-            <select id="filtro-prioridade-ocorrencia" class="bg-surface-container-lowest border border-outline-variant text-on-surface text-body-sm font-body-sm rounded-lg pl-sm pr-10 py-1.5 focus:border-primary outline-none">
-                <option value="ALL">Todas Prioridades</option>
-                <option value="ALTA">Alta</option>
-                <option value="MEDIA">Média</option>
-                <option value="BAIXA">Baixa</option>
-                <option value="NAO_DEFINIDA">Não Definida</option>
+            <select id="filtro-prioridade-ocorrencia" onchange="aplicarFiltrosMorador()" class="bg-surface-container-lowest border border-outline-variant text-on-surface text-body-sm font-body-sm rounded-lg pl-sm pr-10 py-1.5 focus:border-primary outline-none">
+                <option value="ALL" th:selected="${filtroPrioridade == 'ALL'}">Todas Prioridades</option>
+                <option value="ALTA" th:selected="${filtroPrioridade == 'ALTA'}">Alta</option>
+                <option value="MEDIA" th:selected="${filtroPrioridade == 'MEDIA'}">Média</option>
+                <option value="BAIXA" th:selected="${filtroPrioridade == 'BAIXA'}">Baixa</option>
+                <option value="NAO_DEFINIDA" th:selected="${filtroPrioridade == 'NAO_DEFINIDA'}">Não Definida</option>
             </select>
 
-            <select id="filtro-status-ocorrencia" class="bg-surface-container-lowest border border-outline-variant text-on-surface text-body-sm font-body-sm rounded-lg pl-sm pr-10 py-1.5 focus:border-primary outline-none">
-                <option value="ALL">Todos os status</option>
-                <option value="REGISTRADA">Registrada</option>
-                <option value="EM_ANALISE">Em Análise</option>
-                <option value="RESOLVIDA">Resolvida</option>
-                <option value="REJEITADA">Rejeitada</option>
+            <select id="filtro-status-ocorrencia" onchange="aplicarFiltrosMorador()" class="bg-surface-container-lowest border border-outline-variant text-on-surface text-body-sm font-body-sm rounded-lg pl-sm pr-10 py-1.5 focus:border-primary outline-none">
+                <option value="ALL" th:selected="${filtroStatus == 'ALL'}">Todos os status</option>
+                <option value="REGISTRADA" th:selected="${filtroStatus == 'REGISTRADA'}">Registrada</option>
+                <option value="EM_ANALISE" th:selected="${filtroStatus == 'EM_ANALISE'}">Em Análise</option>
+                <option value="RESOLVIDA" th:selected="${filtroStatus == 'RESOLVIDA'}">Resolvida</option>
+                <option value="REJEITADA" th:selected="${filtroStatus == 'REJEITADA'}">Rejeitada</option>
             </select>
 
-            <select id="filtro-ordenacao-ocorrencia" class="bg-surface-container-lowest border border-outline-variant text-on-surface text-body-sm font-body-sm rounded-lg pl-sm pr-10 py-1.5 focus:border-primary outline-none">
-                <option value="DESC">Mais Recentes</option>
-                <option value="ASC">Mais Antigas</option>
+            <select id="filtro-ordenacao-ocorrencia" onchange="aplicarFiltrosMorador()" class="bg-surface-container-lowest border border-outline-variant text-on-surface text-body-sm font-body-sm rounded-lg pl-sm pr-10 py-1.5 focus:border-primary outline-none">
+                <option value="DESC" th:selected="${filtroOrdem == 'DESC'}">Mais Recentes</option>
+                <option value="ASC" th:selected="${filtroOrdem == 'ASC'}">Mais Antigas</option>
             </select>
         </div>
     </div>
@@ -94,13 +95,17 @@
                     <div class="col-span-2 font-label-md text-label-md text-on-surface-variant uppercase">Status</div>
                 </div>
 
-                <div th:if="${#lists.isEmpty(ocorrencias)}" class="p-md text-on-surface-variant bg-surface-container rounded-xl text-center border border-[#E2E8F0] mt-sm">
+                <div th:if="${listaVazia and !filtrosAtivos}" class="p-md text-on-surface-variant bg-surface-container rounded-xl text-center border border-[#E2E8F0] mt-sm">
                     <span class="material-symbols-outlined text-[40px] text-on-surface-variant/40 block mb-sm mx-auto" data-icon="inbox">inbox</span>
                     <p class="font-body-md text-body-md">Você não possui nenhuma ocorrência registrada.</p>
                 </div>
+                <div th:if="${listaVazia and filtrosAtivos}" class="p-md text-on-surface-variant bg-surface-container rounded-xl text-center border border-[#E2E8F0] mt-sm">
+                    <p class="font-body-md text-body-md">Nenhuma ocorrência encontrada para os filtros selecionados.</p>
+                </div>
 
-                <div class="flex flex-col gap-xs" th:unless="${#lists.isEmpty(ocorrencias)}">
+                <div id="lista-ocorrencias-morador" class="flex flex-col gap-xs" th:unless="${listaVazia}">
 
+                    <th:block th:fragment="listagemCards">
                     <article th:each="ocorrencia : ${ocorrencias}"
                              class="ocorrencia-card grid grid-cols-1 md:grid-cols-12 gap-sm items-center p-sm rounded-lg hover:bg-surface-container-low transition-colors border border-transparent hover:border-surface-container-high cursor-pointer"
                              onclick="abrirConsulta(this)"
@@ -137,7 +142,18 @@
                             <span th:if="${ocorrencia.status.name() == 'REJEITADA'}" class="inline-flex items-center px-2 py-1 rounded-full bg-error-container text-error font-label-md text-label-md uppercase w-fit">Rejeitada</span>
                         </div>
                     </article>
+                    </th:block>
 
+                    <div th:if="${totalPaginas > 1}" id="containerCarregarMaisOcorrencias" class="flex justify-center pt-md">
+                        <button id="btnCarregarMaisOcorrencias"
+                                th:data-pagina-atual="${paginaAtual}"
+                                th:data-total-paginas="${totalPaginas}"
+                                onclick="carregarMaisOcorrenciasMorador()"
+                                class="px-6 py-3 rounded-full bg-surface-container border border-outline-variant/30 text-on-surface font-label-lg hover:bg-surface-container-highest transition-colors flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[20px]" id="iconCarregarMaisOcorrencias">refresh</span>
+                            <span id="textoCarregarMaisOcorrencias">Carregar mais ocorrências</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

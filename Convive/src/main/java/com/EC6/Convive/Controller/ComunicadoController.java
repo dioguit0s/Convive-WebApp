@@ -8,6 +8,7 @@ import com.EC6.Convive.Repository.ComunicadoRepository;
 import com.EC6.Convive.Security.CustomUserDetails;
 import com.EC6.Convive.Service.ComunicadoService;
 import com.EC6.Convive.Service.FileStorageService;
+import com.EC6.Convive.Util.PaginationConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,7 +37,7 @@ public class ComunicadoController {
 
         Usuario usuario = userDetails.getUsuario();
 
-        Page<Comunicado> comunicadosPage = comunicadoService.findPaginated(page, 10);
+        Page<Comunicado> comunicadosPage = comunicadoService.findPaginated(page, PaginationConstants.DEFAULT_PAGE_SIZE);
 
         model.addAttribute("usuario", usuario);
         model.addAttribute("comunicados", comunicadosPage.getContent());
@@ -93,7 +94,7 @@ public class ComunicadoController {
 
     @GetMapping("/mais")
     public String carregarMais(@RequestParam(defaultValue = "1") int page, Model model) {
-        Page<Comunicado> comunicadosPage = comunicadoService.findPaginated(page, 10);
+        Page<Comunicado> comunicadosPage = comunicadoService.findPaginated(page, PaginationConstants.DEFAULT_PAGE_SIZE);
         model.addAttribute("comunicados", comunicadosPage.getContent());
 
         // O segredo está aqui: o Spring retornará apenas o fragmento 'listagemCards'

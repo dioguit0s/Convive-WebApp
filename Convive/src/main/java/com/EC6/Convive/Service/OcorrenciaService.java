@@ -2,9 +2,15 @@ package com.EC6.Convive.Service;
 
 import com.EC6.Convive.Event.OcorrenciaCriadaEvent;
 import com.EC6.Convive.Model.Ocorrencia;
+import com.EC6.Convive.Model.Prioridade;
+import com.EC6.Convive.Model.StatusOcorrencia;
 import com.EC6.Convive.Repository.OcorrenciaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -69,4 +75,53 @@ public class OcorrenciaService {
     public List<Ocorrencia> listByUser(UUID moradorId) {
         return ocorrenciaRepository.findByUsuarioId(moradorId);
     }
+
+    public Page<Ocorrencia> findTriagemPaginated(int page, int size, String busca, String statusParam,
+                                                 String prioridadeParam, String ordem) {
+        String buscaNorm = normalizeBusca(busca);
+        StatusOcorrencia status = parseStatusFilter(statusParam);
+        Prioridade prioridade = parsePrioridadeFilter(prioridadeParam);
+        Sort sort = "ASC".equalsIgnoreCase(ordem)
+                ? Sort.by("dataRegistro").ascending()
+                : Sort.by("dataRegistro").descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return ocorrenciaRepository.findTriagem(buscaNorm, status, prioridade, pageable);
+    }
+
+    public Page<Ocorrencia> findPaginatedByUser(UUID moradorId, int page, int size, String busca,
+                                                String statusParam, String prioridadeParam, String ordem) {
+        String buscaNorm = normalizeBusca(busca);
+        StatusOcorrencia status = parseStatusFilter(statusParam);
+        Prioridade prioridade = parsePrioridadeFilter(prioridadeParam);
+        Pageable pageable = PageRequest.of(page, size, resolveSort(ordem));
+        return ocorrenciaRepository.findByUsuarioTriagem(moradorId, buscaNorm, status, prioridade, pageable);
+    }
+
+    private static Sort resolveSort(String ordem) {
+        return "ASC".equalsIgnoreCase(ordem)
+                ? Sort.by("dataRegistro").ascending()
+                : Sort.by("dataRegistro").descending();
+    }
+
+    private static String normalizeBusca(String busca) {
+        if (busca == null || busca.isBlank()) {
+            return null;
+        }
+        return busca.trim();
+    }
+
+    private static StatusOcorrencia parseStatusFilter(String statusParam) {
+        if (statusParam == null || statusParam.isBlank() || "ALL".equalsIgnoreCase(statusParam)) {
+            return null;
+        }
+        return StatusOcorrencia.valueOf(statusParam);
+    }
+
+    private static Prioridade parsePrioridadeFilter(String prioridadeParam) {
+        if (prioridadeParam == null || prioridadeParam.isBlank() || "ALL".equalsIgnoreCase(prioridadeParam)) {
+            return null;
+        }
+        return Prioridade.valueOf(prioridadeParam);
+    }
+
 }

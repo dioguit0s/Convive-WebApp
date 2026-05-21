@@ -3,6 +3,9 @@ package com.EC6.Convive.Repository;
 import com.EC6.Convive.Model.Ocorrencia;
 import com.EC6.Convive.Model.Prioridade;
 import com.EC6.Convive.Model.StatusOcorrencia;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,6 +19,35 @@ import java.util.UUID;
 @Repository
 public interface OcorrenciaRepository extends JpaRepository<Ocorrencia, UUID> {
     List<Ocorrencia> findByUsuarioId(UUID moradorId);
+
+    Page<Ocorrencia> findByUsuarioIdOrderByDataRegistroDesc(UUID moradorId, Pageable pageable);
+
+    @Query("""
+            SELECT o FROM Ocorrencia o
+            WHERE o.usuario.id = :moradorId
+            AND (:busca IS NULL OR LOWER(o.protocolo) LIKE LOWER(CONCAT('%', :busca, '%'))
+                OR LOWER(o.descricao) LIKE LOWER(CONCAT('%', :busca, '%')))
+            AND (:status IS NULL OR o.status = :status)
+            AND (:prioridade IS NULL OR o.prioridade = :prioridade)
+            """)
+    Page<Ocorrencia> findByUsuarioTriagem(@Param("moradorId") UUID moradorId,
+                                          @Param("busca") String busca,
+                                          @Param("status") StatusOcorrencia status,
+                                          @Param("prioridade") Prioridade prioridade,
+                                          Pageable pageable);
+
+    @EntityGraph(attributePaths = "usuario")
+    @Query("""
+            SELECT o FROM Ocorrencia o
+            WHERE (:busca IS NULL OR LOWER(o.protocolo) LIKE LOWER(CONCAT('%', :busca, '%'))
+                OR LOWER(o.descricao) LIKE LOWER(CONCAT('%', :busca, '%')))
+            AND (:status IS NULL OR o.status = :status)
+            AND (:prioridade IS NULL OR o.prioridade = :prioridade)
+            """)
+    Page<Ocorrencia> findTriagem(@Param("busca") String busca,
+                                 @Param("status") StatusOcorrencia status,
+                                 @Param("prioridade") Prioridade prioridade,
+                                 Pageable pageable);
 
     Optional<Ocorrencia> findTopByProtocoloStartingWithOrderByProtocoloDesc(String prefixoAno);
 

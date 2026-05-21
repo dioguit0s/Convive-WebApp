@@ -3,6 +3,7 @@ package com.EC6.Convive.Config;
 import com.EC6.Convive.Model.*;
 import com.EC6.Convive.Repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +27,9 @@ public class DataInitializer implements CommandLineRunner {
     private final NotificacaoRepository notificacaoRepository;
     private final OcorrenciaRepository ocorrenciaRepository;
 
+    @Value("${app.seed.pagination-target:40}")
+    private int paginationTarget;
+
     private int protocoloSequencial = 1;
 
     @Override
@@ -36,6 +40,8 @@ public class DataInitializer implements CommandLineRunner {
         seedReservas();
         seedComunicados();
         seedNotificacoes();
+        sincronizarSequencialProtocolo();
+        completarDadosParaPaginacao();
     }
 
     private void seedUsuarios() {
@@ -349,5 +355,238 @@ public class DataInitializer implements CommandLineRunner {
         notificacao.setDataOcorrencia(dataEnvio.minusDays(1));
         notificacao.setGerouMulta(gerouMulta);
         notificacaoRepository.save(notificacao);
+    }
+
+    private void sincronizarSequencialProtocolo() {
+        String prefixo = Year.now().getValue() + "-";
+        ocorrenciaRepository.findTopByProtocoloStartingWithOrderByProtocoloDesc(prefixo)
+                .ifPresent(oc -> {
+                    String[] partes = oc.getProtocolo().split("-");
+                    if (partes.length == 2) {
+                        try {
+                            protocoloSequencial = Integer.parseInt(partes[1]) + 1;
+                        } catch (NumberFormatException ignored) {
+                            protocoloSequencial = 1;
+                        }
+                    }
+                });
+    }
+
+    private void completarDadosParaPaginacao() {
+        int adicionados = 0;
+        adicionados += completarMoradores();
+        adicionados += completarAreasComuns();
+        adicionados += completarComunicados();
+        adicionados += completarOcorrencias();
+        adicionados += completarReservas();
+        adicionados += completarNotificacoes();
+        if (adicionados > 0) {
+            System.out.println("-----------------------------------------");
+            System.out.println("DADOS EXTRAS PARA PAGINACAO: " + adicionados + " registros (alvo: " + paginationTarget + " por lista)");
+            System.out.println("Reinicie a app ou recarregue as telas para testar 'Carregar mais' e filtros.");
+            System.out.println("-----------------------------------------");
+        }
+    }
+
+    private int completarMoradores() {
+        long atual = moradorRepository.count();
+        int faltam = (int) (paginationTarget - atual);
+        if (faltam <= 0) return 0;
+
+        for (int i = 0; i < faltam; i++) {
+            int apt = 700 + i;
+            criarMorador("Morador Teste " + (atual + i + 1),
+                    "morador.teste" + (atual + i + 1) + "@convive.com",
+                    apt,
+                    i % 5 == 0);
+        }
+        return faltam;
+    }
+
+    private int completarAreasComuns() {
+        long atual = areaComumRepository.count();
+        int faltam = Math.min(15, (int) (paginationTarget - atual));
+        if (faltam <= 0) return 0;
+
+        StatusArea[] statuses = {StatusArea.ATIVA, StatusArea.ATIVA, StatusArea.EM_MANUTENCAO};
+        for (int i = 0; i < faltam; i++) {
+            salvarArea("Area Comum Extra " + (atual + i + 1), 10 + (i % 40), statuses[i % statuses.length]);
+        }
+        return faltam;
+    }
+
+    private int completarComunicados() {
+        long atual = comunicadoRepository.count();
+        int faltam = (int) (paginationTarget - atual);
+        if (faltam <= 0) return 0;
+
+        Moderador autor = moderadorRepository.findAll().stream().findFirst().orElse(null);
+        if (autor == null) return 0;
+
+        TipoComunicado[] tipos = TipoComunicado.values();
+        LocalDateTime agora = LocalDateTime.now();
+        List<Comunicado> batch = new ArrayList<>();
+        for (int i = 0; i < faltam; i++) {
+            batch.add(criarComunicado(autor,
+                    "Comunicado de teste #" + (atual + i + 1),
+                    "Conteúdo gerado automaticamente para validar paginação do mural de avisos. Registro " + (atual + i + 1) + ".",
+                    tipos[i % tipos.length],
+                    agora.minusHours(i + 1L)));
+        }
+        comunicadoRepository.saveAll(batch);
+        return faltam;
+    }
+
+    private int completarOcorrencias() {
+        List<Morador> moradores = moradorRepository.findAll();
+        if (moradores.isEmpty()) return 0;
+
+        int totalAdicionados = 0;
+        totalAdicionados += completarOcorrenciasGlobais(moradores);
+        totalAdicionados += completarOcorrenciasDoMorador(moradores.get(0), paginationTarget);
+        return totalAdicionados;
+    }
+
+    private int completarOcorrenciasGlobais(List<Morador> moradores) {
+        long atual = ocorrenciaRepository.count();
+        int faltam = (int) (paginationTarget - atual);
+        if (faltam <= 0) return 0;
+
+        Prioridade[] prioridades = Prioridade.values();
+        StatusOcorrencia[] statuses = StatusOcorrencia.values();
+        LocalDateTime agora = LocalDateTime.now();
+
+        for (int i = 0; i < faltam; i++) {
+            Morador morador = moradores.get(i % moradores.size());
+            salvarOcorrencia(morador,
+                    "Ocorrência de teste para paginação #" + (atual + i + 1)
+                            + " — " + statuses[i % statuses.length].name().replace('_', ' '),
+                    prioridades[i % prioridades.length],
+                    statuses[i % statuses.length],
+                    agora.minusHours(i + 2L));
+        }
+        return faltam;
+    }
+
+    private int completarOcorrenciasDoMorador(Morador morador, int alvoPorMorador) {
+        long doMorador = ocorrenciaRepository.findByUsuarioId(morador.getId()).size();
+        int faltam = (int) (alvoPorMorador - doMorador);
+        if (faltam <= 0) return 0;
+
+        LocalDateTime agora = LocalDateTime.now();
+        for (int i = 0; i < faltam; i++) {
+            salvarOcorrencia(morador,
+                    "Minha ocorrência de teste #" + (doMorador + i + 1) + " — " + morador.getNome(),
+                    Prioridade.values()[i % Prioridade.values().length],
+                    StatusOcorrencia.values()[i % StatusOcorrencia.values().length],
+                    agora.minusDays(i + 1L));
+        }
+        return faltam;
+    }
+
+    private int completarReservas() {
+        List<Morador> moradores = moradorRepository.findAll();
+        List<AreaComum> areas = areaComumRepository.findAll().stream()
+                .filter(a -> a.getStatusArea() == StatusArea.ATIVA)
+                .toList();
+        if (moradores.isEmpty() || areas.isEmpty()) return 0;
+
+        int adicionados = 0;
+        adicionados += completarReservasPorStatus(moradores, areas, StatusReserva.PENDENTE);
+        adicionados += completarReservasPorStatus(moradores, areas, StatusReserva.APROVADO);
+        adicionados += completarReservasPorStatus(moradores, areas, StatusReserva.REPROVADO);
+        adicionados += completarReservasDoMorador(moradores.get(0), areas, paginationTarget);
+        return adicionados;
+    }
+
+    private int completarReservasDoMorador(Morador morador, List<AreaComum> areas, int alvo) {
+        long doMorador = reservaRepository.findByReservadoPorId(morador.getId()).size();
+        int faltam = (int) (alvo - doMorador);
+        if (faltam <= 0) return 0;
+
+        LocalDateTime base = LocalDateTime.now();
+        StatusReserva[] statuses = StatusReserva.values();
+        for (int i = 0; i < faltam; i++) {
+            AreaComum area = areas.get(i % areas.size());
+            LocalDateTime inicio = base.plusDays(i + 10L).withHour(9).withMinute(0);
+            LocalDateTime fim = inicio.plusHours(3);
+            salvarReserva(morador, area, inicio, fim, statuses[i % statuses.length], 4 + (i % 10));
+        }
+        return faltam;
+    }
+
+    private int completarReservasPorStatus(List<Morador> moradores, List<AreaComum> areas, StatusReserva status) {
+        long atual = reservaRepository.findAll().stream().filter(r -> r.getStatus() == status).count();
+        int faltam = (int) (paginationTarget - atual);
+        if (faltam <= 0) return 0;
+
+        LocalDateTime base = LocalDateTime.now();
+        for (int i = 0; i < faltam; i++) {
+            Morador morador = moradores.get(i % moradores.size());
+            AreaComum area = areas.get(i % areas.size());
+            LocalDateTime inicio = base.plusDays(i + 3L).withHour(8 + (i % 4) * 4).withMinute(0);
+            LocalDateTime fim = inicio.plusHours(4);
+            if (status == StatusReserva.REPROVADO) {
+                Reserva r = new Reserva();
+                r.setReservadoPor(morador);
+                r.setAreaReservada(area);
+                r.setInicio(inicio);
+                r.setFim(fim);
+                r.setStatus(StatusReserva.REPROVADO);
+                r.setConvidadosEstimados(5 + i);
+                r.setMotivoRejeicao("Rejeição automática de teste #" + (atual + i + 1));
+                reservaRepository.save(r);
+            } else {
+                salvarReserva(morador, area, inicio, fim, status, 5 + (i % 20));
+            }
+        }
+        return faltam;
+    }
+
+    private int completarNotificacoes() {
+        Moderador admin = moderadorRepository.findAll().stream().findFirst().orElse(null);
+        List<Morador> moradores = moradorRepository.findAll();
+        if (admin == null || moradores.isEmpty()) return 0;
+
+        int total = 0;
+        total += completarNotificacoesGlobais(admin, moradores);
+        total += completarNotificacoesDoMorador(admin, moradores.get(0), paginationTarget);
+        return total;
+    }
+
+    private int completarNotificacoesGlobais(Moderador admin, List<Morador> moradores) {
+        long atual = notificacaoRepository.count();
+        int faltam = (int) (paginationTarget - atual);
+        if (faltam <= 0) return 0;
+
+        GravidadeNotificacao[] gravidades = GravidadeNotificacao.values();
+        LocalDateTime agora = LocalDateTime.now();
+        for (int i = 0; i < faltam; i++) {
+            Morador morador = moradores.get(i % moradores.size());
+            salvarNotificacao(admin, morador,
+                    "Advertência de teste #" + (atual + i + 1),
+                    "Notificação gerada para testar paginação na tela do morador.",
+                    gravidades[i % gravidades.length],
+                    agora.minusDays(i + 1L),
+                    i % 4 == 0);
+        }
+        return faltam;
+    }
+
+    private int completarNotificacoesDoMorador(Moderador admin, Morador morador, int alvo) {
+        long doMorador = notificacaoRepository.getAllByMoradorId(morador.getId()).size();
+        int faltam = (int) (alvo - doMorador);
+        if (faltam <= 0) return 0;
+
+        LocalDateTime agora = LocalDateTime.now();
+        for (int i = 0; i < faltam; i++) {
+            salvarNotificacao(admin, morador,
+                    "Alerta pessoal #" + (doMorador + i + 1),
+                    "Histórico extra para " + morador.getEmail() + " — teste de carregar mais.",
+                    GravidadeNotificacao.values()[i % GravidadeNotificacao.values().length],
+                    agora.minusHours(i + 3L),
+                    false);
+        }
+        return faltam;
     }
 }

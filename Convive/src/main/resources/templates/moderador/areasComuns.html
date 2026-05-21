@@ -91,6 +91,29 @@
                 </tbody>
             </table>
             </div>
+
+            <div th:if="${areaPage.totalPages > 0}" class="border-t border-outline-variant/60 px-md py-sm flex flex-col sm:flex-row items-center justify-between gap-sm">
+                <span class="font-body-sm text-on-surface-variant"
+                      th:text="'Página ' + (${areaPage.number} + 1) + ' de ' + ${areaPage.totalPages} + ' (' + ${areaPage.totalElements} + ' áreas)'"></span>
+                <div class="flex items-center gap-xs">
+                    <a th:if="${areaPage.hasPrevious()}"
+                       th:href="@{/moderador/areasComuns(page=${areaPage.number - 1})}"
+                       class="p-xs rounded text-outline hover:bg-surface-container hover:text-on-surface transition-colors">
+                        <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                    </a>
+                    <span th:each="i : ${#numbers.sequence(0, areaPage.totalPages - 1)}">
+                        <a th:href="@{/moderador/areasComuns(page=${i})}"
+                           th:text="${i + 1}"
+                           th:classappend="${i == areaPage.number} ? 'bg-primary text-on-primary font-medium' : 'hover:bg-surface-container text-on-surface-variant'"
+                           class="w-8 h-8 rounded font-body-sm flex items-center justify-center transition-colors"></a>
+                    </span>
+                    <a th:if="${areaPage.hasNext()}"
+                       th:href="@{/moderador/areasComuns(page=${areaPage.number + 1})}"
+                       class="p-xs rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+                        <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </main>

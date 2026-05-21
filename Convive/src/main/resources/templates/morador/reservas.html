@@ -22,7 +22,9 @@
 <div th:replace="~{fragments/morador/components :: navMorador(activeItem='reservas')}"></div>
 
 <main id="morador-reservas-main" class="flex-1 md:ml-64 p-4 sm:p-6 md:p-margin md:p-xl w-full max-w-7xl mx-auto flex flex-col gap-lg"
-      th:data-lista-vazia-servidor="${#lists.isEmpty(reservas)}"
+      th:data-lista-vazia-servidor="${listaVazia}"
+      th:data-pagina-atual="${paginaAtual}"
+      th:data-total-paginas="${totalPaginas}"
       th:data-csrf-parameter-name="${_csrf.parameterName}"
       th:data-csrf-token="${_csrf.token}"
       th:data-morador-reservas-base="@{/morador/reservas}">
@@ -73,6 +75,7 @@
             </section>
 
             <div id="reservas-source" class="hidden" aria-hidden="true">
+                <th:block th:fragment="listagemReservasSource">
                 <div th:each="reserva : ${reservas}"
                      th:if="${reserva.inicio != null}"
                      class="reserva-row"
@@ -85,16 +88,34 @@
                   data-convidados=${reserva.convidadosEstimados != null ? reserva.convidadosEstimados : 'Não informado'},
                   data-observacoes=${reserva.observacoes != null ? reserva.observacoes : 'Nenhuma observação'}">
                 </div>
+                </th:block>
+            </div>
+
+            <div th:if="${totalPaginas > 1}" id="containerCarregarMaisReservasMorador" class="flex justify-center pt-md">
+                <button type="button" id="btnCarregarMaisReservasMorador"
+                        th:data-pagina-atual="${paginaAtual}"
+                        th:data-total-paginas="${totalPaginas}"
+                        class="px-6 py-3 rounded-full bg-surface-container border border-outline-variant/30 text-on-surface font-label-lg hover:bg-surface-container-highest transition-colors flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[20px]" id="iconCarregarMaisReservasMorador">refresh</span>
+                    <span id="textoCarregarMaisReservasMorador">Carregar mais reservas</span>
+                </button>
             </div>
         </div>
 
-        <aside class="lg:col-span-4 flex flex-col gap-md order-2 lg:order-2">
-            <section>
-                <h2 class="font-h2 text-h2 text-primary mb-sm">Espaços do condomínio</h2>
+        <aside class="lg:col-span-4 flex flex-col gap-md order-2 lg:sticky lg:top-6 lg:self-start">
+            <section class="flex flex-col min-h-0">
+                <div class="flex flex-wrap items-baseline justify-between gap-sm mb-sm shrink-0">
+                    <h2 class="font-h2 text-h2 text-primary">Espaços do condomínio</h2>
+                    <span th:if="${!#lists.isEmpty(areasComuns)}"
+                          class="font-body-sm text-body-sm text-on-surface-variant"
+                          th:text="${#lists.size(areasComuns)} + ' cadastrados'">0 cadastrados</span>
+                </div>
                 <div th:if="${#lists.isEmpty(areasComuns)}" class="p-md text-on-surface-variant bg-surface-container rounded-xl border border-[#E2E8F0]">
                     Nenhuma área comum cadastrada no momento.
                 </div>
-                <div th:unless="${#lists.isEmpty(areasComuns)}" class="flex flex-col gap-sm">
+                <div th:unless="${#lists.isEmpty(areasComuns)}"
+                     id="lista-areas-condominio"
+                     class="flex flex-col gap-sm max-h-[min(22rem,50dvh)] overflow-y-auto overscroll-contain pr-1 -mr-1">
                     <article th:each="area : ${areasComuns}"
                              class="bg-surface-container-lowest border border-[#E2E8F0] rounded-xl p-md shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] flex flex-wrap justify-between items-center gap-sm">
                         <div class="flex gap-sm items-start">

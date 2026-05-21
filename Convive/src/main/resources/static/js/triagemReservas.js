@@ -1,41 +1,99 @@
+var debounceFiltrosReservaTimer = null;
+
+function montarQueryReservas(statusOverride) {
+    var params = new URLSearchParams();
+    params.set('page', '0');
+    var status = statusOverride || new URLSearchParams(window.location.search).get('status') || 'PENDENTE';
+    params.set('status', status);
+    var busca = document.getElementById('filtro-busca-reserva');
+    if (busca && busca.value.trim()) {
+        params.set('busca', busca.value.trim());
+    }
+    var ordem = new URLSearchParams(window.location.search).get('ordem');
+    if (ordem) params.set('ordem', ordem);
+    var reservaId = new URLSearchParams(window.location.search).get('reservaId');
+    if (reservaId) params.set('reservaId', reservaId);
+    return params.toString();
+}
+
 function mudarAba(statusSelecionado) {
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('border-b-2', 'border-primary', 'text-primary');
-            btn.classList.add('text-on-surface-variant');
-        });
-        const activeTab = document.getElementById('tab-' + statusSelecionado);
-        activeTab.classList.remove('text-on-surface-variant');
-        activeTab.classList.add('border-b-2', 'border-primary', 'text-primary');
+    window.location.search = montarQueryReservas(statusSelecionado);
+}
 
-        document.querySelectorAll('.reserva-card').forEach(card => {
-            if (card.dataset.status === statusSelecionado) {
-                card.style.display = 'flex';
+function debounceAplicarFiltrosReserva() {
+    clearTimeout(debounceFiltrosReservaTimer);
+    debounceFiltrosReservaTimer = setTimeout(function () {
+        window.location.search = montarQueryReservas();
+    }, 400);
+}
+
+function abrirModalRejeicao(id) {
+    document.getElementById('rejeicao-reserva-id').value = id;
+    document.getElementById('modal-rejeicao').showModal();
+}
+
+function restaurarBotaoCarregarMais(btn, icon, texto) {
+    texto.innerText = 'Carregar mais reservas';
+    icon.classList.remove('animate-spin');
+    btn.disabled = false;
+}
+
+async function carregarMaisReservas() {
+    var btn = document.getElementById('btnCarregarMaisReservas');
+    if (!btn) return;
+    var icon = document.getElementById('iconCarregarMaisReservas');
+    var texto = document.getElementById('textoCarregarMaisReservas');
+
+    var paginaAtual = parseInt(btn.getAttribute('data-pagina-atual'), 10);
+    var totalPaginas = parseInt(btn.getAttribute('data-total-paginas'), 10);
+    var proximaPagina = paginaAtual + 1;
+
+    if (proximaPagina >= totalPaginas) return;
+
+    icon.classList.add('animate-spin');
+    texto.innerText = 'Carregando...';
+    btn.disabled = true;
+
+    var params = new URLSearchParams(window.location.search);
+    params.set('page', String(proximaPagina));
+
+    try {
+        var response = await fetch('/moderador/triagemReservas/mais?' + params.toString());
+        if (response.ok) {
+            var fragmentoHtml = await response.text();
+            var loadMore = document.getElementById('containerCarregarMaisReservas');
+            if (loadMore) {
+                loadMore.insertAdjacentHTML('beforebegin', fragmentoHtml);
             } else {
-                card.style.display = 'none';
+                document.getElementById('container-reservas').insertAdjacentHTML('beforeend', fragmentoHtml);
             }
-        });
-    }
-
-    function abrirModalRejeicao(id) {
-        document.getElementById('rejeicao-reserva-id').value = id;
-        document.getElementById('modal-rejeicao').showModal();
-    }
-
-    function selecionarReservaPorQueryParam() {
-        const params = new URLSearchParams(window.location.search);
-        const reservaId = params.get('reservaId');
-        if (!reservaId) return;
-
-        const card = document.querySelector(`.reserva-card[data-id="${reservaId}"]`);
-        if (card) {
-            const status = card.dataset.status || 'PENDENTE';
-            mudarAba(status);
-            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            card.classList.add('ring-2', 'ring-primary');
+            btn.setAttribute('data-pagina-atual', String(proximaPagina));
+            if (proximaPagina + 1 >= totalPaginas) {
+                if (loadMore) loadMore.style.display = 'none';
+            } else {
+                restaurarBotaoCarregarMais(btn, icon, texto);
+            }
+        } else {
+            restaurarBotaoCarregarMais(btn, icon, texto);
         }
+    } catch (e) {
+        console.error(e);
+        restaurarBotaoCarregarMais(btn, icon, texto);
     }
+}
 
-    document.addEventListener("DOMContentLoaded", () => {
-        mudarAba('PENDENTE');
-        selecionarReservaPorQueryParam();
-    });
+function selecionarReservaPorQueryParam() {
+    var params = new URLSearchParams(window.location.search);
+    var reservaId = params.get('reservaId');
+    if (!reservaId) return;
+
+    var card = document.querySelector('.reserva-card[data-id="' + reservaId + '"]');
+    if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.classList.add('ring-2', 'ring-primary');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    selecionarReservaPorQueryParam();
+});

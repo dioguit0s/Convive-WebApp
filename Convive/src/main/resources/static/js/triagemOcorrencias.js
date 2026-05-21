@@ -1,3 +1,5 @@
+var debounceFiltrosTimer = null;
+
 function isMobileTriagem() {
   return window.matchMedia('(max-width: 767px)').matches;
 }
@@ -88,37 +90,80 @@ function selecionarOcorrencia(card) {
   }
 }
 
-function filtrarOcorrencias() {
-  var termo = document.getElementById('filtro-busca').value.toLowerCase();
-  var filtroStatus = document.getElementById('filtro-status').value;
-  var filtroPrioridade = document.getElementById('filtro-prioridade').value;
-
-  document.querySelectorAll('.ocorrencia-card').forEach(function (card) {
-    var protocolo = card.getAttribute('data-protocolo').toLowerCase();
-    var descricao = card.getAttribute('data-descricao').toLowerCase();
-    var status = card.getAttribute('data-status');
-    var prioridade = card.getAttribute('data-prioridade');
-
-    var matchBusca = protocolo.includes(termo) || descricao.includes(termo);
-    var matchStatus = (filtroStatus === 'ALL' || status === filtroStatus);
-    var matchPrioridade = (filtroPrioridade === 'ALL' || prioridade === filtroPrioridade);
-
-    card.style.display = (matchBusca && matchStatus && matchPrioridade) ? 'block' : 'none';
-  });
+function montarQueryFiltros() {
+  var params = new URLSearchParams();
+  params.set('page', '0');
+  var busca = document.getElementById('filtro-busca');
+  var status = document.getElementById('filtro-status');
+  var prioridade = document.getElementById('filtro-prioridade');
+  var ordem = document.getElementById('filtro-ordenacao');
+  if (busca && busca.value.trim()) params.set('busca', busca.value.trim());
+  if (status) params.set('status', status.value);
+  if (prioridade) params.set('prioridade', prioridade.value);
+  if (ordem) params.set('ordem', ordem.value);
+  var ocorrenciaId = new URLSearchParams(window.location.search).get('ocorrenciaId');
+  if (ocorrenciaId) params.set('ocorrenciaId', ocorrenciaId);
+  return params.toString();
 }
 
-function ordenarOcorrencias() {
-  var ordem = document.getElementById('filtro-ordenacao').value;
-  var container = document.getElementById('lista-ocorrencias');
-  var cards = Array.from(container.querySelectorAll('.ocorrencia-card'));
+function aplicarFiltros() {
+  window.location.search = montarQueryFiltros();
+}
 
-  cards.sort(function (a, b) {
-    var dataA = a.getAttribute('data-data-sort');
-    var dataB = b.getAttribute('data-data-sort');
-    return ordem === 'DESC' ? dataB.localeCompare(dataA) : dataA.localeCompare(dataB);
-  });
+function debounceAplicarFiltros() {
+  clearTimeout(debounceFiltrosTimer);
+  debounceFiltrosTimer = setTimeout(aplicarFiltros, 400);
+}
 
-  cards.forEach(function (card) { container.appendChild(card); });
+function restaurarBotaoCarregarMais(btn, icon, texto) {
+  texto.innerText = 'Carregar mais';
+  icon.classList.remove('animate-spin');
+  btn.disabled = false;
+}
+
+async function carregarMaisTriagem() {
+  var btn = document.getElementById('btnCarregarMais');
+  if (!btn) return;
+  var icon = document.getElementById('iconCarregarMais');
+  var texto = document.getElementById('textoCarregarMais');
+
+  var paginaAtual = parseInt(btn.getAttribute('data-pagina-atual'), 10);
+  var totalPaginas = parseInt(btn.getAttribute('data-total-paginas'), 10);
+  var proximaPagina = paginaAtual + 1;
+
+  if (proximaPagina >= totalPaginas) return;
+
+  icon.classList.add('animate-spin');
+  texto.innerText = 'Carregando...';
+  btn.disabled = true;
+
+  var params = new URLSearchParams(window.location.search);
+  params.set('page', String(proximaPagina));
+
+  try {
+    var response = await fetch('/moderador/triagemOcorrencias/mais?' + params.toString());
+    if (response.ok) {
+      var fragmentoHtml = await response.text();
+      var container = document.getElementById('lista-ocorrencias');
+      var loadMore = document.getElementById('containerCarregarMais');
+      if (loadMore) {
+        loadMore.insertAdjacentHTML('beforebegin', fragmentoHtml);
+      } else {
+        container.insertAdjacentHTML('beforeend', fragmentoHtml);
+      }
+      btn.setAttribute('data-pagina-atual', String(proximaPagina));
+      if (proximaPagina + 1 >= totalPaginas) {
+        if (loadMore) loadMore.style.display = 'none';
+      } else {
+        restaurarBotaoCarregarMais(btn, icon, texto);
+      }
+    } else {
+      restaurarBotaoCarregarMais(btn, icon, texto);
+    }
+  } catch (e) {
+    console.error(e);
+    restaurarBotaoCarregarMais(btn, icon, texto);
+  }
 }
 
 function selecionarPorQueryParam() {
@@ -134,7 +179,6 @@ function selecionarPorQueryParam() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-  ordenarOcorrencias();
   selecionarPorQueryParam();
 
   var modal = document.getElementById('modal-detalhes-triagem');

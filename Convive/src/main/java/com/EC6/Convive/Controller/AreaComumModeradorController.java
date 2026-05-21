@@ -1,9 +1,12 @@
 package com.EC6.Convive.Controller;
 
+import com.EC6.Convive.Model.AreaComum;
 import com.EC6.Convive.Model.StatusArea;
 import com.EC6.Convive.Security.CustomUserDetails;
 import com.EC6.Convive.Service.AreaComumService;
+import com.EC6.Convive.Util.PaginationConstants;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,9 +23,17 @@ public class AreaComumModeradorController {
     private final AreaComumService areaComumService;
 
     @GetMapping
-    public String listar(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+    public String listar(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model) {
+
+        Page<AreaComum> areaPage = areaComumService.findPaginated(page, size);
+
         model.addAttribute("usuario", userDetails.getUsuario());
-        model.addAttribute("areas", areaComumService.listAll());
+        model.addAttribute("areaPage", areaPage);
+        model.addAttribute("areas", areaPage.getContent());
         model.addAttribute("statusOptions", StatusArea.values());
         return "moderador/areasComuns";
     }
@@ -54,7 +65,7 @@ public class AreaComumModeradorController {
             if (capacidade < 1) {
                 throw new IllegalArgumentException("A capacidade deve ser de pelo menos 1 pessoa.");
             }
-            var area = areaComumService.atualizar(id, nome, capacidade, statusArea);
+            AreaComum area = areaComumService.atualizar(id, nome, capacidade, statusArea);
             attributes.addFlashAttribute("sucesso", "Área \"" + area.getNome() + "\" atualizada com sucesso!");
         } catch (IllegalArgumentException e) {
             attributes.addFlashAttribute("erro", e.getMessage());

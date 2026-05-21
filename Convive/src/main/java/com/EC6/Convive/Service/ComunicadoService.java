@@ -43,4 +43,8 @@ public class ComunicadoService {
         Pageable pageable = PageRequest.of(page, size);
         return comunicadoRepository.findAllByOrderByPublicadoEmDesc(pageable);
     }
+
+    public List<Comunicado> findTopPublished(int limit) {
+        return findPaginated(0, limit).getContent();
+    }
 }
