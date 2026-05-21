@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.ui.Model;
+import com.EC6.Convive.Service.UsuarioService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,9 +30,14 @@ import static org.mockito.Mockito.when;
 public class MoradorHomeControllerTest {
     @Mock
     private ComunicadoService comunicadoService;
-    @Mock private ReservaService reservaService;
-    @Mock private AreaComumService areaComumService;
-    @Mock private Model model;
+    @Mock
+    private ReservaService reservaService;
+    @Mock
+    private AreaComumService areaComumService;
+    @Mock
+    private UsuarioService usuarioService;  // Add this mock
+    @Mock
+    private Model model;
     @InjectMocks
     private MoradorHomeController moradorHomeController;
 
@@ -42,6 +48,9 @@ public class MoradorHomeControllerTest {
     void setUp() {
         usuarioMock = new Morador();
         usuarioMock.setId(UUID.randomUUID());
+
+        usuarioMock.setEmail("teste@convive.com");
+
         userDetails = new CustomUserDetails(usuarioMock);
     }
 
@@ -49,6 +58,7 @@ public class MoradorHomeControllerTest {
     void moradorHomeController_Dashboard_Sucesso() {
         when(comunicadoService.findAllOrderByDate()).thenReturn(List.of(new Comunicado()));
         when(reservaService.listByUser(usuarioMock.getId())).thenReturn(List.of(new Reserva()));
+        when(usuarioService.getByEmail(anyString())).thenReturn(usuarioMock);  // Mock this call
 
         String view = moradorHomeController.dashboardMorador(userDetails, model);
 
@@ -57,5 +67,4 @@ public class MoradorHomeControllerTest {
         verify(model).addAttribute(eq("comunicados"), anyList());
         verify(model).addAttribute(eq("reservas"), anyList());
     }
-
 }

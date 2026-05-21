@@ -36,6 +36,9 @@ public abstract class Usuario {
     @Column(name = "isInadimplente")
     private boolean isInadimplente;
 
+    @Column(name = "fotoPerfil")
+    private String fotoPerfil;
+
     public abstract String getTipoUsuario();
 
 }
