@@ -1,6 +1,7 @@
 package com.EC6.Convive.Service;
 
 import com.EC6.Convive.Config.AsyncConfig;
+import com.EC6.Convive.Model.email.RenderedEmail;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,10 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class PasswordResetMailService {
 
+    private static final String SUBJECT = "Convive — Redefinição de senha";
+
     private final JavaMailSender mailSender;
+    private final EmailRenderingService emailRenderingService;
 
     @Value("${spring.mail.username}")
     private String fromAddress;
@@ -36,31 +40,17 @@ public class PasswordResetMailService {
         }
 
         String resetUrl = baseUrl.replaceAll("/$", "") + "/reset-password?token=" + token;
-        String subject = "[Convive] Redefinição de senha";
-        String body = """
-                Olá,
-
-                Recebemos uma solicitação para redefinir a senha da sua conta Convive.
-
-                Para criar uma nova senha, acesse o link abaixo (válido por tempo limitado):
-
-                %s
-
-                Se você não solicitou esta alteração, ignore este e-mail. Sua senha permanecerá inalterada.
-
-                Atenciosamente,
-                Equipe Convive
-                """.formatted(resetUrl);
+        RenderedEmail rendered = emailRenderingService.renderPasswordReset(resetUrl);
 
         log.info("Reset de senha: iniciando envio | destino={}", toEmail);
 
         MimeMessage message = mailSender.createMimeMessage();
         try {
-            MimeMessageHelper helper = new MimeMessageHelper(message, false, StandardCharsets.UTF_8.name());
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, StandardCharsets.UTF_8.name());
             helper.setFrom(fromAddress);
             helper.setTo(toEmail);
-            helper.setSubject(subject);
-            helper.setText(body, false);
+            helper.setSubject(SUBJECT);
+            helper.setText(rendered.plainTextBody(), rendered.htmlBody());
         } catch (jakarta.mail.MessagingException e) {
             log.error("Reset de senha: falha ao montar MIME | causa={}", e.getMessage(), e);
             throw new MailPreparationException("Falha ao montar a mensagem de redefinição.", e);
