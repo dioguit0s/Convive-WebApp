@@ -48,6 +48,9 @@ public class MoradorHomeControllerTest {
     void setUp() {
         usuarioMock = new Morador();
         usuarioMock.setId(UUID.randomUUID());
+
+        usuarioMock.setEmail("teste@convive.com");
+
         userDetails = new CustomUserDetails(usuarioMock);
     }
 
