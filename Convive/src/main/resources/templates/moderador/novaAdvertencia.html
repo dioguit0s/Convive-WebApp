@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Nova Advertência - Convive</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script th:src="@{/js/tailwindTheme.js}"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }</style>
+</head>
+<body class="bg-background text-on-surface font-body-md h-screen flex flex-col md:flex-row overflow-hidden">
+
+<div th:replace="~{fragments/morador/components :: navMorador(activeItem='dashboard')}"></div>
+
+<main class="flex-1 overflow-y-auto bg-background md:ml-64 p-margin">
+    <div class="max-w-xl mx-auto">
+        <div th:if="${erro}" class="p-sm rounded-lg bg-[#fee2e2] text-[#991b1b] font-body-sm mb-md" th:text="${erro}"></div>
+
+        <header class="mb-lg">
+            <a th:href="@{/moderador/dashboard}" class="text-primary font-label-md hover:underline flex items-center gap-xs mb-sm">
+                <span class="material-symbols-outlined text-sm">arrow_back</span> Voltar ao Dashboard
+            </a>
+            <h1 class="font-h1 text-h1 text-on-surface">Nova Advertência</h1>
+            <p class="font-body-md text-on-surface-variant mt-xs">Registre uma notificação formal para o morador.</p>
+        </header>
+
+        <form th:action="@{/moderador/advertencias/nova}" method="post"
+              class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex flex-col gap-md shadow-sm">
+            <div id="morador-combobox" class="relative">
+                <label for="morador-busca" class="block font-label-md text-on-surface-variant mb-1">Morador</label>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">search</span>
+                    <input type="text" id="morador-busca" autocomplete="off"
+                           placeholder="Digite nome, e-mail ou apartamento..."
+                           class="w-full rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface text-on-surface pl-xl pr-sm py-sm font-body-sm"/>
+                </div>
+                <input type="hidden" name="moradorId" id="morador-id" required/>
+                <ul id="morador-lista"
+                    class="hidden absolute z-20 mt-xs w-full max-h-48 overflow-y-auto bg-surface-container-lowest border border-outline-variant rounded-lg shadow-lg py-xs">
+                    <li th:each="m : ${moradores}"
+                        class="morador-opcao px-sm py-sm cursor-pointer font-body-sm text-on-surface hover:bg-surface-container-high transition-colors"
+                        th:attr="data-id=${m.id},data-label=${m.nome + ' — Apt ' + m.apartamento},data-search=${#strings.toLowerCase(m.nome + ' ' + m.email + ' apt ' + m.apartamento)}"
+                        th:text="${m.nome + ' — Apt ' + m.apartamento}">Morador</li>
+                    <li id="morador-lista-vazio" class="hidden px-sm py-sm font-body-sm text-on-surface-variant text-center">
+                        Nenhum morador encontrado.
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <label class="block font-label-md text-on-surface-variant mb-1">Título</label>
+                <input type="text" name="titulo" required maxlength="200"
+                       class="w-full rounded-lg border-outline-variant focus:border-primary bg-surface text-on-surface"/>
+            </div>
+            <div>
+                <label class="block font-label-md text-on-surface-variant mb-1">Descrição</label>
+                <textarea name="descricao" required rows="5" maxlength="2000"
+                          class="w-full rounded-lg border-outline-variant focus:border-primary bg-surface text-on-surface"></textarea>
+            </div>
+            <div>
+                <label class="block font-label-md text-on-surface-variant mb-1">Gravidade</label>
+                <select name="gravidade" required
+                        class="w-full rounded-lg border-outline-variant focus:border-primary bg-surface text-on-surface">
+                    <option th:each="g : ${gravidades}" th:value="${g.name()}" th:text="${g.descricao}">Gravidade</option>
+                </select>
+            </div>
+            <div>
+                <label class="block font-label-md text-on-surface-variant mb-1">Data da ocorrência (opcional)</label>
+                <input type="datetime-local" name="dataOcorrencia"
+                       class="w-full rounded-lg border-outline-variant focus:border-primary bg-surface text-on-surface"/>
+            </div>
+            <label class="flex items-center gap-sm cursor-pointer">
+                <input type="checkbox" name="gerouMulta" value="true"
+                       class="rounded border-outline-variant text-primary focus:ring-primary"/>
+                <span class="font-body-sm text-on-surface">Esta advertência gerou multa</span>
+            </label>
+            <div class="flex justify-end gap-sm mt-sm">
+                <a th:href="@{/moderador/dashboard}"
+                   class="px-md py-[10px] rounded-lg font-label-md text-on-surface-variant hover:bg-surface-container transition-colors">Cancelar</a>
+                <button type="submit"
+                        class="bg-primary text-on-primary px-md py-[10px] rounded-lg font-label-md hover:bg-primary/90 transition-colors">
+                    Registrar Advertência
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+<script th:src="@{/js/novaAdvertencia.js}"></script>
+</body>
+</html>

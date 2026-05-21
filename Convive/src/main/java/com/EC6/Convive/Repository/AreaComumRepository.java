@@ -11,4 +11,8 @@ import java.util.UUID;
 public interface AreaComumRepository extends JpaRepository<AreaComum, UUID> {
 
     Optional<AreaComum> findByNome(String nome);
+
+    boolean existsByNomeIgnoreCase(String nome);
+
+    boolean existsByNomeIgnoreCaseAndIdNot(String nome, UUID id);
 }

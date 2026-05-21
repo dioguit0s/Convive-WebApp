@@ -39,4 +39,21 @@ public interface ReservaRepository extends JpaRepository<Reserva, UUID> {
     @Modifying
     @Query("DELETE FROM Reserva r WHERE r.areaReservada.id = :areaId")
     void deleteAllReservasWithThisArea(@Param("areaId") UUID areaId);
+
+    @Query("""
+            SELECT r.areaReservada.nome, COUNT(r) FROM Reserva r
+            WHERE r.status = com.EC6.Convive.Model.StatusReserva.APROVADO
+            AND r.inicio BETWEEN :inicio AND :fim
+            GROUP BY r.areaReservada.nome
+            ORDER BY COUNT(r) DESC
+            """)
+    List<Object[]> countAprovadasPorAreaNoMes(@Param("inicio") LocalDateTime inicio,
+                                              @Param("fim") LocalDateTime fim);
+
+    @Query("""
+            SELECT r FROM Reserva r
+            WHERE r.status = com.EC6.Convive.Model.StatusReserva.PENDENTE
+            ORDER BY r.inicio ASC
+            """)
+    List<Reserva> findProximasReservasPendentes(org.springframework.data.domain.Pageable pageable);
 }

@@ -21,6 +21,21 @@ function mudarAba(statusSelecionado) {
         document.getElementById('modal-rejeicao').showModal();
     }
 
+    function selecionarReservaPorQueryParam() {
+        const params = new URLSearchParams(window.location.search);
+        const reservaId = params.get('reservaId');
+        if (!reservaId) return;
+
+        const card = document.querySelector(`.reserva-card[data-id="${reservaId}"]`);
+        if (card) {
+            const status = card.dataset.status || 'PENDENTE';
+            mudarAba(status);
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            card.classList.add('ring-2', 'ring-primary');
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
         mudarAba('PENDENTE');
+        selecionarReservaPorQueryParam();
     });

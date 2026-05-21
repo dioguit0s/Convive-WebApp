@@ -122,3 +122,10 @@ function restaurarBotaoCarregarMais(btn, icon, texto) {
     icon.classList.remove('animate-spin');
     btn.disabled = false;
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('abrirNovo') === 'true') {
+        abrirModalNovoComunicado();
+    }
+});

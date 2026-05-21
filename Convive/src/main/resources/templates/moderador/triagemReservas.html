@@ -56,7 +56,7 @@
                 Nenhuma reserva encontrada.
             </div>
 
-            <article th:each="reserva : ${reservas}" th:data-status="${reserva.status.name()}" class="reserva-card bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm flex flex-col gap-md relative overflow-hidden group">
+            <article th:each="reserva : ${reservas}" th:data-id="${reserva.id}" th:data-status="${reserva.status.name()}" class="reserva-card bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm flex flex-col gap-md relative overflow-hidden group">
                 <div class="absolute left-0 top-0 bottom-0 w-[4px]"
                      th:classappend="${reserva.status.name() == 'PENDENTE' ? 'bg-[#fef08a]' : (reserva.status.name() == 'APROVADO' ? 'bg-[#dcfce7]' : 'bg-[#fee2e2]')}"></div>
 

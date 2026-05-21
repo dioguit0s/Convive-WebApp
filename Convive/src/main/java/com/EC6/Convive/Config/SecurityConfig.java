@@ -78,7 +78,7 @@ public class SecurityConfig {
             if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_MORADOR"))) {
                 redirectUrl = "/morador/home";
             } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_MODERADOR"))) {
-                redirectUrl = "/morador/home";
+                redirectUrl = "/moderador/dashboard";
             }
 
             response.sendRedirect(redirectUrl);

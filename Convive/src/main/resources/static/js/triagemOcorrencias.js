@@ -93,6 +93,19 @@ function ordenarOcorrencias() {
     cards.forEach(card => container.appendChild(card));
 }
 
+function selecionarPorQueryParam() {
+    const params = new URLSearchParams(window.location.search);
+    const ocorrenciaId = params.get('ocorrenciaId');
+    if (!ocorrenciaId) return;
+
+    const card = document.querySelector(`.ocorrencia-card[data-id="${ocorrenciaId}"]`);
+    if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        selecionarOcorrencia(card);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     ordenarOcorrencias();
+    selecionarPorQueryParam();
 });

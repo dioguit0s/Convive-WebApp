@@ -51,6 +51,12 @@
                 <span class="font-body-sm text-body-sm">Notificações</span>
             </a>
             <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"
+               th:href="@{/moderador/dashboard}" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}"
+               th:classappend="${activeItem == 'dashboard'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
+                <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                <span class="font-body-sm text-body-sm">Dashboard</span>
+            </a>
+            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"
                th:href="@{/moderador/triagemOcorrencias}" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}"
                th:classappend="${activeItem == 'triagemOcorrencias'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
                 <span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>

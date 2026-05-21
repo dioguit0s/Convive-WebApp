@@ -12,4 +12,6 @@ import java.util.UUID;
 public interface MoradorRepository extends JpaRepository<Morador, UUID> {
 
     Page<Morador> findByNomeContainingIgnoreCaseOrEmailContainingIgnoreCase(String nome, String email, Pageable pageable);
+
+    long countByIsInadimplenteTrue();
 }
