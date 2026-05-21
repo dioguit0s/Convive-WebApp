@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="20e65014-3048-487a-87c2-8d5925c0f14b" name="Changes" comment="feat: add image treating for ocorrencias">
-      <change beforePath="$PROJECT_DIR$/Convive/src/main/java/com/EC6/Convive/Service/OcorrenciaService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Convive/src/main/java/com/EC6/Convive/Service/OcorrenciaService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Convive/src/main/java/com/EC6/Convive/Controller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Convive/src/main/java/com/EC6/Convive/Controller/LoginController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,6 +14,11 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="feat/tela-gestao-usuario" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -21,6 +27,13 @@
     &quot;assignee&quot;: &quot;leonardorosario&quot;
   }
 }</component>
+  <component name="GithubProjectSettings">
+    <option name="branchProtectionPatterns">
+      <list>
+        <option value="main" />
+      </list>
+    </option>
+  </component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/dioguit0s/Convive-WebApp.git&quot;,
@@ -39,7 +52,7 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feat/triagemDeOcorrencias",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/grupotaak/Documents/Convive-WebApp",
     "nodejs_package_manager_path": "npm",

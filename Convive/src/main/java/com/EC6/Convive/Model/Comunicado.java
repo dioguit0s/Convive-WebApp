@@ -36,4 +36,7 @@ public class Comunicado {
     @Column(name = "tipo")
     private TipoComunicado tipo = TipoComunicado.Geral;
 
+    @Column(name = "urlImagem", length = 500)
+    private String urlImagem;
+
 }

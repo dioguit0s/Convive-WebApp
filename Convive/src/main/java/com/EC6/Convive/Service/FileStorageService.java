@@ -21,7 +21,7 @@ public class FileStorageService {
             return null;
         }
 
-        Path uploadPath = Paths.get(uploadDir);
+        Path uploadPath = Paths.get(uploadDir).resolve("ocorrencias");
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
@@ -33,5 +33,20 @@ public class FileStorageService {
         Files.copy(arquivo.getInputStream(), caminhoDestino, StandardCopyOption.REPLACE_EXISTING);
 
         return "/uploads/ocorrencias/" + nomeArquivoUnico;
+    }
+
+    public String salvarImagemComunicado(MultipartFile arquivo) throws IOException {
+        if (arquivo.isEmpty()) {
+            return null;
+        }
+        Path uploadPath = Paths.get(uploadDir).resolve("comunicados");
+        if(!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+        String nomeArquivoOriginal = arquivo.getOriginalFilename();
+        String nomeArquivoUnico = UUID.randomUUID().toString() + "_comunicado_" + nomeArquivoOriginal;
+        Path caminhoDestino = uploadPath.resolve(nomeArquivoUnico);
+        Files.copy(arquivo.getInputStream(), caminhoDestino, StandardCopyOption.REPLACE_EXISTING);
+        return "/uploads/comunicados/" + nomeArquivoUnico;
     }
 }

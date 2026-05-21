@@ -41,12 +41,19 @@
             <article th:each="comunicado, iterStat : ${comunicados}"
                      th:if="${iterStat.index < 3}"
                      class="bg-surface-container-lowest border border-[#E2E8F0] rounded-xl p-md shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow duration-300">
+
                 <div class="flex justify-between items-start mb-sm">
-            <span class="inline-block bg-surface-container px-sm py-xs rounded-full font-label-md text-label-md text-on-surface-variant uppercase tracking-wider" th:classappend="${comunicado.tipo.name() == 'Eventos' ? 'bg-tertiary-fixed text-on-tertiary-fixed' : (comunicado.tipo.name() == 'Obras' ? 'bg-[#fef08a] text-[#713f12]' : 'bg-surface-container-high text-on-surface')}">
-               <p th:text="${comunicado.getTipo().toString()}">Comunicado</p>
-            </span>
+        <span class="inline-block bg-surface-container px-sm py-xs rounded-full font-label-md text-label-md text-on-surface-variant uppercase tracking-wider" th:classappend="${comunicado.tipo.name() == 'Eventos' ? 'bg-tertiary-fixed text-on-tertiary-fixed' : (comunicado.tipo.name() == 'Obras' ? 'bg-[#fef08a] text-[#713f12]' : 'bg-surface-container-high text-on-surface')}">
+           <p th:text="${comunicado.getTipo().toString()}">Comunicado</p>
+        </span>
                     <span class="font-body-sm text-body-sm text-on-surface-variant" th:text="${#temporals.format(comunicado.publicadoEm, 'dd/MM/yyyy')}">Data</span>
                 </div>
+
+                <img th:if="${comunicado.urlImagem != null}"
+                     th:src="${comunicado.urlImagem}"
+                     class="w-full h-auto min-h-[150px] max-h-[280px] object-contain bg-surface-container-lowest rounded-lg mb-sm border border-outline-variant/30 shadow-sm"
+                     alt="Capa do aviso" />
+
                 <h3 class="font-h3 text-h3 text-on-surface mb-xs" th:text="${comunicado.titulo}">Título do Comunicado</h3>
                 <p class="font-body-md text-body-md text-on-surface-variant mb-md" th:text="${comunicado.conteudo}">
                     Conteúdo do comunicado virá aqui.

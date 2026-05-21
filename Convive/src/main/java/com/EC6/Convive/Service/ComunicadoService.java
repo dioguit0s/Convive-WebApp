@@ -3,6 +3,9 @@ package com.EC6.Convive.Service;
 import com.EC6.Convive.Model.Comunicado;
 import com.EC6.Convive.Repository.ComunicadoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,5 +37,10 @@ public class ComunicadoService {
     public List<Comunicado> findAllOrderByDate() {
         return comunicadoRepository.getAllByPublicadoEmNotNullOrderByPublicadoEmDesc();
 
+    }
+
+    public Page<Comunicado> findPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return comunicadoRepository.findAllByOrderByPublicadoEmDesc(pageable);
     }
 }
