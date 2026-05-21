@@ -32,10 +32,16 @@
         </div>
         <div class="flex-1 flex flex-col gap-xs">
             <a class="flex items-center gap-md p-sm rounded-lg transition-transform duration-150"
-               th:href="@{/morador/home}"
+               th:href="@{/morador/home}" th:if="${#authorization.expression('hasRole(''MORADOR'')')}"
                th:classappend="${activeItem == 'home'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
                 <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
                 <span class="font-body-sm text-body-sm">Início</span>
+            </a>
+            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"
+               th:href="@{/moderador/dashboard}" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}"
+               th:classappend="${activeItem == 'dashboard'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
+                <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                <span class="font-body-sm text-body-sm">Dashboard</span>
             </a>
             <a class="flex items-center gap-md p-sm rounded-lg transition-transform duration-150" th:href="@{/morador/reservas}"
                th:classappend="${activeItem == 'reservas'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
@@ -60,6 +66,7 @@
                 <span class="material-symbols-outlined" data-icon="notification_important">notification_important</span>
                 <span class="font-body-sm text-body-sm">Notificações</span>
             </a>
+
             <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"
                th:href="@{/moderador/triagemOcorrencias}" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}"
                th:classappend="${activeItem == 'triagemOcorrencias'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">

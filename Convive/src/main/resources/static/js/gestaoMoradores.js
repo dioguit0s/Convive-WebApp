@@ -19,6 +19,13 @@ function fecharModalNovo() {
     document.getElementById('modalNovoCadastro').classList.add('hidden');
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('abrirCadastro') === 'true') {
+        abrirModalNovo();
+    }
+});
+
 function confirmarExclusao() {
     const id = document.getElementById('edit-id').value;
     const nome = document.getElementById('edit-nome').value;

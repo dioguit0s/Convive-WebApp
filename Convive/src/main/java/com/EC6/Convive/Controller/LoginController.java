@@ -18,7 +18,7 @@ public class LoginController {
                     .anyMatch(a -> a.getAuthority().equals("ROLE_MODERADOR"));
 
             if (isModerador) {
-                return "redirect:/morador/home";
+                return "redirect:/moderador/dashboard";
             }
 
             return "redirect:/morador/home";
