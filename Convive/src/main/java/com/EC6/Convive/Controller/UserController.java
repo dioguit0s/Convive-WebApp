@@ -6,6 +6,9 @@ import com.EC6.Convive.Repository.UsuarioRepository;
 import com.EC6.Convive.Service.FileStorageService;
 import com.EC6.Convive.Service.UsuarioService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +44,16 @@ public class UserController {
             redirectAttributes.addFlashAttribute("erro", "Erro ao fazer upload da foto de perfil.");
         }
 
-        return "redirect:/morador/home";
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+            boolean isModerador = auth.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_MODERADOR"));
+
+            if (isModerador) {
+                return "redirect:/moderador/dashboard";
+            }
+
+            return "redirect:/morador/home";
+
     }
 }

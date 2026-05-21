@@ -3,7 +3,12 @@ package com.EC6.Convive.Service;
 import com.EC6.Convive.Model.Reserva;
 import com.EC6.Convive.Model.StatusReserva;
 import com.EC6.Convive.Repository.ReservaRepository;
+import com.EC6.Convive.Util.PaginationConstants;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -45,6 +50,26 @@ public class ReservaService {
 
     public List<Reserva> listByUser(UUID id) {
         return reservaRepository.findByReservadoPorId(id);
+    }
+
+    public Page<Reserva> findTriagemPaginated(int page, int size, String statusParam, String busca, String ordem) {
+        StatusReserva status = StatusReserva.valueOf(statusParam);
+        String buscaNorm = (busca != null && !busca.isBlank()) ? busca.trim() : null;
+        Sort sort = "ASC".equalsIgnoreCase(ordem)
+                ? Sort.by("inicio").ascending()
+                : Sort.by("inicio").descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return reservaRepository.findTriagem(status, buscaNorm, pageable);
+    }
+
+    public Page<Reserva> findPaginatedByUser(UUID userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("inicio").descending());
+        return reservaRepository.findByReservadoPorIdOrderByInicioDesc(userId, pageable);
+    }
+
+    public List<Reserva> findTopByUser(UUID userId, int limit) {
+        Pageable pageable = PageRequest.of(0, limit, Sort.by("inicio").ascending());
+        return reservaRepository.findByReservadoPorIdOrderByInicioDesc(userId, pageable).getContent();
     }
 
 

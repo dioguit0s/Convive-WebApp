@@ -1,3 +1,5 @@
+var debounceFiltrosMoradorTimer = null;
+
 function abrirConsulta(elemento) {
     const id = elemento.getAttribute('data-id');
     const protocolo = elemento.getAttribute('data-protocolo');
@@ -38,7 +40,7 @@ function abrirConsulta(elemento) {
         }
     }
 
-if (comentarioModerador && comentarioModerador.trim() !== '') {
+    if (comentarioModerador && comentarioModerador.trim() !== '') {
         if (campoComentarioModerador) campoComentarioModerador.innerText = comentarioModerador;
         if (containerComentario) containerComentario.classList.remove('hidden');
     } else {
@@ -46,73 +48,79 @@ if (comentarioModerador && comentarioModerador.trim() !== '') {
         if (containerComentario) containerComentario.classList.add('hidden');
     }
 
-
-
     const modal = document.getElementById('modal-detalhes-ocorrencia');
     if (modal) {
         modal.showModal();
     }
 }
 
-function filtrarOcorrencias() {
-    const termoBusca = (document.getElementById('filtro-busca-ocorrencia')?.value || '').toLowerCase();
-    const filtroStatus = document.getElementById('filtro-status-ocorrencia')?.value || 'ALL';
-    const filtroPrioridade = document.getElementById('filtro-prioridade-ocorrencia')?.value || 'ALL';
-
-    const cards = document.querySelectorAll('.ocorrencia-card');
-
-    cards.forEach(card => {
-        const protocolo = (card.getAttribute('data-protocolo') || '').toLowerCase();
-        const descricao = (card.getAttribute('data-descricao') || '').toLowerCase();
-        const status = card.getAttribute('data-status') || '';
-        const prioridade = card.getAttribute('data-prioridade') || '';
-
-        const matchBusca = protocolo.includes(termoBusca) || descricao.includes(termoBusca);
-        const matchStatus = (filtroStatus === 'ALL' || status === filtroStatus);
-        const matchPrioridade = (filtroPrioridade === 'ALL' || prioridade === filtroPrioridade);
-
-        if (matchBusca && matchStatus && matchPrioridade) {
-            card.classList.remove('hidden');
-        } else {
-            card.classList.add('hidden');
-        }
-    });
-
-    ordenarOcorrencias();
+function montarQueryFiltrosMorador() {
+    const params = new URLSearchParams();
+    params.set('page', '0');
+    const busca = document.getElementById('filtro-busca-ocorrencia');
+    const status = document.getElementById('filtro-status-ocorrencia');
+    const prioridade = document.getElementById('filtro-prioridade-ocorrencia');
+    const ordem = document.getElementById('filtro-ordenacao-ocorrencia');
+    if (busca && busca.value.trim()) params.set('busca', busca.value.trim());
+    if (status) params.set('status', status.value);
+    if (prioridade) params.set('prioridade', prioridade.value);
+    if (ordem) params.set('ordem', ordem.value);
+    return params.toString();
 }
 
-function ordenarOcorrencias() {
-    const ordenacao = document.getElementById('filtro-ordenacao-ocorrencia')?.value || 'DESC';
-    const container = document.querySelector('.ocorrencia-card')?.parentElement;
-
-    if(!container) return;
-
-    const cards = Array.from(container.querySelectorAll('.ocorrencia-card'));
-
-    cards.sort((a, b) => {
-        const dataA = a.getAttribute('data-data-sort') || '';
-        const dataB = b.getAttribute('data-data-sort') || '';
-
-        if (ordenacao === 'ASC') {
-            return dataA.localeCompare(dataB);
-        } else {
-            return dataB.localeCompare(dataA);
-        }
-    });
-
-    cards.forEach(card => container.appendChild(card));
+function aplicarFiltrosMorador() {
+    window.location.search = montarQueryFiltrosMorador();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const inputBusca = document.getElementById('filtro-busca-ocorrencia');
-    if (inputBusca) inputBusca.addEventListener('keyup', filtrarOcorrencias);
+function debounceAplicarFiltrosMorador() {
+    clearTimeout(debounceFiltrosMoradorTimer);
+    debounceFiltrosMoradorTimer = setTimeout(aplicarFiltrosMorador, 400);
+}
 
-    const selectStatus = document.getElementById('filtro-status-ocorrencia');
-    if (selectStatus) selectStatus.addEventListener('change', filtrarOcorrencias);
+async function carregarMaisOcorrenciasMorador() {
+    const btn = document.getElementById('btnCarregarMaisOcorrencias');
+    if (!btn) return;
+    const icon = document.getElementById('iconCarregarMaisOcorrencias');
+    const texto = document.getElementById('textoCarregarMaisOcorrencias');
 
-    const selectPrioridade = document.getElementById('filtro-prioridade-ocorrencia');
-    if (selectPrioridade) selectPrioridade.addEventListener('change', filtrarOcorrencias);
+    const paginaAtual = parseInt(btn.getAttribute('data-pagina-atual'), 10);
+    const totalPaginas = parseInt(btn.getAttribute('data-total-paginas'), 10);
+    const proximaPagina = paginaAtual + 1;
 
-    const selectOrdenacao = document.getElementById('filtro-ordenacao-ocorrencia');
-    if (selectOrdenacao) selectOrdenacao.addEventListener('change', ordenarOcorrencias);
-});
+    if (proximaPagina >= totalPaginas) return;
+
+    icon.classList.add('animate-spin');
+    texto.innerText = 'Carregando...';
+    btn.disabled = true;
+
+    const params = new URLSearchParams(window.location.search);
+    params.set('page', String(proximaPagina));
+
+    try {
+        const response = await fetch('/morador/ocorrencias/mais?' + params.toString());
+        if (response.ok) {
+            const html = await response.text();
+            const loadMore = document.getElementById('containerCarregarMaisOcorrencias');
+            if (loadMore) {
+                loadMore.insertAdjacentHTML('beforebegin', html);
+            }
+            btn.setAttribute('data-pagina-atual', String(proximaPagina));
+            if (proximaPagina + 1 >= totalPaginas) {
+                if (loadMore) loadMore.style.display = 'none';
+            } else {
+                texto.innerText = 'Carregar mais ocorrências';
+                icon.classList.remove('animate-spin');
+                btn.disabled = false;
+            }
+        } else {
+            texto.innerText = 'Carregar mais ocorrências';
+            icon.classList.remove('animate-spin');
+            btn.disabled = false;
+        }
+    } catch (e) {
+        console.error(e);
+        texto.innerText = 'Carregar mais ocorrências';
+        icon.classList.remove('animate-spin');
+        btn.disabled = false;
+    }
+}

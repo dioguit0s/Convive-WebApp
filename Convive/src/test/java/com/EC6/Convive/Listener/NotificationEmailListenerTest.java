@@ -1,8 +1,8 @@
 package com.EC6.Convive.Listener;
 
 import com.EC6.Convive.Event.OcorrenciaCriadaEvent;
+import com.EC6.Convive.Event.ReservaPendenteCriadaEvent;
 import com.EC6.Convive.Event.ReservaRejeitadaEvent;
-import com.EC6.Convive.Model.ContactMessageModel;
 import com.EC6.Convive.Model.Moderador;
 import com.EC6.Convive.Service.ContactMailService;
 import com.EC6.Convive.Service.ModeradorService;
@@ -18,6 +18,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,12 +30,8 @@ class NotificationEmailListenerTest {
 
     @Test
     void onOcorrenciaCriada_notificaTodosModeradores() {
-        Moderador mod1 = new Moderador();
-        mod1.setNome("Ana");
-        mod1.setEmail("ana@convive.com");
-        Moderador mod2 = new Moderador();
-        mod2.setNome("Bruno");
-        mod2.setEmail("bruno@convive.com");
+        Moderador mod1 = moderador("Ana", "ana@convive.com");
+        Moderador mod2 = moderador("Bruno", "bruno@convive.com");
 
         when(moderadorService.getAllActiveMods()).thenReturn(List.of(mod1, mod2));
 
@@ -46,18 +43,17 @@ class NotificationEmailListenerTest {
 
         listener.onOcorrenciaCriada(event);
 
-        verify(contactMailService, times(2)).sendToOutside(any(ContactMessageModel.class));
+        verify(contactMailService).sendOcorrenciaNotification("ana@convive.com", "Ana", event);
+        verify(contactMailService).sendOcorrenciaNotification("bruno@convive.com", "Bruno", event);
     }
 
     @Test
     void onOcorrenciaCriada_falhaEmailNaoPropaga() {
-        Moderador mod = new Moderador();
-        mod.setNome("Ana");
-        mod.setEmail("ana@convive.com");
+        Moderador mod = moderador("Ana", "ana@convive.com");
 
         when(moderadorService.getAllActiveMods()).thenReturn(List.of(mod));
         doThrow(new MailSendException("SMTP indisponível"))
-                .when(contactMailService).sendToOutside(any(ContactMessageModel.class));
+                .when(contactMailService).sendOcorrenciaNotification(any(), any(), any());
 
         OcorrenciaCriadaEvent event = new OcorrenciaCriadaEvent(
                 LocalDateTime.of(2026, 5, 19, 14, 30),
@@ -66,6 +62,23 @@ class NotificationEmailListenerTest {
         );
 
         assertDoesNotThrow(() -> listener.onOcorrenciaCriada(event));
+    }
+
+    @Test
+    void onReservaPendenteCriada_notificaTodosModeradores() {
+        Moderador mod = moderador("Ana", "ana@convive.com");
+        when(moderadorService.getAllActiveMods()).thenReturn(List.of(mod));
+
+        ReservaPendenteCriadaEvent event = new ReservaPendenteCriadaEvent(
+                "Piscina",
+                "João",
+                LocalDateTime.of(2026, 7, 1, 10, 0),
+                null
+        );
+
+        listener.onReservaPendenteCriada(event);
+
+        verify(contactMailService).sendReservaPendenteNotification("ana@convive.com", "Ana", event);
     }
 
     @Test
@@ -78,16 +91,13 @@ class NotificationEmailListenerTest {
 
         listener.onReservaRejeitada(event);
 
-        verify(contactMailService).sendToOutside(argThat(msg ->
-                "morador@email.com".equals(msg.getEmail())
-                        && msg.getSubject().contains("rejeitada")
-        ));
+        verify(contactMailService).sendReservaRejeitadaNotification(eq(event));
     }
 
     @Test
     void onReservaRejeitada_falhaEmailNaoPropaga() {
         doThrow(new MailSendException("SMTP indisponível"))
-                .when(contactMailService).sendToOutside(any(ContactMessageModel.class));
+                .when(contactMailService).sendReservaRejeitadaNotification(any());
 
         ReservaRejeitadaEvent event = new ReservaRejeitadaEvent(
                 "morador@email.com",
@@ -96,5 +106,12 @@ class NotificationEmailListenerTest {
         );
 
         assertDoesNotThrow(() -> listener.onReservaRejeitada(event));
+    }
+
+    private static Moderador moderador(String nome, String email) {
+        Moderador mod = new Moderador();
+        mod.setNome(nome);
+        mod.setEmail(email);
+        return mod;
     }
 }

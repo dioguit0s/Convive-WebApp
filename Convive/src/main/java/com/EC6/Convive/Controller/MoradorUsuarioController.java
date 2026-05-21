@@ -86,14 +86,18 @@ public class MoradorUsuarioController {
             @RequestParam String nome,
             @RequestParam String email,
             @RequestParam(required = false) Integer apartamento,
+            @RequestParam(required = false) Boolean inadimplente,
             RedirectAttributes redirectAttributes) {
         try {
             Usuario user = usuarioService.searchById(id);
+
+            boolean statusInadimplente = inadimplente != null && inadimplente;
 
             if (user instanceof Morador) {
                 Morador m = (Morador) user;
                 m.setNome(nome);
                 m.setEmail(email);
+                m.setInadimplente(statusInadimplente);
                 if (apartamento != null) m.setApartamento(apartamento);
                 moradorService.update(id, m);
             } else if (user instanceof Moderador) {
@@ -101,6 +105,7 @@ public class MoradorUsuarioController {
                 m.setNome(nome);
                 m.setEmail(email);
                 m.setApartamento(apartamento);
+                m.setInadimplente(statusInadimplente);
                 moderadorService.update(id, m);
             }
             redirectAttributes.addFlashAttribute("sucesso", "Usuário atualizado com sucesso!");

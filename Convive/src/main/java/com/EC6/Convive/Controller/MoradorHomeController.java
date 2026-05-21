@@ -3,7 +3,9 @@ package com.EC6.Convive.Controller;
 import com.EC6.Convive.Model.*;
 import com.EC6.Convive.Security.CustomUserDetails;
 import com.EC6.Convive.Service.*;
+import com.EC6.Convive.Util.PaginationConstants;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import com.EC6.Convive.Event.ReservaPendenteCriadaEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,8 +43,8 @@ public class MoradorHomeController {
     public String dashboardMorador(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         Usuario usuario = usuarioService.getByEmail(userDetails.getUsername());
 
-        List<Comunicado> comunicados = comunicadoService.findAllOrderByDate();
-        List<Reserva> reservas = reservaService.listByUser(usuario.getId());
+        List<Comunicado> comunicados = comunicadoService.findTopPublished(PaginationConstants.HOME_PREVIEW_SIZE);
+        List<Reserva> reservas = reservaService.findTopByUser(usuario.getId(), PaginationConstants.HOME_PREVIEW_SIZE);
 
         model.addAttribute("usuario", usuario);
         model.addAttribute("comunicados", comunicados);
@@ -52,20 +54,39 @@ public class MoradorHomeController {
     }
 
     @GetMapping("/reservas")
-    public String listarReservasMorador(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+    public String listarReservasMorador(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(defaultValue = "0") int page,
+            Model model) {
         Usuario usuario = usuarioService.getByEmail(userDetails.getUsername());
 
-        List<Reserva> reservas = reservaService.listByUser(usuario.getId()).stream()
-                .sorted(Comparator.comparing(Reserva::getInicio, Comparator.nullsLast(Comparator.naturalOrder())))
+        Page<Reserva> reservasPage = reservaService.findPaginatedByUser(
+                usuario.getId(), page, PaginationConstants.DEFAULT_PAGE_SIZE);
+        List<AreaComum> areasComuns = areaComumService.listAll().stream()
+                .sorted(Comparator.comparing(AreaComum::getNome, Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)))
                 .toList();
-        List<AreaComum> areasComuns = areaComumService.listAll();
         boolean temAreaAtiva = areasComuns.stream().anyMatch(a -> a.getStatusArea() == StatusArea.ATIVA);
 
         model.addAttribute("usuario", usuario);
-        model.addAttribute("reservas", reservas);
+        model.addAttribute("reservas", reservasPage.getContent());
+        model.addAttribute("paginaAtual", page);
+        model.addAttribute("totalPaginas", reservasPage.getTotalPages());
+        model.addAttribute("listaVazia", reservasPage.getTotalElements() == 0);
         model.addAttribute("areasComuns", areasComuns);
         model.addAttribute("temAreaAtiva", temAreaAtiva);
         return "morador/reservas";
+    }
+
+    @GetMapping("/reservas/mais")
+    public String carregarMaisReservas(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(defaultValue = "1") int page,
+            Model model) {
+        Usuario usuario = usuarioService.getByEmail(userDetails.getUsername());
+        Page<Reserva> reservasPage = reservaService.findPaginatedByUser(
+                usuario.getId(), page, PaginationConstants.DEFAULT_PAGE_SIZE);
+        model.addAttribute("reservas", reservasPage.getContent());
+        return "morador/reservas :: listagemReservasSource";
     }
 
     @PostMapping("/reservas")

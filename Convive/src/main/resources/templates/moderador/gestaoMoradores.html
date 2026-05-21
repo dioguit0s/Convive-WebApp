@@ -10,13 +10,13 @@
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script th:src="@{/js/tailwindTheme.js}"></script>
 </head>
-<body class="bg-background flex min-h-screen font-body-md text-on-background selection:bg-primary-container selection:text-on-primary-container">
+<body class="bg-background flex flex-col md:flex-row min-h-screen w-full font-body-md text-on-background selection:bg-primary-container selection:text-on-primary-container">
 
 <div th:replace="~{fragments/morador/components :: navMorador(activeItem='gestaoUser')}"></div>
 
-<main class="flex-1 flex flex-col w-full min-h-screen md:ml-64 relative">
+<main class="flex-1 flex flex-col w-full min-w-0 min-h-screen md:ml-64 relative">
 
-  <header class="px-margin pt-lg pb-md flex flex-col gap-sm">
+  <header class="px-4 sm:px-6 md:px-margin pt-lg pb-md flex flex-col gap-sm">
     <h1 class="font-h1 text-h1 text-on-surface">Gestão de Moradores</h1>
     <p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Acesse, filtre e gerencie o cadastro de todos os residentes do condomínio. Cadastre novos moradores ou edite informações existentes.</p>
 
@@ -28,7 +28,7 @@
     </div>
   </header>
 
-  <div class="px-margin pb-md flex flex-col sm:flex-row items-center justify-between gap-md">
+  <div class="px-4 sm:px-6 md:px-margin pb-md flex flex-col sm:flex-row items-center justify-between gap-md">
 
     <div class="flex items-center gap-sm w-full sm:w-auto">
       <form th:action="@{/moderador/gestaoMoradores}" method="get" class="flex gap-sm w-full">
@@ -46,16 +46,54 @@
     </button>
   </div>
 
-  <section class="px-margin pb-xl flex-1 flex flex-col">
+  <section class="px-4 sm:px-6 md:px-margin pb-xl flex-1 flex flex-col">
     <div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.02)] flex flex-col flex-1 overflow-hidden">
-      <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse min-w-[800px]">
+
+      <div class="md:hidden flex flex-col gap-sm p-md">
+        <div th:if="${#lists.isEmpty(moradorPage.content)}" class="py-md text-center text-on-surface-variant">Nenhum morador encontrado.</div>
+        <article th:each="morador : ${moradorPage.content}" class="border border-outline-variant rounded-xl p-md flex flex-col gap-sm">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary font-bold overflow-hidden border border-outline-variant/30 shrink-0">
+              <img th:if="${morador.fotoPerfil != null}" th:src="${morador.fotoPerfil}" alt="Foto" class="w-full h-full object-cover"/>
+              <span th:if="${morador.fotoPerfil == null}" th:text="${morador.nome != null ? morador.nome.substring(0,1).toUpperCase() : 'U'}">U</span>
+            </div>
+            <div class="min-w-0 flex-1">
+              <p class="font-medium text-primary truncate" th:text="${morador.nome}">Nome</p>
+              <p class="text-body-sm text-on-surface-variant truncate" th:text="${morador.email}">email</p>
+            </div>
+            <button type="button"
+                    th:data-id="${morador.id}"
+                    th:data-nome="${morador.nome}"
+                    th:data-email="${morador.email}"
+                    th:data-apartamento="${morador.apartamento}"
+                    th:data-inadimplente="${morador.isInadimplente()}"
+                    onclick="abrirModal(this)"
+                    class="text-on-surface-variant hover:text-primary p-2 rounded-full hover:bg-surface-container shrink-0"
+                    title="Editar">
+              <span class="material-symbols-outlined text-[20px]">edit</span>
+            </button>
+          </div>
+          <div class="flex flex-wrap gap-2 text-body-sm">
+            <span class="text-on-surface-variant" th:text="${'Unidade: ' + (morador.getTipoUsuario() == 'MODERADOR' ? (morador.apartamento != null ? morador.apartamento : 'N/A') : (morador.apartamento != null ? morador.apartamento : 'Não Atribuído'))}">Unidade</span>
+            <span class="px-2 py-0.5 rounded text-xs font-semibold"
+                  th:classappend="${morador.getTipoUsuario() == 'MODERADOR'} ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'"
+                  th:text="${morador.getTipoUsuario()}">TIPO</span>
+            <span class="px-2 py-0.5 rounded text-xs font-semibold"
+                  th:classappend="${morador.isInadimplente()} ? 'bg-error/10 text-error' : 'bg-primary/10 text-primary'"
+                  th:text="${morador.isInadimplente()} ? 'Inadimplente' : 'Em dia'">Status</span>
+          </div>
+        </article>
+      </div>
+
+      <div class="hidden md:block overflow-x-auto">
+        <table class="w-full text-left border-collapse">
           <thead>
           <tr class="border-b border-outline-variant bg-surface-container-low/50">
             <th class="py-sm px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Nome</th>
             <th class="py-sm px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Unidade</th>
             <th class="py-sm px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">E-mail</th>
-            <th class="py-sm px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Status</th>
+            <th class="py-sm px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Cargo</th>
+            <th class="py-sm px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Inadimplente?</th>
             <th class="py-sm px-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">Ação</th>
           </tr>
           </thead>
@@ -70,33 +108,53 @@
                        th:src="${morador.fotoPerfil}"
                        alt="Foto de Perfil"
                        class="w-full h-full object-cover">
-
                   <span th:if="${morador.fotoPerfil == null}"
                         th:text="${morador.nome != null ? morador.nome.substring(0,1).toUpperCase() : 'U'}"
                         class="text-xs">U</span>
                 </div>
-
                 <span th:text="${morador.nome}">Nome do Usuário</span>
               </div>
             </td>
 
-            <td class="px-6 py-3 text-on-surface-variant" th:text="${morador.email}">email@convive.com</td>
             <td class="px-6 py-3 text-on-surface-variant" th:text="${morador.getTipoUsuario() == 'MODERADOR' ? (morador.apartamento != null ? morador.apartamento : 'N/A') : (morador.apartamento != null ? morador.apartamento : 'Não Atribuído')}">000</td>
+
+            <td class="px-6 py-3 text-on-surface-variant" th:text="${morador.email}">email@convive.com</td>
+
             <td class="px-6 py-3">
-        <span class="px-2 py-1 rounded text-xs font-semibold"
-              th:classappend="${morador.getTipoUsuario() == 'MODERADOR'} ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'"
-              th:text="${morador.getTipoUsuario()}">TIPO</span>
+    <span class="px-2 py-1 rounded text-xs font-semibold"
+          th:classappend="${morador.getTipoUsuario() == 'MODERADOR'} ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'"
+          th:text="${morador.getTipoUsuario()}">TIPO</span>
+            </td>
+
+            <td class="px-6 py-3">
+    <span class="px-2 py-1 rounded text-xs font-semibold"
+          th:classappend="${morador.isInadimplente()} ? 'bg-error/10 text-error' : 'bg-primary/10 text-primary'"
+          th:text="${morador.isInadimplente()} ? 'Sim' : 'Não'">Status</span>
+            </td>
+
+            <td class="px-6 py-3 text-right">
+              <button type="button"
+                      th:data-id="${morador.id}"
+                      th:data-nome="${morador.nome}"
+                      th:data-email="${morador.email}"
+                      th:data-apartamento="${morador.apartamento}"
+                      th:data-inadimplente="${morador.isInadimplente()}"
+                      onclick="abrirModal(this)"
+                      class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-container"
+                      title="Editar usuário">
+                <span class="material-symbols-outlined text-[20px]">edit</span>
+              </button>
             </td>
           </tr>
 
           <tr th:if="${#lists.isEmpty(moradorPage.content)}">
-            <td colspan="5" class="py-md text-center text-on-surface-variant">Nenhum morador encontrado.</td>
+            <td colspan="6" class="py-md text-center text-on-surface-variant">Nenhum morador encontrado.</td>
           </tr>
           </tbody>
         </table>
       </div>
 
-      <div class="mt-auto border-t border-outline-variant/60 bg-surface px-md py-sm flex items-center justify-between" th:if="${moradorPage.totalPages > 0}">
+      <div class="mt-auto border-t border-outline-variant/60 bg-surface px-md py-sm flex flex-col sm:flex-row items-center justify-between gap-sm" th:if="${moradorPage.totalPages > 0}">
                     <span class="font-body-sm text-body-sm text-on-surface-variant"
                           th:text="'Mostrando página ' + (${moradorPage.number} + 1) + ' de ' + ${moradorPage.totalPages} + ' (' + ${moradorPage.totalElements} + ' registros)'">
                     </span>
@@ -147,6 +205,17 @@
       <div>
         <label class="block font-label-md text-on-surface-variant mb-1">Número do Apartamento</label>
         <input type="text" id="edit-apartamento" name="apartamento" required class="w-full rounded-lg border-outline-variant focus:border-primary focus:ring-primary bg-surface text-on-surface">
+      </div>
+
+      <div class="mt-2 flex items-center justify-between p-3 bg-surface border border-outline-variant rounded-lg">
+        <div>
+          <label class="block font-label-md text-on-surface">Morador Inadimplente?</label>
+          <span class="text-xs text-on-surface-variant">Impede o usuário de realizar reservas</span>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" id="edit-inadimplente" name="inadimplente" value="true" class="sr-only peer">
+          <div class="w-11 h-6 bg-surface-container-high rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-outline-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-error"></div>
+        </label>
       </div>
 
       <div class="mt-md flex justify-end gap-sm">

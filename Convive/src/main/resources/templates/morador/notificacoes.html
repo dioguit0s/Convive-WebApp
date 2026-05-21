@@ -7,6 +7,7 @@
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script th:src="@{/js/tailwindTheme.js}"></script>
+    <script th:src="@{/js/notificacoes.js}" defer></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -22,19 +23,20 @@
 
 <div th:replace="~{fragments/morador/components :: navMorador(activeItem='notificacoes')}"></div>
 
-<main class="flex-1 md:ml-64 p-margin md:p-xl w-full max-w-5xl mx-auto flex flex-col min-h-screen">
+<main class="flex-1 md:ml-64 p-4 sm:p-6 md:p-margin md:p-xl w-full max-w-5xl mx-auto flex flex-col min-h-screen">
     <header class="mb-lg border-b border-outline-variant/20 pb-md">
         <h1 class="font-h1 text-h1 text-primary">Notificações e Alertas</h1>
         <p class="font-body-lg text-body-lg text-on-surface-variant mt-sm">Histórico de advertências formais emitidas pela administração.</p>
     </header>
 
-    <div th:if="${#lists.isEmpty(notificacoes)}" class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-xl flex flex-col items-center justify-center text-center shadow-[0_4px_12px_rgba(0,0,0,0.02)] mt-lg">
+    <div th:if="${listaVazia}" class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-xl flex flex-col items-center justify-center text-center shadow-[0_4px_12px_rgba(0,0,0,0.02)] mt-lg">
         <span class="material-symbols-outlined text-[48px] text-primary-fixed-dim mb-md">task_alt</span>
         <h3 class="font-h3 text-h3 text-on-surface mb-xs">Nenhuma advertência registrada</h3>
         <p class="font-body-md text-body-md text-on-surface-variant max-w-md">Parabéns! Você não possui notificações ou alertas ativos. Agradecemos por manter a harmonia na comunidade.</p>
     </div>
 
-    <div th:unless="${#lists.isEmpty(notificacoes)}" class="space-y-md">
+    <div th:unless="${listaVazia}" id="lista-notificacoes" class="space-y-md">
+        <th:block th:fragment="listagemCards">
         <article th:each="notificacao : ${notificacoes}" class="bg-surface-container-lowest border border-outline-variant/30 rounded-lg p-md shadow-[0_4px_12px_rgba(0,0,0,0.02)] flex flex-col md:flex-row gap-md items-start relative overflow-hidden group">
 
             <div class="absolute left-0 top-0 bottom-0 w-1"
@@ -75,6 +77,18 @@
                 </div>
             </div>
         </article>
+        </th:block>
+
+        <div th:if="${totalPaginas > 1}" id="containerCarregarMais" class="flex justify-center pt-md">
+            <button id="btnCarregarMais"
+                    th:data-pagina-atual="${paginaAtual}"
+                    th:data-total-paginas="${totalPaginas}"
+                    onclick="carregarMaisNotificacoes()"
+                    class="px-6 py-3 rounded-full bg-surface-container border border-outline-variant/30 text-on-surface font-label-lg hover:bg-surface-container-highest transition-colors flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px]" id="iconCarregarMais">refresh</span>
+                <span id="textoCarregarMais">Carregar mais notificações</span>
+            </button>
+        </div>
     </div>
 </main>
 </body>

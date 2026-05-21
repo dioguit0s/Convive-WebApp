@@ -10,11 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <style>.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }</style>
 </head>
-<body class="bg-background text-on-surface font-body-md h-screen flex flex-col md:flex-row overflow-hidden">
+<body class="bg-background text-on-surface font-body-md min-h-dvh flex flex-col md:flex-row">
 
 <div th:replace="~{fragments/morador/components :: navMorador(activeItem='dashboard')}"></div>
 
-<main class="flex-1 overflow-y-auto bg-background md:ml-64 p-margin">
+<main class="flex-1 overflow-y-auto bg-background w-full min-w-0 md:ml-64 p-4 sm:p-6 md:p-margin">
     <div class="max-w-4xl mx-auto pb-xl">
         <div th:if="${sucesso}" class="p-sm rounded-lg bg-[#dcfce7] text-[#166534] font-body-sm mb-md" th:text="${sucesso}"></div>
         <div th:if="${erro}" class="p-sm rounded-lg bg-[#fee2e2] text-[#991b1b] font-body-sm mb-md" th:text="${erro}"></div>
@@ -35,6 +35,28 @@
         </header>
 
         <div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+            <div class="md:hidden flex flex-col gap-sm p-md">
+                <div th:if="${#lists.isEmpty(areas)}" class="py-lg text-center text-on-surface-variant">Nenhuma área cadastrada.</div>
+                <article th:each="area : ${areas}" class="border border-outline-variant rounded-xl p-md flex flex-col gap-sm">
+                    <div class="flex justify-between items-start gap-sm">
+                        <div>
+                            <h3 class="font-h3 text-h3 text-on-surface" th:text="${area.nome}">Nome</h3>
+                            <p class="font-body-sm text-on-surface-variant mt-xs" th:text="${area.capacidade + ' pessoas'}">Capacidade</p>
+                        </div>
+                        <span class="inline-block px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shrink-0"
+                              th:classappend="${area.statusArea.name() == 'ATIVA' ? 'bg-secondary-fixed text-on-secondary-container' : 'bg-error-container text-on-error-container'}"
+                              th:text="${area.statusArea.name() == 'ATIVA' ? 'Ativa' : 'Em Manutenção'}">Status</span>
+                    </div>
+                    <button type="button"
+                            class="w-full inline-flex items-center justify-center gap-xs px-sm py-xs border border-outline-variant rounded-lg text-primary hover:bg-surface-container-high text-xs font-semibold"
+                            th:attr="data-id=${area.id},data-nome=${area.nome},data-capacidade=${area.capacidade},data-status=${area.statusArea.name()}"
+                            onclick="abrirModalEditar(this)">
+                        <span class="material-symbols-outlined text-[16px]">edit</span>
+                        Editar
+                    </button>
+                </article>
+            </div>
+            <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left">
                 <thead>
                 <tr class="border-b border-outline-variant font-label-md text-label-md text-on-surface-variant bg-surface-container-low">
@@ -68,6 +90,30 @@
                 </tr>
                 </tbody>
             </table>
+            </div>
+
+            <div th:if="${areaPage.totalPages > 0}" class="border-t border-outline-variant/60 px-md py-sm flex flex-col sm:flex-row items-center justify-between gap-sm">
+                <span class="font-body-sm text-on-surface-variant"
+                      th:text="'Página ' + (${areaPage.number} + 1) + ' de ' + ${areaPage.totalPages} + ' (' + ${areaPage.totalElements} + ' áreas)'"></span>
+                <div class="flex items-center gap-xs">
+                    <a th:if="${areaPage.hasPrevious()}"
+                       th:href="@{/moderador/areasComuns(page=${areaPage.number - 1})}"
+                       class="p-xs rounded text-outline hover:bg-surface-container hover:text-on-surface transition-colors">
+                        <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                    </a>
+                    <span th:each="i : ${#numbers.sequence(0, areaPage.totalPages - 1)}">
+                        <a th:href="@{/moderador/areasComuns(page=${i})}"
+                           th:text="${i + 1}"
+                           th:classappend="${i == areaPage.number} ? 'bg-primary text-on-primary font-medium' : 'hover:bg-surface-container text-on-surface-variant'"
+                           class="w-8 h-8 rounded font-body-sm flex items-center justify-center transition-colors"></a>
+                    </span>
+                    <a th:if="${areaPage.hasNext()}"
+                       th:href="@{/moderador/areasComuns(page=${areaPage.number + 1})}"
+                       class="p-xs rounded text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+                        <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </main>

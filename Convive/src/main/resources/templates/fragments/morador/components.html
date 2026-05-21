@@ -2,27 +2,126 @@
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <body>
 
+<th:block th:fragment="navMoradorLinks (activeItem)">
+    <a class="flex items-center gap-md p-sm rounded-lg transition-transform duration-150"
+       th:href="@{/morador/home}" th:if="${#authorization.expression('hasRole(''MORADOR'')')}"
+       th:classappend="${activeItem == 'home'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
+        <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+        <span class="font-body-sm text-body-sm">Início</span>
+    </a>
+    <a class="flex items-center gap-md p-sm rounded-lg transition-transform duration-150"
+       th:href="@{/moderador/dashboard}" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}"
+       th:classappend="${activeItem == 'dashboard'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
+        <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+        <span class="font-body-sm text-body-sm">Dashboard</span>
+    </a>
+    <a class="flex items-center gap-md p-sm rounded-lg transition-transform duration-150" th:href="@{/morador/reservas}"
+       th:classappend="${activeItem == 'reservas'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
+        <span class="material-symbols-outlined" data-icon="event_available">event_available</span>
+        <span class="font-body-sm text-body-sm">Minhas Reservas</span>
+    </a>
+    <a class="flex items-center gap-md p-sm rounded-lg transition-transform duration-150"
+       th:href="@{/morador/ocorrencias}"
+       th:classappend="${activeItem == 'ocorrencias'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
+        <span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
+        <span class="font-body-sm text-body-sm">Ocorrências</span>
+    </a>
+    <a class="flex items-center gap-md p-sm rounded-lg transition-transform duration-150"
+       th:href="@{/morador/comunicados}"
+       th:classappend="${activeItem == 'comunicados'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
+        <span class="material-symbols-outlined" data-icon="Newspaper">Newspaper</span>
+        <span class="font-body-sm text-body-sm">Comunicados</span>
+    </a>
+    <a class="flex items-center gap-md p-sm rounded-lg transition-transform duration-150"
+       th:href="@{/morador/notificacoes}"
+       th:classappend="${activeItem == 'notificacoes'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
+        <span class="material-symbols-outlined" data-icon="notification_important">notification_important</span>
+        <span class="font-body-sm text-body-sm">Notificações</span>
+    </a>
+    <a class="flex items-center gap-md p-sm rounded-lg transition-transform duration-150"
+       th:href="@{/moderador/triagemOcorrencias}" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}"
+       th:classappend="${activeItem == 'triagemOcorrencias'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
+        <span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
+        <span class="font-body-sm text-body-sm">Triagem de ocorrências</span>
+    </a>
+    <a class="flex items-center gap-md p-sm rounded-lg transition-transform duration-150"
+       th:href="@{/moderador/triagemReservas}" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}"
+       th:classappend="${activeItem == 'triagemReservas'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
+        <span class="material-symbols-outlined" data-icon="edit_calendar">edit_calendar</span>
+        <span class="font-body-sm text-body-sm">Triagem de reservas</span>
+    </a>
+    <a class="flex items-center gap-md p-sm rounded-lg transition-transform duration-150"
+       th:href="@{/moderador/gestaoMoradores}" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}"
+       th:classappend="${activeItem == 'gestaoUser'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
+        <span class="material-symbols-outlined" data-icon="group">group</span>
+        <span class="font-body-sm text-body-sm">Gestão de usuarios</span>
+    </a>
+</th:block>
+
 <th:block th:fragment="navMorador (activeItem)">
-    <nav class="md:hidden bg-surface-container-lowest flex justify-between items-center px-margin py-4 w-full shadow-sm sticky top-0 z-50">
-        <div class="text-h2 font-h2 text-primary">Convive</div>
-        <button class="text-primary p-2 focus:outline-none" type="button">
+    <div class="app-nav-shell w-full shrink-0 z-50 md:w-0 md:overflow-visible">
+    <div class="md:hidden h-14 shrink-0" aria-hidden="true"></div>
+    <nav class="md:hidden fixed top-0 left-0 right-0 bg-surface-container-lowest flex justify-between items-center px-4 sm:px-6 py-3 min-h-14 shadow-sm z-50 border-b border-outline-variant/20">
+        <div class="text-h2 font-h2 text-primary leading-none">Convive</div>
+        <button id="nav-drawer-toggle" class="text-primary p-2 focus:outline-none rounded-lg hover:bg-surface-container-high"
+                type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Abrir menu">
             <span class="material-symbols-outlined" data-icon="menu">menu</span>
         </button>
     </nav>
 
-    <nav class="hidden md:flex flex-col h-screen p-md gap-base bg-background text-primary w-64 docked left-0 h-full fixed border-r border-outline-variant/30">
+    <div id="nav-drawer-backdrop" class="hidden md:hidden fixed inset-0 bg-black/40 z-[55]" aria-hidden="true"></div>
+    <nav id="nav-drawer" aria-hidden="true"
+         class="md:hidden fixed top-0 right-0 h-full w-[min(100%,280px)] bg-background border-l border-outline-variant/30 z-[60] flex flex-col p-md gap-base translate-x-full transition-transform duration-300 ease-out shadow-xl">
+        <div class="flex justify-between items-center mb-sm">
+            <div class="text-h3 font-h3 text-primary font-bold">Menu</div>
+            <button id="nav-drawer-close" type="button" class="text-on-surface-variant p-2 rounded-lg hover:bg-surface-container-high" aria-label="Fechar menu">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="px-2 flex items-center gap-sm pb-sm border-b border-outline-variant/30">
+            <form th:action="@{/perfil/upload-foto}" method="post" enctype="multipart/form-data" id="formFotoPerfilMobile" class="m-0 shrink-0">
+                <label class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary font-bold overflow-hidden cursor-pointer relative group transition-all"
+                       aria-label="Alterar foto de perfil">
+                    <span th:if="${usuario?.fotoPerfil == null}" th:text="${usuario?.nome != null ? usuario.nome.substring(0,1).toUpperCase() : 'C'}">C</span>
+                    <img th:if="${usuario?.fotoPerfil != null}" th:src="${usuario.fotoPerfil}" alt="Foto de Perfil" class="relative z-0 w-full h-full object-cover"/>
+                    <div th:if="${usuario?.fotoPerfil == null}" class="absolute inset-0 z-10 bg-black/40 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-white text-sm" style="font-size: 18px;">upload</span>
+                    </div>
+                    <div th:if="${usuario?.fotoPerfil != null}" class="absolute bottom-0 right-0 z-10 w-4 h-4 rounded-full bg-primary border-2 border-background flex items-center justify-center shadow-sm">
+                        <span class="material-symbols-outlined text-on-primary" style="font-size: 11px;">edit</span>
+                    </div>
+                    <input type="file" name="foto" accept="image/*" class="hidden" onchange="this.form.submit()">
+                </label>
+            </form>
+            <div class="min-w-0 flex-1">
+                <div class="text-h3 font-h3 font-bold text-primary truncate" th:text="${usuario?.nome ?: 'Administrador'}">Convive</div>
+                <div class="font-body-sm text-body-sm text-on-surface-variant truncate" th:text="${usuario != null ? usuario.getTipoUsuario() : 'Portal de Gestão'}">Portal</div>
+                <span class="font-body-sm text-body-sm text-on-surface-variant/80">Toque na foto para alterar</span>
+            </div>
+        </div>
+        <div class="flex-1 flex flex-col gap-xs overflow-y-auto">
+            <th:block th:replace="~{fragments/morador/components :: navMoradorLinks(activeItem=${activeItem})}"></th:block>
+        </div>
+        <div class="mt-auto flex flex-col gap-xs pt-md border-t border-outline-variant/30">
+            <form th:action="@{/logout}" method="post" class="w-full">
+                <button type="submit" class="w-full flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg text-left">
+                    <span class="material-symbols-outlined" data-icon="logout">logout</span>
+                    <span class="font-body-sm text-body-sm">Sair</span>
+                </button>
+            </form>
+        </div>
+    </nav>
+
+    <nav class="hidden md:flex flex-col h-screen p-md gap-base bg-background text-primary w-64 docked left-0 h-full fixed border-r border-outline-variant/30 z-40">
         <div class="mb-lg px-2 flex items-center gap-sm">
             <form th:action="@{/perfil/upload-foto}" method="post" enctype="multipart/form-data" id="formFotoPerfil" class="m-0">
                 <label class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary font-bold overflow-hidden cursor-pointer relative group transition-all">
-
                     <span th:if="${usuario?.fotoPerfil == null}" th:text="${usuario?.nome != null ? usuario.nome.substring(0,1).toUpperCase() : 'C'}">C</span>
-
-                    <img th:if="${usuario?.fotoPerfil != null}" th:src="${usuario.fotoPerfil}" alt="Foto de Perfil" class="w-full h-full object-cover">
-
+                    <img th:if="${usuario?.fotoPerfil != null}" th:src="${usuario.fotoPerfil}" alt="Foto de Perfil" class="w-full h-full object-cover"/>
                     <div class="absolute inset-0 bg-black/40 hidden group-hover:flex items-center justify-center transition-opacity">
                         <span class="material-symbols-outlined text-white text-sm" style="font-size: 18px;">upload</span>
                     </div>
-                    <input type="file" name="foto" accept="image/*" class="hidden" onchange="document.getElementById('formFotoPerfil').submit();">
+                    <input type="file" name="foto" accept="image/*" class="hidden" onchange="this.form.submit()">
                 </label>
             </form>
             <div>
@@ -30,62 +129,8 @@
                 <div class="font-body-sm text-body-sm text-on-surface-variant" th:text="${usuario != null ? usuario.getTipoUsuario() : 'Portal de Gestão'}">Portal do Morador</div>
             </div>
         </div>
-        <div class="flex-1 flex flex-col gap-xs">
-            <a class="flex items-center gap-md p-sm rounded-lg transition-transform duration-150"
-               th:href="@{/morador/home}" th:if="${#authorization.expression('hasRole(''MORADOR'')')}"
-               th:classappend="${activeItem == 'home'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
-                <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-                <span class="font-body-sm text-body-sm">Início</span>
-            </a>
-            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"
-               th:href="@{/moderador/dashboard}" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}"
-               th:classappend="${activeItem == 'dashboard'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
-                <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-                <span class="font-body-sm text-body-sm">Dashboard</span>
-            </a>
-            <a class="flex items-center gap-md p-sm rounded-lg transition-transform duration-150" th:href="@{/morador/reservas}"
-               th:classappend="${activeItem == 'reservas'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
-                <span class="material-symbols-outlined" data-icon="event_available">event_available</span>
-                <span class="font-body-sm text-body-sm">Minhas Reservas</span>
-            </a>
-            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"
-               th:href="@{/morador/ocorrencias}"
-               th:classappend="${activeItem == 'ocorrencias'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
-                <span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
-                <span class="font-body-sm text-body-sm">Ocorrências</span>
-            </a>
-            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"
-               th:href="@{/morador/comunicados}"
-               th:classappend="${activeItem == 'comunicados'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
-                <span class="material-symbols-outlined" data-icon="Newspaper">Newspaper</span>
-                <span class="font-body-sm text-body-sm">Comunicados</span>
-            </a>
-            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"
-               th:href="@{/morador/notificacoes}"
-               th:classappend="${activeItem == 'notificacoes'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
-                <span class="material-symbols-outlined" data-icon="notification_important">notification_important</span>
-                <span class="font-body-sm text-body-sm">Notificações</span>
-            </a>
-
-            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"
-               th:href="@{/moderador/triagemOcorrencias}" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}"
-               th:classappend="${activeItem == 'triagemOcorrencias'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
-                <span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
-                <span class="font-body-sm text-body-sm">Triagem de ocorrências</span>
-            </a>
-            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"
-               th:href="@{/moderador/triagemReservas}" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}"
-               th:classappend="${activeItem == 'triagemReservas'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
-
-            <span class="material-symbols-outlined" data-icon="edit_calendar">edit_calendar</span>
-                <span class="font-body-sm text-body-sm">Triagem de reservas</span>
-            </a>
-            <a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg transition-transform duration-150"
-               th:href="@{/moderador/gestaoMoradores}" th:if="${#authorization.expression('hasRole(''MODERADOR'')')}"
-               th:classappend="${activeItem == 'gestaoUser'} ? 'text-primary font-bold bg-surface-container-highest' : 'text-on-surface-variant hover:bg-surface-container-high transition-colors'">
-                <span class="material-symbols-outlined" data-icon="group">group</span>
-                <span class="font-body-sm text-body-sm">Gestão de usuarios</span>
-            </a>
+        <div class="flex-1 flex flex-col gap-xs overflow-y-auto">
+            <th:block th:replace="~{fragments/morador/components :: navMoradorLinks(activeItem=${activeItem})}"></th:block>
         </div>
         <div class="mt-auto flex flex-col gap-xs pt-md border-t border-outline-variant/30">
             <form th:action="@{/logout}" method="post" class="w-full">
@@ -96,6 +141,9 @@
             </form>
         </div>
     </nav>
+    </div>
+
+    <script th:src="@{/js/app-nav.js}"></script>
 </th:block>
 
 </body>

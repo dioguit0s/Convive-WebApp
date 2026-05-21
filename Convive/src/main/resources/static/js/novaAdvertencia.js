@@ -2,12 +2,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const buscaInput = document.getElementById('morador-busca');
     const hiddenId = document.getElementById('morador-id');
     const lista = document.getElementById('morador-lista');
-    const vazio = document.getElementById('morador-lista-vazio');
 
     if (!buscaInput || !hiddenId || !lista) return;
 
-    const itens = Array.from(lista.querySelectorAll('.morador-opcao'));
     let indiceAtivo = -1;
+    let debounceTimer = null;
+    let paginaBusca = 0;
+    let termoAtual = '';
 
     function limparSelecao() {
         hiddenId.value = '';
@@ -28,26 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function itensVisiveis() {
-        return itens.filter(item => !item.classList.contains('hidden'));
-    }
-
-    function renderLista(termo) {
-        const t = termo.trim().toLowerCase();
-        let visiveis = 0;
-
-        itens.forEach(item => {
-            const search = (item.getAttribute('data-search') || '').toLowerCase();
-            const match = t.length === 0 || search.includes(t);
-            item.classList.toggle('hidden', !match);
-            item.classList.remove('bg-surface-container-high');
-            if (match) visiveis++;
-        });
-
-        if (vazio) {
-            vazio.classList.toggle('hidden', visiveis > 0);
-        }
-
-        lista.classList.remove('hidden');
+        return Array.from(lista.querySelectorAll('.morador-opcao'));
     }
 
     function destacarItem(index) {
@@ -59,16 +41,65 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function vincularEventosOpcoes() {
+        lista.querySelectorAll('.morador-opcao').forEach(item => {
+            item.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                selecionarMorador(item.getAttribute('data-id'), item.getAttribute('data-label'));
+            });
+        });
+
+        const btnMais = document.getElementById('morador-btn-carregar-mais');
+        if (btnMais) {
+            btnMais.addEventListener('click', (e) => {
+                e.preventDefault();
+                const proxima = parseInt(btnMais.getAttribute('data-pagina-atual'), 10) + 1;
+                buscarMoradores(termoAtual, proxima, true);
+            });
+        }
+    }
+
+    async function buscarMoradores(termo, page, append) {
+        paginaBusca = page;
+        termoAtual = termo;
+        const params = new URLSearchParams();
+        if (termo.trim()) params.set('q', termo.trim());
+        params.set('page', String(page));
+
+        try {
+            const response = await fetch('/moderador/advertencias/moradores?' + params.toString());
+            if (!response.ok) return;
+
+            const html = await response.text();
+            if (append) {
+                const carregarItem = document.getElementById('morador-carregar-mais-item');
+                if (carregarItem) carregarItem.remove();
+                lista.insertAdjacentHTML('beforeend', html);
+            } else {
+                lista.innerHTML = html;
+            }
+            lista.classList.remove('hidden');
+            vincularEventosOpcoes();
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     buscaInput.addEventListener('input', () => {
         if (hiddenId.value && buscaInput.value !== buscaInput.dataset.selecionadoLabel) {
             limparSelecao();
         }
-        renderLista(buscaInput.value);
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => buscarMoradores(buscaInput.value, 0, false), 300);
         indiceAtivo = -1;
     });
 
     buscaInput.addEventListener('focus', () => {
-        renderLista(buscaInput.value);
+        if (lista.querySelectorAll('.morador-opcao').length === 0) {
+            buscarMoradores(buscaInput.value, 0, false);
+        } else {
+            lista.classList.remove('hidden');
+        }
     });
 
     buscaInput.addEventListener('keydown', (e) => {
@@ -76,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (e.key === 'ArrowDown') {
             e.preventDefault();
-            if (lista.classList.contains('hidden')) renderLista(buscaInput.value);
+            if (lista.classList.contains('hidden')) buscarMoradores(buscaInput.value, 0, false);
             indiceAtivo = Math.min(indiceAtivo + 1, visiveis.length - 1);
             destacarItem(indiceAtivo);
         } else if (e.key === 'ArrowUp') {
@@ -94,13 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    lista.addEventListener('mousedown', (e) => {
-        const item = e.target.closest('.morador-opcao');
-        if (!item || item.classList.contains('hidden')) return;
-        e.preventDefault();
-        selecionarMorador(item.getAttribute('data-id'), item.getAttribute('data-label'));
-    });
-
     document.addEventListener('click', (e) => {
         if (!e.target.closest('#morador-combobox')) {
             fecharLista();
@@ -111,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!hiddenId.value) {
             e.preventDefault();
             buscaInput.focus();
-            renderLista(buscaInput.value);
+            buscarMoradores(buscaInput.value, 0, false);
             buscaInput.classList.add('ring-2', 'ring-error');
             setTimeout(() => buscaInput.classList.remove('ring-2', 'ring-error'), 2000);
         }

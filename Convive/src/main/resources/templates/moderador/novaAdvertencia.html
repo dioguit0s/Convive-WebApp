@@ -14,7 +14,7 @@
 
 <div th:replace="~{fragments/morador/components :: navMorador(activeItem='dashboard')}"></div>
 
-<main class="flex-1 overflow-y-auto bg-background md:ml-64 p-margin">
+<main class="flex-1 overflow-y-auto bg-background w-full min-w-0 md:ml-64 p-4 sm:p-6 md:p-margin">
     <div class="max-w-xl mx-auto">
         <div th:if="${erro}" class="p-sm rounded-lg bg-[#fee2e2] text-[#991b1b] font-body-sm mb-md" th:text="${erro}"></div>
 
@@ -39,13 +39,22 @@
                 <input type="hidden" name="moradorId" id="morador-id" required/>
                 <ul id="morador-lista"
                     class="hidden absolute z-20 mt-xs w-full max-h-48 overflow-y-auto bg-surface-container-lowest border border-outline-variant rounded-lg shadow-lg py-xs">
-                    <li th:each="m : ${moradores}"
-                        class="morador-opcao px-sm py-sm cursor-pointer font-body-sm text-on-surface hover:bg-surface-container-high transition-colors"
-                        th:attr="data-id=${m.id},data-label=${m.nome + ' — Apt ' + m.apartamento},data-search=${#strings.toLowerCase(m.nome + ' ' + m.email + ' apt ' + m.apartamento)}"
-                        th:text="${m.nome + ' — Apt ' + m.apartamento}">Morador</li>
-                    <li id="morador-lista-vazio" class="hidden px-sm py-sm font-body-sm text-on-surface-variant text-center">
-                        Nenhum morador encontrado.
-                    </li>
+                    <th:block th:fragment="moradorOpcoes">
+                        <li th:each="m : ${moradores}"
+                            class="morador-opcao px-sm py-sm cursor-pointer font-body-sm text-on-surface hover:bg-surface-container-high transition-colors"
+                            th:attr="data-id=${m.id},data-label=${m.nome + ' — Apt ' + m.apartamento}"
+                            th:text="${m.nome + ' — Apt ' + m.apartamento}">Morador</li>
+                        <li th:if="${#lists.isEmpty(moradores)}" class="px-sm py-sm font-body-sm text-on-surface-variant text-center">
+                            Nenhum morador encontrado.
+                        </li>
+                        <li th:if="${hasMore}" id="morador-carregar-mais-item" class="px-sm py-xs border-t border-outline-variant/30">
+                            <button type="button" id="morador-btn-carregar-mais"
+                                    th:data-pagina-atual="${paginaAtual}"
+                                    class="w-full text-center font-label-md text-primary hover:underline py-xs">
+                                Carregar mais resultados...
+                            </button>
+                        </li>
+                    </th:block>
                 </ul>
             </div>
             <div>

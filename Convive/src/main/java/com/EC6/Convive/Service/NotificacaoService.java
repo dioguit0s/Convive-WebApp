@@ -4,7 +4,10 @@ import com.EC6.Convive.Model.Notificacao;
 import com.EC6.Convive.Model.Usuario;
 import com.EC6.Convive.Repository.NotificacaoRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +31,11 @@ public class NotificacaoService {
 
     public List<Notificacao> listAllByUserId(UUID user) {
         return notificacaoRepository.getAllByMoradorId(user);
+    }
+
+    public Page<Notificacao> findPaginatedByUser(UUID userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("dataEnvio").descending());
+        return notificacaoRepository.findByMorador_IdOrderByDataEnvioDesc(userId, pageable);
     }
 
     public Notificacao searchById(UUID id) {

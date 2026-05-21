@@ -4,6 +4,9 @@ function abrirModal(botao) {
     document.getElementById('edit-email').value = botao.getAttribute('data-email');
     document.getElementById('edit-apartamento').value = botao.getAttribute('data-apartamento');
 
+    const isInadimplente = botao.getAttribute('data-inadimplente') === 'true';
+    document.getElementById('edit-inadimplente').checked = isInadimplente;
+
     document.getElementById('modalEdicao').classList.remove('hidden');
 }
 

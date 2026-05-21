@@ -5,6 +5,10 @@ import com.EC6.Convive.Model.StatusArea;
 import com.EC6.Convive.Repository.AreaComumRepository;
 import com.EC6.Convive.Repository.ReservaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +37,11 @@ public class AreaComumService {
 
     public List<AreaComum> listAll() {
         return areaComumRepository.findAll();
+    }
+
+    public Page<AreaComum> findPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("nome").ascending());
+        return areaComumRepository.findAllByOrderByNomeAsc(pageable);
     }
 
     public AreaComum searchById(UUID id) {

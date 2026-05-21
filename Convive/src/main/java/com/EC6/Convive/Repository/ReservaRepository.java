@@ -2,6 +2,9 @@ package com.EC6.Convive.Repository;
 
 import com.EC6.Convive.Model.Reserva;
 import com.EC6.Convive.Model.StatusReserva;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +21,20 @@ import java.util.UUID;
 public interface ReservaRepository extends JpaRepository<Reserva, UUID> {
 
     List<Reserva> findByReservadoPorId(UUID usuarioId);
+
+    Page<Reserva> findByReservadoPorIdOrderByInicioDesc(UUID usuarioId, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"reservadoPor", "areaReservada"})
+    @Query("""
+            SELECT r FROM Reserva r
+            WHERE r.status = :status
+            AND (:busca IS NULL OR LOWER(r.reservadoPor.nome) LIKE LOWER(CONCAT('%', :busca, '%'))
+                OR LOWER(COALESCE(r.reservadoPor.email, '')) LIKE LOWER(CONCAT('%', :busca, '%'))
+                OR LOWER(r.areaReservada.nome) LIKE LOWER(CONCAT('%', :busca, '%')))
+            """)
+    Page<Reserva> findTriagem(@Param("status") StatusReserva status,
+                              @Param("busca") String busca,
+                              Pageable pageable);
 
     Optional<Reserva> findByIdAndReservadoPor_Id(UUID id, UUID reservadoPorId);
 

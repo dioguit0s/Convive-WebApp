@@ -18,7 +18,7 @@
 <body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row">
 <div th:replace="~{fragments/morador/components :: navMorador(activeItem='home')}"></div>
 
-<main class="flex-1 md:ml-64 p-margin md:p-xl w-full max-w-7xl mx-auto flex flex-col gap-lg">
+<main class="flex-1 md:ml-64 p-4 sm:p-6 md:p-margin md:p-xl w-full min-w-0 max-w-7xl mx-auto flex flex-col gap-lg">
 
     <header class="flex justify-between items-end border-b border-outline-variant/20 pb-md">
         <div>
@@ -38,8 +38,7 @@
                 Nenhum comunicado no momento.
             </div>
 
-            <article th:each="comunicado, iterStat : ${comunicados}"
-                     th:if="${iterStat.index < 3}"
+            <article th:each="comunicado : ${comunicados}"
                      class="bg-surface-container-lowest border border-[#E2E8F0] rounded-xl p-md shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow duration-300">
 
                 <div class="flex justify-between items-start mb-sm">
@@ -60,7 +59,7 @@
                 </p>
             </article>
 
-            <div th:if="${#lists.size(comunicados) >= 3}" class="flex justify-center mt-sm">
+            <div th:if="${!#lists.isEmpty(comunicados)}" class="flex justify-center mt-sm">
                 <a th:href="@{/morador/comunicados}" class="inline-flex items-center gap-xs text-primary font-label-md text-label-md hover:underline transition-all">
                     Ver todos os comunicados
                     <span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
@@ -77,8 +76,7 @@
                     Você não possui reservas futuras.
                 </div>
 
-                <div th:each="reserva, iterStat : ${reservas}"
-                     th:if="${iterStat.index < 3}"
+                <div th:each="reserva : ${reservas}"
                      class="flex gap-sm items-start pb-sm border-b border-outline-variant/20 last:border-0 last:pb-0">
                     <div class="mt-1 bg-surface-container text-on-surface-variant rounded-full p-2 flex items-center justify-center">
                         <span class="material-symbols-outlined text-[20px]" data-icon="event">event</span>
@@ -97,7 +95,7 @@
                     </div>
                 </div>
 
-                <div th:if="${#lists.size(reservas) >= 3}" class="flex justify-center pt-sm border-t border-outline-variant/20">
+                <div th:if="${!#lists.isEmpty(reservas)}" class="flex justify-center pt-sm border-t border-outline-variant/20">
                     <a th:href="@{/morador/reservas}" class="inline-flex items-center gap-xs text-primary font-label-md text-label-md hover:underline transition-all">
                         Ver todas as reservas
                         <span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>

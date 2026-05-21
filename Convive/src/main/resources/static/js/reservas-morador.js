@@ -255,7 +255,7 @@
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className =
-        'flex flex-col items-center justify-center gap-xs p-sm rounded-xl border transition-colors min-h-[4.5rem] ' +
+        'flex flex-col items-center justify-center gap-xs p-1.5 sm:p-sm rounded-xl border transition-colors min-h-14 sm:min-h-[4.5rem] ' +
         (dayStart === sel
           ? 'border-primary bg-surface-container-highest ring-1 ring-primary/20'
           : 'border-outline-variant/30 bg-surface-container-lowest hover:bg-surface-container-high');
@@ -404,6 +404,55 @@
           modal.showModal();
         });
       }
+
+  const btnCarregarMais = document.getElementById('btnCarregarMaisReservasMorador');
+  if (btnCarregarMais) {
+    btnCarregarMais.addEventListener('click', async function () {
+      const icon = document.getElementById('iconCarregarMaisReservasMorador');
+      const texto = document.getElementById('textoCarregarMaisReservasMorador');
+      const paginaAtual = parseInt(btnCarregarMais.getAttribute('data-pagina-atual'), 10);
+      const totalPaginas = parseInt(btnCarregarMais.getAttribute('data-total-paginas'), 10);
+      const proximaPagina = paginaAtual + 1;
+
+      if (proximaPagina >= totalPaginas || !source) return;
+
+      if (icon) icon.classList.add('animate-spin');
+      if (texto) texto.innerText = 'Carregando...';
+      btnCarregarMais.disabled = true;
+
+      try {
+        const response = await fetch(moradorReservasBase + '/mais?page=' + proximaPagina);
+        if (response.ok) {
+          const html = await response.text();
+          const loadMore = document.getElementById('containerCarregarMaisReservasMorador');
+          if (loadMore) {
+            loadMore.insertAdjacentHTML('beforebegin', html);
+          } else {
+            source.insertAdjacentHTML('beforeend', html);
+          }
+          btnCarregarMais.setAttribute('data-pagina-atual', String(proximaPagina));
+          renderWeek();
+          renderList();
+          if (proximaPagina + 1 >= totalPaginas) {
+            if (loadMore) loadMore.style.display = 'none';
+          } else {
+            if (texto) texto.innerText = 'Carregar mais reservas';
+            if (icon) icon.classList.remove('animate-spin');
+            btnCarregarMais.disabled = false;
+          }
+        } else {
+          if (texto) texto.innerText = 'Carregar mais reservas';
+          if (icon) icon.classList.remove('animate-spin');
+          btnCarregarMais.disabled = false;
+        }
+      } catch (err) {
+        console.error(err);
+        if (texto) texto.innerText = 'Carregar mais reservas';
+        if (icon) icon.classList.remove('animate-spin');
+        btnCarregarMais.disabled = false;
+      }
+    });
+  }
 
   renderWeek();
   renderList();

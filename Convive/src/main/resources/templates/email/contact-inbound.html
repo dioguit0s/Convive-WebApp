@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Mensagem de contato</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f1f5f9;">
+<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color:#f1f5f9;padding:32px 16px;">
+    <tr>
+        <td align="center">
+            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width:560px;background-color:#ffffff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+                <tr>
+                    <td style="padding:0;">
+                        <div th:replace="~{email/fragments :: header}"></div>
+                        <div style="padding:8px 24px 24px;">
+                            <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#334155;line-height:1.6;">
+                                Prezada equipe,
+                            </p>
+                            <p style="margin:0 0 16px;font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#334155;line-height:1.6;">
+                                Foi recebida uma nova mensagem pelo formulário de contato do site Convive.
+                            </p>
+                            <div th:replace="~{email/fragments :: detailsTable}"></div>
+                            <p style="margin:16px 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:600;color:#334155;">
+                                Mensagem:
+                            </p>
+                            <p style="margin:0 0 24px;padding:16px;background-color:#f8fafc;border-radius:6px;border:1px solid #e2e8f0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#1e293b;line-height:1.6;white-space:pre-wrap;"
+                               th:text="${messageBody}">Texto</p>
+                            <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#64748b;line-height:1.5;">
+                                Para responder ao remetente, utilize a função &quot;Responder&quot; do seu cliente de e-mail.
+                            </p>
+                        </div>
+                        <div th:replace="~{email/fragments :: footer(false)}"></div>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
