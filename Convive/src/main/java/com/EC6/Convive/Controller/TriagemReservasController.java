@@ -4,10 +4,12 @@ import com.EC6.Convive.Event.ReservaRejeitadaEvent;
 import com.EC6.Convive.Model.Reserva;
 import com.EC6.Convive.Model.StatusReserva;
 import com.EC6.Convive.Model.Usuario;
+import com.EC6.Convive.Security.CustomUserDetails;
 import com.EC6.Convive.Service.ReservaService;
 import com.EC6.Convive.Service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +28,9 @@ public class TriagemReservasController {
     private final ApplicationEventPublisher eventPublisher;
 
     @GetMapping
-    public String gerenciarReservas(Model model) {
+    public String gerenciarReservas(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        Usuario usuarioLogado = usuarioService.getByEmail(userDetails.getUsername());
+        model.addAttribute("usuario", usuarioLogado);
         List<Reserva> reservas = reservaService.listAll();
         model.addAttribute("reservas", reservas);
         return "moderador/triagemReservas";

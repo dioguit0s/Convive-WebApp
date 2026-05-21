@@ -61,32 +61,31 @@
           </thead>
           <tbody class="divide-y divide-outline-variant/60 font-data-tabular text-data-tabular text-on-surface">
 
-          <tr th:each="morador : ${moradorPage.content}" class="hover:bg-surface-container-low/30 transition-colors group">
-            <td class="py-sm px-md flex items-center gap-sm">
-              <div class="w-8 h-8 rounded-full bg-surface-container-highest text-primary flex items-center justify-center font-bold text-[12px]"
-                   th:text="${#strings.substring(morador.nome,0,1)}">M</div>
-              <span class="font-medium" th:text="${morador.nome}">Maria Silva</span>
+          <tr th:each="morador : ${moradorPage.content}" class="border-b border-outline-variant/20 hover:bg-surface-container-lowest/50 transition-colors">
+
+            <td class="px-6 py-3 text-primary font-medium">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary font-bold overflow-hidden border border-outline-variant/30 flex-shrink-0">
+                  <img th:if="${morador.fotoPerfil != null}"
+                       th:src="${morador.fotoPerfil}"
+                       alt="Foto de Perfil"
+                       class="w-full h-full object-cover">
+
+                  <span th:if="${morador.fotoPerfil == null}"
+                        th:text="${morador.nome != null ? morador.nome.substring(0,1).toUpperCase() : 'U'}"
+                        class="text-xs">U</span>
+                </div>
+
+                <span th:text="${morador.nome}">Nome do Usuário</span>
+              </div>
             </td>
 
-            <td class="py-sm px-md" th:text="${morador.tipoUsuario == 'MORADOR' ? morador.apartamento : (morador.apartamento != null ? morador.apartamento : 'Admin/Sem Unidade')}">101</td>
-
-            <td class="py-sm px-md" th:text="${morador.email}">email@example.com</td>
-
-            <td class="py-sm px-md">
-              <span th:if="${!morador.inadimplente}" class="inline-flex items-center px-2 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-[10px] uppercase leading-none">Adimplente</span>
-              <span th:if="${morador.inadimplente}" class="inline-flex items-center px-2 py-1 rounded-full bg-error-container text-on-error-container font-label-md text-[10px] uppercase leading-none">Inadimplente</span>
-            </td>
-
-            <td class="py-sm px-md text-right">
-              <button class="text-on-surface-variant hover:text-primary transition-colors p-xs rounded hover:bg-surface-container-low opacity-0 group-hover:opacity-100 focus:opacity-100"
-                      th:data-id="${morador.id}"
-                      th:data-nome="${morador.nome}"
-                      th:data-email="${morador.email}"
-                      th:data-apartamento="${morador.tipoUsuario == 'MORADOR' ? morador.apartamento : (morador.tipoUsuario == 'MODERADOR' ? morador.apartamento : '')}"
-                      th:data-tipo="${morador.tipoUsuario == 'MORADOR' ? 'morador' : 'moderador'}"
-                      onclick="abrirModal(this)">
-                <span class="material-symbols-outlined" data-icon="edit">edit</span>
-              </button>
+            <td class="px-6 py-3 text-on-surface-variant" th:text="${morador.email}">email@convive.com</td>
+            <td class="px-6 py-3 text-on-surface-variant" th:text="${morador.getTipoUsuario() == 'MODERADOR' ? (morador.apartamento != null ? morador.apartamento : 'N/A') : (morador.apartamento != null ? morador.apartamento : 'Não Atribuído')}">000</td>
+            <td class="px-6 py-3">
+        <span class="px-2 py-1 rounded text-xs font-semibold"
+              th:classappend="${morador.getTipoUsuario() == 'MODERADOR'} ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'"
+              th:text="${morador.getTipoUsuario()}">TIPO</span>
             </td>
           </tr>
 

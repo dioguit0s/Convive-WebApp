@@ -3,8 +3,12 @@ package com.EC6.Convive.Controller;
 import com.EC6.Convive.Model.Ocorrencia;
 import com.EC6.Convive.Model.Prioridade;
 import com.EC6.Convive.Model.StatusOcorrencia;
+import com.EC6.Convive.Model.Usuario;
+import com.EC6.Convive.Security.CustomUserDetails;
 import com.EC6.Convive.Service.OcorrenciaService;
+import com.EC6.Convive.Service.UsuarioService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +23,12 @@ import java.util.UUID;
 public class TriagemOcorrenciasController {
 
     private final OcorrenciaService ocorrenciaService;
+    private final UsuarioService usuarioService;
 
     @GetMapping
-    public String gerenciarOcorrencias(Model model) {
+    public String gerenciarOcorrencias(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        Usuario usuarioLogado = usuarioService.getByEmail(userDetails.getUsername());
+        model.addAttribute("usuario", usuarioLogado);
         List<Ocorrencia> ocorrencias = ocorrenciaService.listAll();
         model.addAttribute("ocorrencias", ocorrencias);
         return "moderador/triagemOcorrencias";

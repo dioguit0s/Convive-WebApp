@@ -10,12 +10,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.UUID;
+import java.util.UUID;import com.EC6.Convive.Security.CustomUserDetails;
 
 @Controller
 @RequiredArgsConstructor
@@ -28,10 +31,14 @@ public class MoradorUsuarioController {
 
     @GetMapping
     public String listarUsuarios(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String search,
             Model model) {
+
+        Usuario usuarioLogado = usuarioService.getByEmail(userDetails.getUsername());
+        model.addAttribute("usuario", usuarioLogado);
 
         Pageable pageable = PageRequest.of(page, size);
         Page<Usuario> moradorPage = usuarioService.findPaginatedAndFiltered(search, pageable);

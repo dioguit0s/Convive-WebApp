@@ -51,6 +51,16 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
+    public Usuario update(UUID id, Usuario moradorAtualizado) {
+        Usuario usuario = searchById(id);
+
+        usuario.setNome(moradorAtualizado.getNome());
+        usuario.setEmail(moradorAtualizado.getEmail());
+        usuario.setFotoPerfil(moradorAtualizado.getFotoPerfil());
+
+        return usuarioRepository.save(usuario);
+    }
+
     public Page<Usuario> findPaginatedAndFiltered(String search, Pageable pageable) {
         if (search != null && !search.trim().isEmpty()) {
             return usuarioRepository.findByNomeContainingIgnoreCaseOrEmailContainingIgnoreCase(search, search, pageable);

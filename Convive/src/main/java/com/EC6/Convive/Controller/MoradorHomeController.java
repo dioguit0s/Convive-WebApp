@@ -39,10 +39,9 @@ public class MoradorHomeController {
 
     @GetMapping("/home")
     public String dashboardMorador(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
-        Usuario usuario = userDetails.getUsuario();
+        Usuario usuario = usuarioService.getByEmail(userDetails.getUsername());
 
         List<Comunicado> comunicados = comunicadoService.findAllOrderByDate();
-
         List<Reserva> reservas = reservaService.listByUser(usuario.getId());
 
         model.addAttribute("usuario", usuario);
@@ -54,12 +53,14 @@ public class MoradorHomeController {
 
     @GetMapping("/reservas")
     public String listarReservasMorador(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
-        Usuario usuario = userDetails.getUsuario();
+        Usuario usuario = usuarioService.getByEmail(userDetails.getUsername());
+
         List<Reserva> reservas = reservaService.listByUser(usuario.getId()).stream()
                 .sorted(Comparator.comparing(Reserva::getInicio, Comparator.nullsLast(Comparator.naturalOrder())))
                 .toList();
         List<AreaComum> areasComuns = areaComumService.listAll();
         boolean temAreaAtiva = areasComuns.stream().anyMatch(a -> a.getStatusArea() == StatusArea.ATIVA);
+
         model.addAttribute("usuario", usuario);
         model.addAttribute("reservas", reservas);
         model.addAttribute("areasComuns", areasComuns);

@@ -12,9 +12,19 @@
 
     <nav class="hidden md:flex flex-col h-screen p-md gap-base bg-background text-primary w-64 docked left-0 h-full fixed border-r border-outline-variant/30">
         <div class="mb-lg px-2 flex items-center gap-sm">
-            <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary font-bold">
-                C
-            </div>
+            <form th:action="@{/perfil/upload-foto}" method="post" enctype="multipart/form-data" id="formFotoPerfil" class="m-0">
+                <label class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary font-bold overflow-hidden cursor-pointer relative group transition-all">
+
+                    <span th:if="${usuario?.fotoPerfil == null}" th:text="${usuario?.nome != null ? usuario.nome.substring(0,1).toUpperCase() : 'C'}">C</span>
+
+                    <img th:if="${usuario?.fotoPerfil != null}" th:src="${usuario.fotoPerfil}" alt="Foto de Perfil" class="w-full h-full object-cover">
+
+                    <div class="absolute inset-0 bg-black/40 hidden group-hover:flex items-center justify-center transition-opacity">
+                        <span class="material-symbols-outlined text-white text-sm" style="font-size: 18px;">upload</span>
+                    </div>
+                    <input type="file" name="foto" accept="image/*" class="hidden" onchange="document.getElementById('formFotoPerfil').submit();">
+                </label>
+            </form>
             <div>
                 <div class="text-h3 font-h3 font-bold text-primary" th:text="${usuario?.nome ?: 'Administrador'}">Convive</div>
                 <div class="font-body-sm text-body-sm text-on-surface-variant" th:text="${usuario != null ? usuario.getTipoUsuario() : 'Portal de Gestão'}">Portal do Morador</div>
