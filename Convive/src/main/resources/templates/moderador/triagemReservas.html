@@ -20,13 +20,13 @@
         }
     </style>
 </head>
-<body class="bg-background text-on-background font-body-md h-screen w-full overflow-hidden">
+<body class="bg-background text-on-background font-body-md min-h-dvh w-full flex flex-col md:flex-row">
 
 <div th:replace="~{fragments/morador/components :: navMorador(activeItem='triagemReservas')}"></div>
 
 
-<main class="flex-1 overflow-y-auto bg-background relative md:ml-64">
-    <div class="max-w-[1200px] mx-auto px-margin py-lg flex flex-col gap-lg">
+<main class="flex-1 overflow-y-auto bg-background relative w-full min-w-0 md:ml-64">
+    <div class="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-margin py-lg flex flex-col gap-lg">
 
         <div th:if="${sucesso}" class="p-sm rounded-lg bg-[#dcfce7] text-[#166534] font-body-sm" th:text="${sucesso}"></div>
         <div th:if="${erro}" class="p-sm rounded-lg bg-[#fee2e2] text-[#991b1b] font-body-sm" th:text="${erro}"></div>
@@ -38,15 +38,16 @@
             </div>
         </header>
 
-        <div class="flex border-b border-outline-variant w-full">
-            <button onclick="mudarAba('PENDENTE')" id="tab-PENDENTE" class="tab-btn px-md py-sm font-label-md text-label-md uppercase transition-colors tracking-wide border-b-2 border-primary text-primary">
+        <div class="flex border-b border-outline-variant w-full overflow-x-auto">
+            <button onclick="mudarAba('PENDENTE')" id="tab-PENDENTE" class="tab-btn shrink-0 px-md py-sm font-label-md text-label-md uppercase transition-colors tracking-wide border-b-2 border-primary text-primary">
                 Pendentes
             </button>
-            <button onclick="mudarAba('APROVADO')" id="tab-APROVADO" class="tab-btn px-md py-sm font-label-md text-label-md uppercase text-on-surface-variant hover:text-on-surface transition-colors tracking-wide">
+            <button onclick="mudarAba('APROVADO')" id="tab-APROVADO" class="tab-btn shrink-0 px-md py-sm font-label-md text-label-md uppercase text-on-surface-variant hover:text-on-surface transition-colors tracking-wide">
                 Aprovadas
             </button>
-            <button onclick="mudarAba('REPROVADO')" id="tab-REPROVADO" class="tab-btn px-md py-sm font-label-md text-label-md uppercase text-on-surface-variant hover:text-on-surface transition-colors tracking-wide">
-                Canceladas/Rejeitadas
+            <button onclick="mudarAba('REPROVADO')" id="tab-REPROVADO" class="tab-btn shrink-0 px-md py-sm font-label-md text-label-md uppercase text-on-surface-variant hover:text-on-surface transition-colors tracking-wide">
+                <span class="sm:hidden">Canceladas</span>
+                <span class="hidden sm:inline">Canceladas/Rejeitadas</span>
             </button>
         </div>
 

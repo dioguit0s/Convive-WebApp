@@ -2,26 +2,49 @@
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<nav th:fragment="navbar" class="bg-surface-container-lowest flex justify-between items-center px-margin py-4 w-full shadow-sm sticky top-0 z-50">
+<th:block th:fragment="navbar">
+    <nav class="bg-surface-container-lowest flex justify-between items-center px-4 sm:px-6 md:px-margin py-4 w-full shadow-sm sticky top-0 z-50">
+        <div class="flex items-center gap-2">
+            <a th:href="@{/}" class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-3xl" data-icon="domain">domain</span>
+                <div class="text-h2 font-h2 text-primary">Convive</div>
+            </a>
+        </div>
+        <div class="hidden md:flex gap-md">
+            <a th:href="@{/}" class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200">Home</a>
+            <a th:href="@{/features}" class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200">Features</a>
+            <a th:href="@{/about}" class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200">Sobre nós</a>
+            <a th:href="@{/contact}" class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200">Contato</a>
+        </div>
+        <div class="flex items-center gap-sm">
+            <a th:href="@{/login}" class="hidden sm:inline-block bg-primary text-on-primary font-label-md text-label-md px-md py-sm rounded-lg hover:opacity-90 transition-opacity no-underline">Login</a>
+            <button id="public-nav-toggle" type="button" class="md:hidden text-primary p-2 rounded-lg hover:bg-surface-container-high focus:outline-none"
+                    aria-expanded="false" aria-controls="public-nav-drawer" aria-label="Abrir menu">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+        </div>
+    </nav>
 
-    <div class="flex items-center gap-2">
-        <a th:href="@{/}" class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary text-3xl" data-icon="domain">domain</span>
-            <div class="text-h2 font-h2 text-primary">Convive</div>
-        </a>
-    </div>
-    <div class="hidden md:flex gap-md">
-        <a th:href="@{/}" class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200">Home</a>
-        <a th:href="@{/features}" class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200">Features</a>
-        <a th:href="@{/about}" class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200">Sobre nós</a>
-        <a th:href="@{/contact}" class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors duration-200">Contato</a>
-    </div>
-    <div>
-        <a th:href="@{/login}" class="bg-primary text-on-primary font-label-md text-label-md px-md py-sm rounded-lg hover:opacity-90 transition-opacity no-underline inline-block">Login</a>
-    </div>
-</nav>
+    <div id="public-nav-backdrop" class="hidden md:hidden fixed inset-0 bg-black/40 z-[55]" aria-hidden="true"></div>
+    <nav id="public-nav-drawer" aria-hidden="true"
+         class="md:hidden fixed top-0 right-0 h-full w-[min(100%,280px)] bg-surface-container-lowest border-l border-outline-variant/30 z-[60] flex flex-col p-md gap-sm translate-x-full transition-transform duration-300 ease-out shadow-xl">
+        <div class="flex justify-between items-center mb-md shrink-0">
+            <div class="text-h3 font-h3 text-primary font-bold">Menu</div>
+            <button id="public-nav-close" type="button" class="text-on-surface-variant p-2 rounded-lg hover:bg-surface-container-high" aria-label="Fechar menu">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <a th:href="@{/}" class="font-body-md text-body-md text-on-surface-variant hover:text-primary py-sm px-sm rounded-lg hover:bg-surface-container-high transition-colors">Home</a>
+        <a th:href="@{/features}" class="font-body-md text-body-md text-on-surface-variant hover:text-primary py-sm px-sm rounded-lg hover:bg-surface-container-high transition-colors">Features</a>
+        <a th:href="@{/about}" class="font-body-md text-body-md text-on-surface-variant hover:text-primary py-sm px-sm rounded-lg hover:bg-surface-container-high transition-colors">Sobre nós</a>
+        <a th:href="@{/contact}" class="font-body-md text-body-md text-on-surface-variant hover:text-primary py-sm px-sm rounded-lg hover:bg-surface-container-high transition-colors">Contato</a>
+        <a th:href="@{/login}" class="mt-auto bg-primary text-on-primary font-label-md text-label-md px-md py-sm rounded-lg hover:opacity-90 transition-opacity no-underline text-center">Login</a>
+    </nav>
 
-<footer th:fragment="footer" class="bg-surface-container-lowest border-t border-outline-variant flex flex-col md:flex-row justify-between items-center px-margin py-lg w-full">
+    <script th:src="@{/js/app-nav.js}"></script>
+</th:block>
+
+<footer th:fragment="footer" class="bg-surface-container-lowest border-t border-outline-variant flex flex-col md:flex-row justify-between items-center px-4 sm:px-6 md:px-margin py-lg w-full">
     <div class="text-h3 font-h3 text-primary mb-md md:mb-0">Convive</div>
     <div class="flex flex-wrap justify-center gap-md mb-md md:mb-0">
         <a th:href="@{/contact}" class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary underline opacity-80 hover:opacity-100 transition-opacity" href="#">Contact Support</a>

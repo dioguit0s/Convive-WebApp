@@ -62,6 +62,7 @@ tailwind.config = {
             "spacing": {
                 "xs": "4px",
                 "margin": "32px",
+                "margin-sm": "16px",
                 "base": "8px",
                 "md": "24px",
                 "gutter": "24px",

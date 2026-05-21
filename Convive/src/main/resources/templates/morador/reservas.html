@@ -21,7 +21,7 @@
 <body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row">
 <div th:replace="~{fragments/morador/components :: navMorador(activeItem='reservas')}"></div>
 
-<main id="morador-reservas-main" class="flex-1 md:ml-64 p-margin md:p-xl w-full max-w-7xl mx-auto flex flex-col gap-lg"
+<main id="morador-reservas-main" class="flex-1 md:ml-64 p-4 sm:p-6 md:p-margin md:p-xl w-full max-w-7xl mx-auto flex flex-col gap-lg"
       th:data-lista-vazia-servidor="${#lists.isEmpty(reservas)}"
       th:data-csrf-parameter-name="${_csrf.parameterName}"
       th:data-csrf-token="${_csrf.token}"
@@ -62,7 +62,9 @@
                         </button>
                     </div>
                 </div>
-                <div id="cal-dias-semana" class="grid grid-cols-7 gap-xs sm:gap-sm" role="group" aria-label="Dias da semana"></div>
+                <div class="overflow-x-auto -mx-1 px-1 pb-1">
+                    <div id="cal-dias-semana" class="grid grid-cols-7 gap-xs sm:gap-sm min-w-[280px]" role="group" aria-label="Dias da semana"></div>
+                </div>
             </section>
 
             <section aria-labelledby="titulo-lista-reservas">
@@ -219,7 +221,7 @@
             </div>
 
             <div class="p-md overflow-y-auto bg-surface-bright flex flex-col gap-gutter">
-                <div class="grid grid-cols-2 gap-md">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-md">
                     <div class="flex flex-col gap-xs">
                         <label class="font-label-md text-label-md text-on-surface-variant uppercase">Ambiente</label>
                         <p id="detalhe-reserva-area" class="font-body-md text-body-md text-on-surface font-bold"></p>
@@ -230,7 +232,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-md">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-md">
                     <div class="flex flex-col gap-xs">
                         <label class="font-label-md text-label-md text-on-surface-variant uppercase">Início</label>
                         <p id="detalhe-reserva-inicio" class="font-body-md text-body-md text-on-surface"></p>

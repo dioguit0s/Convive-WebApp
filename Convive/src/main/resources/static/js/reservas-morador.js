@@ -255,7 +255,7 @@
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className =
-        'flex flex-col items-center justify-center gap-xs p-sm rounded-xl border transition-colors min-h-[4.5rem] ' +
+        'flex flex-col items-center justify-center gap-xs p-1.5 sm:p-sm rounded-xl border transition-colors min-h-14 sm:min-h-[4.5rem] ' +
         (dayStart === sel
           ? 'border-primary bg-surface-container-highest ring-1 ring-primary/20'
           : 'border-outline-variant/30 bg-surface-container-lowest hover:bg-surface-container-high');

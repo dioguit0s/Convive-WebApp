@@ -14,7 +14,7 @@
 
 <div th:replace="~{fragments/morador/components :: navMorador(activeItem='dashboard')}"></div>
 
-<main class="flex-1 overflow-y-auto bg-background md:ml-64 p-margin">
+<main class="flex-1 overflow-y-auto bg-background w-full min-w-0 md:ml-64 p-4 sm:p-6 md:p-margin">
     <div class="max-w-xl mx-auto">
         <div th:if="${erro}" class="p-sm rounded-lg bg-[#fee2e2] text-[#991b1b] font-body-sm mb-md" th:text="${erro}"></div>
 
