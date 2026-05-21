@@ -8,6 +8,7 @@ import com.EC6.Convive.Security.CustomUserDetails;
 import com.EC6.Convive.Service.AreaComumService;
 import com.EC6.Convive.Service.ComunicadoService;
 import com.EC6.Convive.Service.ReservaService;
+import com.EC6.Convive.Util.PaginationConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,9 +57,11 @@ public class MoradorHomeControllerTest {
 
     @Test
     void moradorHomeController_Dashboard_Sucesso() {
-        when(comunicadoService.findAllOrderByDate()).thenReturn(List.of(new Comunicado()));
-        when(reservaService.listByUser(usuarioMock.getId())).thenReturn(List.of(new Reserva()));
-        when(usuarioService.getByEmail(anyString())).thenReturn(usuarioMock);  // Mock this call
+        when(usuarioService.getByEmail(anyString())).thenReturn(usuarioMock);
+        when(comunicadoService.findTopPublished(PaginationConstants.HOME_PREVIEW_SIZE))
+                .thenReturn(List.of(new Comunicado()));
+        when(reservaService.findTopByUser(usuarioMock.getId(), PaginationConstants.HOME_PREVIEW_SIZE))
+                .thenReturn(List.of(new Reserva()));
 
         String view = moradorHomeController.dashboardMorador(userDetails, model);
 
