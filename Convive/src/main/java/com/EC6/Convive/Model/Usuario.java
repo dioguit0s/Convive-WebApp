@@ -34,7 +34,7 @@ public abstract class Usuario {
     private String status;
 
     @Column(name = "isInadimplente")
-    private boolean isInadimplente;
+    private boolean isInadimplente = true;
 
     @Column(name = "fotoPerfil")
     private String fotoPerfil;

@@ -22,8 +22,11 @@ public class ReservaService {
 
     private final ReservaRepository reservaRepository;
 
-    public Reserva insert(Reserva Reserva) {
-        return reservaRepository.save(Reserva);
+    public Reserva insert(Reserva reserva) {
+        if (reserva.getReservadoPor() != null && reserva.getReservadoPor().isInadimplente()) {
+            throw new RuntimeException("Moradores inadimplentes não têm permissão para reservar áreas comuns.");
+        }
+        return reservaRepository.save(reserva);
     }
 
     public List<Reserva> listAll() {
