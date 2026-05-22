@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -49,6 +50,15 @@ public class UsuarioService {
 
     public void delete(UUID id) {
         usuarioRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void alterarInadimplencia(UUID usuarioId, boolean status) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o ID: " + usuarioId));
+
+        usuario.setInadimplente(status);
+        usuarioRepository.save(usuario);
     }
 
     public Usuario update(UUID id, Usuario moradorAtualizado) {

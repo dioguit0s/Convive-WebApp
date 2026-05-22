@@ -4,6 +4,7 @@ import com.EC6.Convive.Model.*;
 import com.EC6.Convive.Security.CustomUserDetails;
 import com.EC6.Convive.Service.*;
 import com.EC6.Convive.Util.PaginationConstants;
+import com.EC6.Convive.Validator.MoradorHomeValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import com.EC6.Convive.Event.ReservaPendenteCriadaEvent;
@@ -38,6 +39,7 @@ public class MoradorHomeController {
     private final UsuarioService usuarioService;
     private final AreaComumService areaComumService;
     private final ApplicationEventPublisher eventPublisher;
+    private final MoradorHomeValidator moradorHomeValidator;
 
     @GetMapping("/home")
     public String dashboardMorador(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
@@ -100,52 +102,19 @@ public class MoradorHomeController {
             RedirectAttributes redirectAttributes
     ) {
         Usuario usuario = userDetails.getUsuario();
+        String erroValidacao = moradorHomeValidator.validarNovaReserva(usuario, areaId, dataReserva, turno, convidadosEstimados);
 
-        if (turno == null || !TURNOS_VALIDOS.contains(turno.toLowerCase(Locale.ROOT))) {
-            redirectAttributes.addFlashAttribute("erroReserva", "Turno inválido.");
+        if (erroValidacao != null) {
+            redirectAttributes.addFlashAttribute("erroReserva", erroValidacao);
             return "redirect:/morador/reservas";
         }
+
+        AreaComum area = areaComumService.searchById(areaId);
         turno = turno.toLowerCase(Locale.ROOT);
-
-        LocalDate hoje = LocalDate.now(ZONA_APP);
-        if (dataReserva.isBefore(hoje)) {
-            redirectAttributes.addFlashAttribute("erroReserva", "A data não pode ser no passado.");
-            return "redirect:/morador/reservas";
-        }
-
-        AreaComum area;
-        try {
-            area = areaComumService.searchById(areaId);
-        } catch (RuntimeException ex) {
-            redirectAttributes.addFlashAttribute("erroReserva", "Ambiente não encontrado.");
-            return "redirect:/morador/reservas";
-        }
-
-        if (area.getStatusArea() != StatusArea.ATIVA) {
-            redirectAttributes.addFlashAttribute("erroReserva", "Este ambiente não está disponível para reserva.");
-            return "redirect:/morador/reservas";
-        }
 
         Integer convidados = null;
         if (convidadosEstimados != null && !convidadosEstimados.isBlank()) {
-            try {
-                convidados = Integer.parseInt(convidadosEstimados.trim());
-            } catch (NumberFormatException ex) {
-                redirectAttributes.addFlashAttribute("erroReserva", "Número de convidados inválido.");
-                return "redirect:/morador/reservas";
-            }
-        }
-
-        if (convidados != null) {
-            if (convidados < 1) {
-                redirectAttributes.addFlashAttribute("erroReserva", "O número de convidados deve ser pelo menos 1.");
-                return "redirect:/morador/reservas";
-            }
-            if (convidados > area.getCapacidade()) {
-                redirectAttributes.addFlashAttribute("erroReserva",
-                        "O número de convidados não pode exceder a capacidade do ambiente (" + area.getCapacidade() + ").");
-                return "redirect:/morador/reservas";
-            }
+            convidados = Integer.parseInt(convidadosEstimados.trim());
         }
 
         LocalDateTime[] periodo = resolverPeriodoTurno(dataReserva, turno);
@@ -225,5 +194,26 @@ public class MoradorHomeController {
             };
             default -> throw new IllegalArgumentException("Turno inválido");
         };
+    }
+
+    @PostMapping("/usuarios/{id}/inadimplencia")
+    public String alterarInadimplenciaUsuario(
+            @PathVariable UUID id,
+            @RequestParam boolean inadimplente,
+            RedirectAttributes redirectAttributes
+    ) {
+        try {
+            usuarioService.alterarInadimplencia(id, inadimplente);
+
+            if (inadimplente) {
+                redirectAttributes.addFlashAttribute("sucesso", "Morador marcado como INADIMPLENTE com sucesso.");
+            } else {
+                redirectAttributes.addFlashAttribute("sucesso", "Restrição removida. Morador agora está ADIMPLENTE.");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("erro", "Erro ao tentar alterar o status do morador.");
+        }
+
+        return "redirect:/moderador/usuarios";
     }
 }
