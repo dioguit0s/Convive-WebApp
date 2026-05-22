@@ -48,6 +48,9 @@ function aplicarEvidencia(urlEvidencia) {
 function preencherDetalhes(card) {
   var id = card.getAttribute('data-id');
   var protocolo = card.getAttribute('data-protocolo');
+  var titulo = card.getAttribute('data-titulo');
+  var categoriaRotulo = card.getAttribute('data-categoria-rotulo');
+  var categoria = card.getAttribute('data-categoria');
   var prioridade = card.getAttribute('data-prioridade');
   var status = card.getAttribute('data-status');
   var descricao = card.getAttribute('data-descricao');
@@ -60,10 +63,20 @@ function preencherDetalhes(card) {
   setDetalheField('detalhe-protocolo', 'innerText', protocolo, function (p) { return '#' + p; });
   setDetalheField('detalhe-morador', 'innerText', morador);
   setDetalheField('detalhe-data', 'innerText', data);
+  setDetalheField('detalhe-titulo', 'innerText', titulo);
+  setDetalheField('detalhe-categoria', 'innerText', categoriaRotulo);
   setDetalheField('detalhe-descricao', 'innerText', descricao);
   setDetalheField('input-resposta', 'value', resposta);
   setDetalheField('select-prioridade', 'value', prioridade);
   setDetalheField('select-status', 'value', status);
+
+  var mostrarAviso = categoria === 'OUTRO' && prioridade === 'NAO_DEFINIDA';
+  ['detalhe-aviso-prioridade', 'detalhe-aviso-prioridade-mobile'].forEach(function (id) {
+    var aviso = document.getElementById(id);
+    if (!aviso) return;
+    if (mostrarAviso) aviso.classList.remove('hidden');
+    else aviso.classList.add('hidden');
+  });
 
   aplicarBadgePrioridade(prioridade);
   aplicarEvidencia(urlEvidencia);

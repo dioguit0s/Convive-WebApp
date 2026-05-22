@@ -26,7 +26,16 @@ public class OcorrenciaService {
     private final OcorrenciaRepository ocorrenciaRepository;
     private final ApplicationEventPublisher eventPublisher;
 
+    public void aplicarPrioridadePadrao(Ocorrencia ocorrencia) {
+        if (ocorrencia.getCategoria() == null) {
+            ocorrencia.setPrioridade(Prioridade.NAO_DEFINIDA);
+            return;
+        }
+        ocorrencia.setPrioridade(ocorrencia.getCategoria().getPrioridadePadrao());
+    }
+
     public Ocorrencia insert(Ocorrencia ocorrencia) {
+        aplicarPrioridadePadrao(ocorrencia);
         ocorrencia.setDataRegistro(LocalDateTime.now());
 
         String anoAtual = String.valueOf(Year.now().getValue());
@@ -50,6 +59,8 @@ public class OcorrenciaService {
         eventPublisher.publishEvent(new OcorrenciaCriadaEvent(
                 saved.getDataRegistro(),
                 saved.getUsuario().getNome(),
+                saved.getTitulo(),
+                saved.getCategoria().getRotulo(),
                 saved.getDescricao()
         ));
 

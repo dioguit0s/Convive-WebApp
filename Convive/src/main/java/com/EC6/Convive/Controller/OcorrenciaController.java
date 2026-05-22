@@ -70,15 +70,23 @@ public class OcorrenciaController {
     @PostMapping
     public String registrarNovaOcorrencia(
             @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam String titulo,
+            @RequestParam CategoriaOcorrencia categoria,
             @RequestParam String descricao,
             @RequestParam(value = "imagemEvidencia", required = false) MultipartFile imagemEvidencia,
             RedirectAttributes redirectAttributes) {
         try {
+            if (titulo == null || titulo.isBlank()) {
+                redirectAttributes.addFlashAttribute("erroOcorrencia", "O título é obrigatório.");
+                return "redirect:/morador/ocorrencias";
+            }
+
             Usuario usuarioLogado = userDetails.getUsuario();
 
             Ocorrencia novaOcorrencia = new Ocorrencia();
+            novaOcorrencia.setTitulo(titulo.trim());
+            novaOcorrencia.setCategoria(categoria);
             novaOcorrencia.setDescricao(descricao);
-            novaOcorrencia.setPrioridade(Prioridade.NAO_DEFINIDA);
             novaOcorrencia.setStatus(StatusOcorrencia.REGISTRADA);
             novaOcorrencia.setUsuario(usuarioLogado);
 

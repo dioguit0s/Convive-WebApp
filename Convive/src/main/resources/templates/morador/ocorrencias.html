@@ -52,7 +52,7 @@
                 <input id="filtro-busca-ocorrencia" th:value="${busca}"
                        onkeyup="debounceAplicarFiltrosMorador()"
                        class="w-full pl-[36px] pr-sm py-1.5 bg-surface-container-lowest rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-sm font-body-sm text-on-surface placeholder:text-outline outline-none transition-colors"
-                       placeholder="Buscar por protocolo ou descrição..."
+                       placeholder="Buscar por protocolo, título ou descrição..."
                        type="text"/>
             </div>
 
@@ -90,7 +90,7 @@
 
                 <div class="hidden md:grid grid-cols-12 gap-sm pb-xs border-b border-surface-container-low px-sm">
                     <div class="col-span-3 font-label-md text-label-md text-on-surface-variant uppercase">Protocolo</div>
-                    <div class="col-span-5 font-label-md text-label-md text-on-surface-variant uppercase">Descrição</div>
+                    <div class="col-span-5 font-label-md text-label-md text-on-surface-variant uppercase">Título</div>
                     <div class="col-span-2 font-label-md text-label-md text-on-surface-variant uppercase">Prioridade</div>
                     <div class="col-span-2 font-label-md text-label-md text-on-surface-variant uppercase">Status</div>
                 </div>
@@ -115,6 +115,8 @@
                              th:data-data-sort="${#temporals.format(ocorrencia.dataRegistro, 'yyyyMMddHHmmss')}"
                              th:data-prioridade="${ocorrencia.prioridade}"
                              th:data-status="${ocorrencia.status}"
+                             th:data-titulo="${ocorrencia.titulo}"
+                             th:data-categoria="${ocorrencia.categoria.rotulo}"
                              th:data-descricao="${ocorrencia.descricao}"
                              th:data-comentario="${ocorrencia.respostaModerador}"
                              th:data-evidencia="${ocorrencia.urlEvidencia != null ? ocorrencia.urlEvidencia : ''}">
@@ -124,8 +126,9 @@
                         </div>
 
                         <div class="md:col-span-5 flex flex-col md:block">
-                            <span class="md:hidden font-label-md text-label-md text-on-surface-variant uppercase mb-1">Descrição</span>
-                            <span class="font-body-sm text-body-sm text-on-surface font-medium truncate block max-w-full" th:text="${ocorrencia.descricao}">Descrição do problema</span>
+                            <span class="md:hidden font-label-md text-label-md text-on-surface-variant uppercase mb-1">Título</span>
+                            <span class="font-body-sm text-body-sm text-on-surface font-medium truncate block max-w-full" th:text="${ocorrencia.titulo}">Título</span>
+                            <span class="font-label-md text-label-md text-on-surface-variant mt-0.5" th:text="${ocorrencia.categoria.rotulo}">Categoria</span>
                         </div>
 
                         <div class="md:col-span-2 flex flex-col md:block">
@@ -181,6 +184,21 @@
 
                 <div class="p-md overflow-y-auto bg-surface-bright flex flex-col gap-gutter">
                     <div class="flex flex-col gap-xs">
+                        <label class="font-label-md text-label-md text-on-surface-variant uppercase" for="titulo">Título</label>
+                        <input type="text" id="titulo" name="titulo" maxlength="200" required
+                               class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-sm py-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-tertiary-container focus:ring-1 focus:ring-tertiary-container transition-colors"
+                               placeholder="Ex.: Barulho excessivo no andar de cima"/>
+                    </div>
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-label-md text-label-md text-on-surface-variant uppercase" for="categoria">Categoria / Tipo</label>
+                        <select id="categoria" name="categoria" required
+                                class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-sm py-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-tertiary-container focus:ring-1 focus:ring-tertiary-container transition-colors">
+                            <option value="" disabled selected>Selecione uma categoria</option>
+                            <option th:each="cat : ${T(com.EC6.Convive.Model.CategoriaOcorrencia).values()}"
+                                    th:value="${cat.name()}" th:text="${cat.rotulo}">Categoria</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-xs">
                         <label class="font-label-md text-label-md text-on-surface-variant uppercase" for="descricao">Descrição do Problema</label>
                         <textarea id="descricao" name="descricao" rows="5" required
                                   class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-sm py-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-tertiary-container focus:ring-1 focus:ring-tertiary-container transition-colors resize-none"
@@ -233,15 +251,25 @@
                     </div>
                 </div>
 
+                <div class="flex flex-col gap-xs">
+                    <label class="font-label-md text-label-md text-on-surface-variant uppercase">Título</label>
+                    <p id="detalhe-titulo-ocorrencia" class="font-body-md text-body-md text-on-surface font-medium"></p>
+                </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-md">
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-label-md text-label-md text-on-surface-variant uppercase">Categoria</label>
+                        <p id="detalhe-categoria" class="font-body-md text-body-md text-on-surface"></p>
+                    </div>
                     <div class="flex flex-col gap-xs">
                         <label class="font-label-md text-label-md text-on-surface-variant uppercase">Prioridade</label>
                         <p id="detalhe-prioridade" class="font-body-md text-body-md text-on-surface"></p>
                     </div>
-                    <div class="flex flex-col gap-xs">
-                        <label class="font-label-md text-label-md text-on-surface-variant uppercase">Status Atual</label>
-                        <p id="detalhe-status" class="font-body-md text-body-md text-on-surface font-medium"></p>
-                    </div>
+                </div>
+
+                <div class="flex flex-col gap-xs">
+                    <label class="font-label-md text-label-md text-on-surface-variant uppercase">Status Atual</label>
+                    <p id="detalhe-status" class="font-body-md text-body-md text-on-surface font-medium"></p>
                 </div>
 
                 <div class="flex flex-col gap-xs">

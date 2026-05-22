@@ -38,7 +38,9 @@ class NotificationEmailListenerTest {
         OcorrenciaCriadaEvent event = new OcorrenciaCriadaEvent(
                 LocalDateTime.of(2026, 5, 19, 14, 30),
                 "Maria",
-                "Barulho excessivo"
+                "Barulho excessivo",
+                "Barulho",
+                "Ruído após 23h"
         );
 
         listener.onOcorrenciaCriada(event);
@@ -58,7 +60,9 @@ class NotificationEmailListenerTest {
         OcorrenciaCriadaEvent event = new OcorrenciaCriadaEvent(
                 LocalDateTime.of(2026, 5, 19, 14, 30),
                 "Maria",
-                "Barulho excessivo"
+                "Barulho excessivo",
+                "Barulho",
+                "Ruído após 23h"
         );
 
         assertDoesNotThrow(() -> listener.onOcorrenciaCriada(event));

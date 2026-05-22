@@ -113,54 +113,76 @@ public class DataInitializer implements CommandLineRunner {
         LocalDateTime agora = LocalDateTime.now();
 
         salvarOcorrencia(moradores.get(0),
+                "Vazamento na garagem",
+                CategoriaOcorrencia.INFRAESTRUTURA,
                 "Vazamento no teto da garagem próximo à vaga 12.",
-                Prioridade.ALTA, StatusOcorrencia.REGISTRADA, agora.minusHours(3));
+                StatusOcorrencia.REGISTRADA, agora.minusHours(3));
 
         salvarOcorrencia(moradores.get(1),
+                "Lâmpada queimada no corredor",
+                CategoriaOcorrencia.OUTRO,
                 "Lâmpada queimada no corredor do 2º andar.",
-                Prioridade.NAO_DEFINIDA, StatusOcorrencia.REGISTRADA, agora.minusDays(1));
+                StatusOcorrencia.REGISTRADA, agora.minusDays(1));
 
         salvarOcorrencia(moradores.get(2),
+                "Barulho excessivo após 23h",
+                CategoriaOcorrencia.BARULHO,
                 "Barulho excessivo após 23h no apartamento 302.",
-                Prioridade.MEDIA, StatusOcorrencia.EM_ANALISE, agora.minusDays(2));
+                StatusOcorrencia.EM_ANALISE, agora.minusDays(2));
 
         salvarOcorrencia(moradores.get(3),
+                "Portão da garagem com falha",
+                CategoriaOcorrencia.INFRAESTRUTURA,
                 "Portão da garagem com falha intermitente.",
-                Prioridade.ALTA, StatusOcorrencia.EM_ANALISE, agora.minusDays(4));
+                StatusOcorrencia.EM_ANALISE, agora.minusDays(4));
 
         salvarOcorrencia(moradores.get(4),
+                "Animal solto nas áreas comuns",
+                CategoriaOcorrencia.REGRAS,
                 "Animal solto nas áreas comuns sem coleira.",
-                Prioridade.BAIXA, StatusOcorrencia.REGISTRADA, agora.minusDays(6));
+                StatusOcorrencia.REGISTRADA, agora.minusDays(6));
 
         salvarOcorrencia(moradores.get(0),
+                "Uso indevido da churrasqueira",
+                CategoriaOcorrencia.REGRAS,
                 "Uso indevido da churrasqueira fora do horário permitido.",
-                Prioridade.MEDIA, StatusOcorrencia.RESOLVIDA, agora.minusDays(10));
+                StatusOcorrencia.RESOLVIDA, agora.minusDays(10));
 
         salvarOcorrencia(moradores.get(1),
+                "Encomenda sem identificação",
+                CategoriaOcorrencia.REGRAS,
                 "Entrega de encomenda sem identificação na portaria.",
-                Prioridade.BAIXA, StatusOcorrencia.RESOLVIDA, agora.minusDays(15));
+                StatusOcorrencia.RESOLVIDA, agora.minusDays(15));
 
         salvarOcorrencia(moradores.get(5),
+                "Limpeza da piscina",
+                CategoriaOcorrencia.LIMPEZA,
                 "Reclamação sobre limpeza da piscina.",
-                Prioridade.NAO_DEFINIDA, StatusOcorrencia.REGISTRADA, agora.minusDays(20));
+                StatusOcorrencia.REGISTRADA, agora.minusDays(20));
 
         salvarOcorrencia(moradores.get(2),
+                "Revisão de multa por ruído",
+                CategoriaOcorrencia.BARULHO,
                 "Solicitação de revisão de multa por ruído.",
-                Prioridade.ALTA, StatusOcorrencia.REJEITADA, agora.minusDays(35));
+                StatusOcorrencia.REJEITADA, agora.minusDays(35));
 
         salvarOcorrencia(moradores.get(3),
+                "Infiltração na unidade 408",
+                CategoriaOcorrencia.INFRAESTRUTURA,
                 "Infiltração na parede da unidade 408.",
-                Prioridade.MEDIA, StatusOcorrencia.RESOLVIDA, agora.minusDays(40));
+                StatusOcorrencia.RESOLVIDA, agora.minusDays(40));
 
         System.out.println("10 ocorrências de teste criadas.");
     }
 
-    private void salvarOcorrencia(Morador morador, String descricao, Prioridade prioridade,
-                                  StatusOcorrencia status, LocalDateTime dataRegistro) {
+    private void salvarOcorrencia(Morador morador, String titulo, CategoriaOcorrencia categoria,
+                                  String descricao, StatusOcorrencia status, LocalDateTime dataRegistro) {
         Ocorrencia ocorrencia = new Ocorrencia();
         ocorrencia.setUsuario(morador);
+        ocorrencia.setTitulo(titulo);
+        ocorrencia.setCategoria(categoria);
         ocorrencia.setDescricao(descricao);
-        ocorrencia.setPrioridade(prioridade);
+        ocorrencia.setPrioridade(categoria.getPrioridadePadrao());
         ocorrencia.setStatus(status);
         ocorrencia.setDataRegistro(dataRegistro);
         ocorrencia.setProtocolo(gerarProtocolo());

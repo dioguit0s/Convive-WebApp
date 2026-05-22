@@ -94,6 +94,8 @@ public class EmailRenderingService {
         context.setVariable("detailRows", List.of(
                 new EmailDetailRow("Data do registro", EmailDateFormatter.format(event.dataRegistro())),
                 new EmailDetailRow("Registrado por", event.nomeMorador()),
+                new EmailDetailRow("Título", event.titulo()),
+                new EmailDetailRow("Categoria", event.categoria()),
                 new EmailDetailRow("Descrição", event.descricao())
         ));
 
@@ -105,6 +107,8 @@ public class EmailRenderingService {
 
                 Data do registro: %s
                 Registrado por: %s
+                Título: %s
+                Categoria: %s
                 Descrição: %s
 
                 Acesse: %s
@@ -115,6 +119,8 @@ public class EmailRenderingService {
                 recipientName,
                 EmailDateFormatter.format(event.dataRegistro()),
                 event.nomeMorador(),
+                event.titulo(),
+                event.categoria(),
                 event.descricao(),
                 actionUrl
         );

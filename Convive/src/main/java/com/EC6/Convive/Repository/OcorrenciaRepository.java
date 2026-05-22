@@ -26,6 +26,7 @@ public interface OcorrenciaRepository extends JpaRepository<Ocorrencia, UUID> {
             SELECT o FROM Ocorrencia o
             WHERE o.usuario.id = :moradorId
             AND (:busca IS NULL OR LOWER(o.protocolo) LIKE LOWER(CONCAT('%', :busca, '%'))
+                OR LOWER(o.titulo) LIKE LOWER(CONCAT('%', :busca, '%'))
                 OR LOWER(o.descricao) LIKE LOWER(CONCAT('%', :busca, '%')))
             AND (:status IS NULL OR o.status = :status)
             AND (:prioridade IS NULL OR o.prioridade = :prioridade)
@@ -40,6 +41,7 @@ public interface OcorrenciaRepository extends JpaRepository<Ocorrencia, UUID> {
     @Query("""
             SELECT o FROM Ocorrencia o
             WHERE (:busca IS NULL OR LOWER(o.protocolo) LIKE LOWER(CONCAT('%', :busca, '%'))
+                OR LOWER(o.titulo) LIKE LOWER(CONCAT('%', :busca, '%'))
                 OR LOWER(o.descricao) LIKE LOWER(CONCAT('%', :busca, '%')))
             AND (:status IS NULL OR o.status = :status)
             AND (:prioridade IS NULL OR o.prioridade = :prioridade)
