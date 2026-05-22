@@ -19,6 +19,13 @@ public class Ocorrencia {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(name = "titulo", length = 200, nullable = false)
+    private String titulo;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "categoria", nullable = false)
+    private CategoriaOcorrencia categoria;
+
     @Column(name = "descricao", length = 10000)
     private String descricao;
 

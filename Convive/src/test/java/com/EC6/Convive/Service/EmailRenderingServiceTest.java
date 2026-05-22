@@ -75,7 +75,9 @@ class EmailRenderingServiceTest {
         OcorrenciaCriadaEvent event = new OcorrenciaCriadaEvent(
                 LocalDateTime.of(2026, 5, 19, 14, 30),
                 "Maria",
-                "Barulho excessivo"
+                "Barulho excessivo no andar de cima",
+                "Barulho",
+                "Ruído após 23h no apartamento 302."
         );
 
         RenderedEmail rendered = emailRenderingService.renderOcorrenciaNotification("Ana", event);
@@ -84,7 +86,9 @@ class EmailRenderingServiceTest {
                 () -> assertTrue(rendered.htmlBody().contains("Ana")),
                 () -> assertTrue(rendered.htmlBody().contains("19/05/2026 às 14:30")),
                 () -> assertTrue(rendered.htmlBody().contains("triagemOcorrencias")),
-                () -> assertTrue(rendered.plainTextBody().contains("Maria"))
+                () -> assertTrue(rendered.htmlBody().contains("Barulho excessivo no andar de cima")),
+                () -> assertTrue(rendered.plainTextBody().contains("Maria")),
+                () -> assertTrue(rendered.plainTextBody().contains("Barulho"))
         );
     }
 

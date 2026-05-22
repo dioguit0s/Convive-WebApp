@@ -1,8 +1,10 @@
 package com.EC6.Convive.Service;
 
 import com.EC6.Convive.Event.OcorrenciaCriadaEvent;
+import com.EC6.Convive.Model.CategoriaOcorrencia;
 import com.EC6.Convive.Model.Morador;
 import com.EC6.Convive.Model.Ocorrencia;
+import com.EC6.Convive.Model.Prioridade;
 import com.EC6.Convive.Repository.OcorrenciaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +34,7 @@ public class OcorrenciaServiceTest {
     void ocorrenciaService_SearchById_Sucesso() {
         UUID id = UUID.randomUUID();
         Ocorrencia ocorrencia = new Ocorrencia();
+        ocorrencia.setTitulo("Lâmpada fundida");
         ocorrencia.setDescricao("Lâmpada fundida no corredor");
 
         when(ocorrenciaRepository.findById(id)).thenReturn(Optional.of(ocorrencia));
@@ -39,7 +42,7 @@ public class OcorrenciaServiceTest {
         Ocorrencia encontrada = ocorrenciaService.searchById(id);
 
         assertNotNull(encontrada);
-        assertEquals("Lâmpada fundida no corredor", encontrada.getDescricao());
+        assertEquals("Lâmpada fundida", encontrada.getTitulo());
     }
 
     @Test
@@ -56,7 +59,9 @@ public class OcorrenciaServiceTest {
         morador.setNome("João Silva");
 
         Ocorrencia ocorrencia = new Ocorrencia();
-        ocorrencia.setDescricao("Vazamento no hall");
+        ocorrencia.setTitulo("Vazamento no hall");
+        ocorrencia.setCategoria(CategoriaOcorrencia.INFRAESTRUTURA);
+        ocorrencia.setDescricao("Vazamento no hall do bloco A");
         ocorrencia.setUsuario(morador);
 
         when(ocorrenciaRepository.findTopByProtocoloStartingWithOrderByProtocoloDesc(any()))
@@ -70,6 +75,7 @@ public class OcorrenciaServiceTest {
         Ocorrencia salva = ocorrenciaService.insert(ocorrencia);
 
         assertNotNull(salva.getProtocolo());
+        assertEquals(Prioridade.ALTA, salva.getPrioridade());
         verify(ocorrenciaRepository).save(ocorrencia);
 
         ArgumentCaptor<OcorrenciaCriadaEvent> eventCaptor = ArgumentCaptor.forClass(OcorrenciaCriadaEvent.class);
@@ -77,7 +83,63 @@ public class OcorrenciaServiceTest {
 
         OcorrenciaCriadaEvent event = eventCaptor.getValue();
         assertEquals("João Silva", event.nomeMorador());
-        assertEquals("Vazamento no hall", event.descricao());
+        assertEquals("Vazamento no hall", event.titulo());
+        assertEquals("Infraestrutura", event.categoria());
+        assertEquals("Vazamento no hall do bloco A", event.descricao());
         assertEquals(LocalDateTime.of(2026, 5, 19, 10, 0), event.dataRegistro());
+    }
+
+    @Test
+    void ocorrenciaService_Insert_Barulho_AplicaPrioridadeAlta() {
+        Morador morador = new Morador();
+        morador.setNome("Ana");
+
+        Ocorrencia ocorrencia = new Ocorrencia();
+        ocorrencia.setTitulo("Barulho noturno");
+        ocorrencia.setCategoria(CategoriaOcorrencia.BARULHO);
+        ocorrencia.setDescricao("Barulho após 23h");
+        ocorrencia.setUsuario(morador);
+
+        when(ocorrenciaRepository.findTopByProtocoloStartingWithOrderByProtocoloDesc(any()))
+                .thenReturn(Optional.empty());
+        when(ocorrenciaRepository.save(any(Ocorrencia.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Ocorrencia salva = ocorrenciaService.insert(ocorrencia);
+
+        assertEquals(Prioridade.ALTA, salva.getPrioridade());
+    }
+
+    @Test
+    void ocorrenciaService_Insert_Outro_AplicaPrioridadeNaoDefinida() {
+        Morador morador = new Morador();
+        morador.setNome("Ana");
+
+        Ocorrencia ocorrencia = new Ocorrencia();
+        ocorrencia.setTitulo("Problema diverso");
+        ocorrencia.setCategoria(CategoriaOcorrencia.OUTRO);
+        ocorrencia.setDescricao("Situação não listada");
+        ocorrencia.setUsuario(morador);
+
+        when(ocorrenciaRepository.findTopByProtocoloStartingWithOrderByProtocoloDesc(any()))
+                .thenReturn(Optional.empty());
+        when(ocorrenciaRepository.save(any(Ocorrencia.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Ocorrencia salva = ocorrenciaService.insert(ocorrencia);
+
+        assertEquals(Prioridade.NAO_DEFINIDA, salva.getPrioridade());
+    }
+
+    @Test
+    void ocorrenciaService_Update_NaoReaplicaPrioridadePadrao() {
+        Ocorrencia ocorrencia = new Ocorrencia();
+        ocorrencia.setTitulo("Barulho");
+        ocorrencia.setCategoria(CategoriaOcorrencia.BARULHO);
+        ocorrencia.setPrioridade(Prioridade.BAIXA);
+
+        when(ocorrenciaRepository.save(ocorrencia)).thenReturn(ocorrencia);
+
+        Ocorrencia atualizada = ocorrenciaService.update(ocorrencia);
+
+        assertEquals(Prioridade.BAIXA, atualizada.getPrioridade());
     }
 }

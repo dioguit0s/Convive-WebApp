@@ -40,7 +40,7 @@
     <div class="bg-surface-container-lowest px-4 sm:px-6 md:px-margin py-sm border-b border-outline-variant flex flex-wrap gap-md items-center shadow-sm z-0 relative shrink-0">
         <div class="relative w-full md:w-64">
             <span class="material-symbols-outlined absolute left-sm top-1/2 transform -translate-y-1/2 text-on-surface-variant">search</span>
-            <input id="filtro-busca" th:value="${busca}" onkeyup="debounceAplicarFiltros()" class="w-full pl-lg pr-sm py-sm bg-surface rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-sm font-body-sm text-on-surface placeholder:text-outline outline-none transition-colors" placeholder="Buscar por protocolo ou título..." type="text"/>
+            <input id="filtro-busca" th:value="${busca}" onkeyup="debounceAplicarFiltros()" class="w-full pl-lg pr-sm py-sm bg-surface rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-sm font-body-sm text-on-surface placeholder:text-outline outline-none transition-colors" placeholder="Buscar por protocolo, título ou descrição..." type="text"/>
         </div>
         <div class="flex items-center gap-sm">
             <span class="text-label-md font-label-md text-on-surface-variant uppercase">Prioridade:</span>
@@ -92,6 +92,9 @@
                      th:data-protocolo="${ocorrencia.protocolo}"
                      th:data-prioridade="${ocorrencia.prioridade}"
                      th:data-status="${ocorrencia.status}"
+                     th:data-titulo="${ocorrencia.titulo}"
+                     th:data-categoria="${ocorrencia.categoria.name()}"
+                     th:data-categoria-rotulo="${ocorrencia.categoria.rotulo}"
                      th:data-descricao="${ocorrencia.descricao}"
                      th:data-resposta="${ocorrencia.respostaModerador ?: ''}"
                      th:data-data-sort="${#temporals.format(ocorrencia.dataRegistro, 'yyyyMMddHHmmss')}"
@@ -108,6 +111,11 @@
                         </div>
                         <span class="text-body-sm font-body-sm text-outline" th:text="${#temporals.format(ocorrencia.dataRegistro, 'dd/MM HH:mm')}">Data</span>
                     </div>
+                    <div class="mb-xs flex items-center gap-xs flex-wrap">
+                        <span class="text-label-md font-label-md px-sm py-xs rounded-full bg-surface-container-low text-on-surface-variant border border-outline-variant uppercase"
+                              th:text="${ocorrencia.categoria.rotulo}">Categoria</span>
+                    </div>
+                    <p class="text-body-md font-body-md text-on-surface font-medium mb-xs line-clamp-1" th:text="${ocorrencia.titulo}">Título...</p>
                     <p class="text-body-sm font-body-sm text-on-surface-variant mb-md line-clamp-2" th:text="${ocorrencia.descricao}">Descrição...</p>
 
                     <div class="flex justify-between items-center border-t border-outline-variant pt-sm mt-sm">
@@ -165,6 +173,13 @@
                 </div>
 
                 <div class="flex-1 min-h-0 overflow-y-auto p-md flex flex-col gap-lg">
+
+                    <section>
+                        <h4 class="text-label-md font-label-md text-on-surface-variant uppercase mb-sm">Título e Categoria</h4>
+                        <p id="detalhe-titulo" class="text-body-md font-body-md text-on-surface font-medium mb-xs"></p>
+                        <p id="detalhe-categoria" class="text-body-sm font-body-sm text-on-surface-variant mb-xs"></p>
+                        <p id="detalhe-aviso-prioridade" class="text-body-sm font-body-sm text-outline hidden">Prioridade aguardando definição pelo moderador.</p>
+                    </section>
 
                     <section>
                         <h4 class="text-label-md font-label-md text-on-surface-variant uppercase mb-sm">Descrição do Problema</h4>
@@ -241,6 +256,12 @@
                     </div>
                 </div>
                 <div class="p-md flex flex-col gap-md flex-1">
+                    <section>
+                        <h4 class="text-label-md font-label-md text-on-surface-variant uppercase mb-sm">Título e Categoria</h4>
+                        <p id="detalhe-titulo-mobile" class="text-body-md font-body-md text-on-surface font-medium mb-xs"></p>
+                        <p id="detalhe-categoria-mobile" class="text-body-sm font-body-sm text-on-surface-variant mb-xs"></p>
+                        <p id="detalhe-aviso-prioridade-mobile" class="text-body-sm font-body-sm text-outline hidden">Prioridade aguardando definição pelo moderador.</p>
+                    </section>
                     <section>
                         <h4 class="text-label-md font-label-md text-on-surface-variant uppercase mb-sm">Descrição do Problema</h4>
                         <p id="detalhe-descricao-mobile" class="text-body-md font-body-md text-on-surface bg-surface p-md rounded-lg border border-outline-variant whitespace-pre-wrap"></p>
