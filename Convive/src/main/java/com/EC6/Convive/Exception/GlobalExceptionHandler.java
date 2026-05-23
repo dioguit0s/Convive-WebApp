@@ -23,6 +23,6 @@ public class GlobalExceptionHandler {
         System.err.println("[" + codigoErro + "] " + ex.getMessage());
         ex.printStackTrace();
         
-        return "error";
+        return "public/error";
     }
 }
