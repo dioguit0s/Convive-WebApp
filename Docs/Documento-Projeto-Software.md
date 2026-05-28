@@ -727,7 +727,7 @@ Cenário C — Erro de validação:
 
 ## Apêndice: Link para o Repositório do Projeto
 
-**Repositório LP2:** [Inserir o link do repositório do projeto de LP2 aqui]
+**Repositório LP2:** [[repositorio Convive](https://github.com/dioguit0s/Convive-WebApp)]
 
 ---
 
@@ -739,8 +739,7 @@ Cenário C — Erro de validação:
 | Design system | `Docs/Design.md` |
 | Configuração de segurança | `Convive/src/main/java/com/EC6/Convive/Config/SecurityConfig.java` |
 | Entidades JPA | `Convive/src/main/java/com/EC6/Convive/Model/` |
+| Diagramas em mermaid | `Docs/Diagramas/*` |
 | Autores | Diogo Santos Rodrigues, Leonardo Rosário Teixeira |
 
 ---
-
-*Documento gerado com base no estado atual do repositório Convive-WebApp. Autenticação documentada como sessão HTTP (form login); tokens JWT não fazem parte do escopo implementado.*
