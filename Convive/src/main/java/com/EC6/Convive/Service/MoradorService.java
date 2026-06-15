@@ -58,6 +58,7 @@ public class MoradorService {
         moradorExistente.setNome(moradorAtualizado.getNome());
         moradorExistente.setEmail(moradorAtualizado.getEmail());
         moradorExistente.setApartamento(moradorAtualizado.getApartamento());
+        moradorExistente.setInadimplente(moradorAtualizado.isInadimplente());
 
         return moradorRepository.save(moradorExistente);
     }

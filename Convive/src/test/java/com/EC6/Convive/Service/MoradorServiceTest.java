@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,6 +43,28 @@ public class MoradorServiceTest {
         when(moradorRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(RuntimeException.class, () -> moradorService.searchById(id));
+    }
+
+    @Test
+    void moradorService_Update_PersisteInadimplente() {
+        UUID id = UUID.randomUUID();
+        Morador existente = new Morador();
+        existente.setId(id);
+        existente.setInadimplente(true);
+
+        Morador atualizado = new Morador();
+        atualizado.setNome("Maria");
+        atualizado.setEmail("maria@test.com");
+        atualizado.setApartamento(202);
+        atualizado.setInadimplente(false);
+
+        when(moradorRepository.findById(id)).thenReturn(Optional.of(existente));
+        when(moradorRepository.save(any(Morador.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Morador salvo = moradorService.update(id, atualizado);
+
+        assertFalse(salvo.isInadimplente());
+        verify(moradorRepository).save(existente);
     }
 }
 
