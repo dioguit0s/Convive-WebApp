@@ -20,6 +20,8 @@ import java.util.UUID;
 public interface OcorrenciaRepository extends JpaRepository<Ocorrencia, UUID> {
     List<Ocorrencia> findByUsuarioId(UUID moradorId);
 
+    Optional<Ocorrencia> findByIdAndUsuario_Id(UUID id, UUID usuarioId);
+
     Page<Ocorrencia> findByUsuarioIdOrderByDataRegistroDesc(UUID moradorId, Pageable pageable);
 
     @Query("""

@@ -1,0 +1,41 @@
+services:
+  app:
+    build:
+      context: ./Convive
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/convive
+      SPRING_DATASOURCE_USERNAME: convive
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-convive}
+      APP_REMEMBER_ME_KEY: ${APP_REMEMBER_ME_KEY:?defina uma chave secreta em .env}
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:8085}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      APP_CONTACT_TO: ${APP_CONTACT_TO:-}
+    volumes:
+      - uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: convive
+      POSTGRES_USER: convive
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-convive}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U convive -d convive"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  db-data:
+  uploads:

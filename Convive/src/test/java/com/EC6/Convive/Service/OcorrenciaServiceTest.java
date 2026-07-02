@@ -2,6 +2,7 @@ package com.EC6.Convive.Service;
 
 import com.EC6.Convive.Event.OcorrenciaCriadaEvent;
 import com.EC6.Convive.Model.CategoriaOcorrencia;
+import com.EC6.Convive.Model.Moderador;
 import com.EC6.Convive.Model.Morador;
 import com.EC6.Convive.Model.Ocorrencia;
 import com.EC6.Convive.Model.Prioridade;
@@ -20,6 +21,8 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -141,5 +144,54 @@ public class OcorrenciaServiceTest {
         Ocorrencia atualizada = ocorrenciaService.update(ocorrencia);
 
         assertEquals(Prioridade.BAIXA, atualizada.getPrioridade());
+    }
+
+    @Test
+    void ocorrenciaService_DeleteForUser_MoradorAutor_Sucesso() {
+        UUID ocorrenciaId = UUID.randomUUID();
+        UUID usuarioId = UUID.randomUUID();
+        Morador morador = new Morador();
+        morador.setId(usuarioId);
+        Ocorrencia ocorrencia = new Ocorrencia();
+
+        when(ocorrenciaRepository.findByIdAndUsuario_Id(ocorrenciaId, usuarioId))
+                .thenReturn(Optional.of(ocorrencia));
+
+        boolean resultado = ocorrenciaService.deleteForUser(ocorrenciaId, morador);
+
+        assertTrue(resultado);
+        verify(ocorrenciaRepository, times(1)).delete(ocorrencia);
+    }
+
+    @Test
+    void ocorrenciaService_DeleteForUser_MoradorNaoAutor_Falha() {
+        UUID ocorrenciaId = UUID.randomUUID();
+        UUID usuarioId = UUID.randomUUID();
+        Morador morador = new Morador();
+        morador.setId(usuarioId);
+
+        when(ocorrenciaRepository.findByIdAndUsuario_Id(ocorrenciaId, usuarioId))
+                .thenReturn(Optional.empty());
+
+        boolean resultado = ocorrenciaService.deleteForUser(ocorrenciaId, morador);
+
+        assertFalse(resultado);
+        verify(ocorrenciaRepository, never()).delete(any());
+    }
+
+    @Test
+    void ocorrenciaService_DeleteForUser_Moderador_Sucesso() {
+        UUID ocorrenciaId = UUID.randomUUID();
+        Moderador moderador = new Moderador();
+        moderador.setId(UUID.randomUUID());
+        Ocorrencia ocorrencia = new Ocorrencia();
+
+        when(ocorrenciaRepository.findById(ocorrenciaId)).thenReturn(Optional.of(ocorrencia));
+
+        boolean resultado = ocorrenciaService.deleteForUser(ocorrenciaId, moderador);
+
+        assertTrue(resultado);
+        verify(ocorrenciaRepository, times(1)).delete(ocorrencia);
+        verify(ocorrenciaRepository, never()).findByIdAndUsuario_Id(any(), any());
     }
 }

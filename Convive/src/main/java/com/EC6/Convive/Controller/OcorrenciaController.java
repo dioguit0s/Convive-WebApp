@@ -104,12 +104,15 @@ public class OcorrenciaController {
     }
 
     @PostMapping("/excluir")
-    public String excluirOcorrencia(@RequestParam UUID id, RedirectAttributes redirectAttributes) {
-        try {
-            ocorrenciaService.delete(id);
+    public String excluirOcorrencia(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam UUID id,
+            RedirectAttributes redirectAttributes) {
+        Usuario usuario = userDetails.getUsuario();
+        if (ocorrenciaService.deleteForUser(id, usuario)) {
             redirectAttributes.addFlashAttribute("sucessoOcorrencia", "Ocorrência eliminada com sucesso.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("erroOcorrencia", "Erro ao eliminar a ocorrência.");
+        } else {
+            redirectAttributes.addFlashAttribute("erroOcorrencia", "Não foi possível eliminar esta ocorrência.");
         }
         return "redirect:/morador/ocorrencias";
     }

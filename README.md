@@ -1,70 +1,100 @@
 # 🏢 Convive - Plataforma de Gestão Condominial
 
-O **Convive** é um sistema web robusto projetado para modernizar, centralizar e facilitar a convivência e a administração de condomínios. Desenvolvido com foco na eficiência operacional e na clareza de comunicação, a plataforma conecta moradores e a administração (síndicos/moderadores) de forma ágil e segura.
+[![CI](https://github.com/dioguit0s/Convive-WebApp/actions/workflows/ci.yml/badge.svg)](https://github.com/dioguit0s/Convive-WebApp/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-## ✨ Funcionalidades Principais
+O **Convive** é uma alternativa **open source e self-hosted** aos sistemas de gestão condominial pagos. Roda na sua própria infraestrutura, com o código-fonte completo aberto — sem mensalidade, sem vendor lock-in.
 
-A aplicação é dividida em dois domínios principais de acesso, garantindo a separação de responsabilidades e segurança através do Spring Security:
+> **Estado do projeto:** nasceu como projeto de faculdade e hoje é mantido como software livre. Cobre o essencial da gestão condominial (comunicados, reservas de áreas comuns, ocorrências, notificações); recursos como pagamentos, portaria e app mobile ainda não existem — veja [Roadmap](#-roadmap).
+
+## 📸 Telas
+
+| Landing page | Dashboard do moderador | Portal do morador |
+|---|---|---|
+| ![Landing page do Convive](Convive/src/main/resources/static/img/screenshots/landing.png) | ![Dashboard do moderador](Convive/src/main/resources/static/img/screenshots/dashboard-moderador.png) | ![Portal do morador](Convive/src/main/resources/static/img/screenshots/portal-morador.png) |
+
+## 🚀 Quickstart (self-hosted)
+
+Pré-requisito: [Docker](https://docs.docker.com/get-docker/) e Docker Compose.
+
+```bash
+git clone https://github.com/dioguit0s/Convive-WebApp.git
+cd Convive-WebApp
+cp .env.example .env   # edite e defina APP_REMEMBER_ME_KEY e demais variáveis
+docker compose up --build
+```
+
+A aplicação sobe em `http://localhost:8085` já com dados de exemplo (moradores, áreas comuns, reservas, ocorrências e comunicados fictícios) — veja as credenciais de teste no log de inicialização do container `app`.
+
+Para rodar localmente sem Docker (perfil de desenvolvimento com banco H2 embutido):
+
+```bash
+cd Convive
+./mvnw spring-boot:run
+```
+
+## ✨ Funcionalidades
+
+A aplicação é dividida em dois domínios principais de acesso, com separação de responsabilidades via Spring Security:
 
 ### 👤 Portal do Morador
 
-* **Home/Mural**: Visualização de comunicados importantes emitidos pela administração.
-* **Gestão de Reservas**: Interface para solicitação, visualização e cancelamento de reservas de áreas comuns (ex: salão de festas, churrasqueira).
-* **Ocorrências**: Abertura e acompanhamento do status de ocorrências, reclamações ou sugestões.
-* **Notificações**: Central de alertas em tempo real sobre mudanças de status nas solicitações.
+* **Home/Mural**: visualização de comunicados importantes emitidos pela administração.
+* **Gestão de Reservas**: solicitação, visualização e cancelamento de reservas de áreas comuns.
+* **Ocorrências**: abertura e acompanhamento de ocorrências, reclamações ou sugestões.
+* **Notificações**: central de alertas sobre mudanças de status nas solicitações.
 
-### 🛡️ Dashboard Operacional (Moderador)
+### 🛡️ Dashboard Operacional (Moderador/Síndico)
 
-* **Visão Geral**: Dashboard com métricas e gráficos de uso do condomínio.
-* **Triagem de Reservas**: Aprovação, rejeição e gerenciamento de conflitos de agenda nas áreas comuns.
-* **Triagem de Ocorrências**: Análise, mudança de status e resolução de problemas relatados pelos moradores.
-* **Gestão de Moradores**: Controle de usuários, envio de advertências e gerenciamento de perfis.
-* **Comunicação**: Criação e disparo de comunicados globais.
+* **Visão Geral**: dashboard com métricas e gráficos de uso do condomínio.
+* **Triagem de Reservas**: aprovação, rejeição e gerenciamento de conflitos de agenda.
+* **Triagem de Ocorrências**: análise, mudança de status e resolução de problemas relatados.
+* **Gestão de Moradores**: controle de usuários, advertências e perfis, incluindo flag de inadimplência.
+* **Comunicação**: criação e disparo de comunicados globais.
 
 ### ⚙️ Recursos de Sistema
 
-* **Event-Driven Notifications**: Uso de *Application Events* do Spring (`OcorrenciaCriadaEvent`, `ReservaRejeitadaEvent`, etc.) para desacoplar a lógica de negócio do envio de e-mails.
-* **Recuperação de Senha**: Fluxo completo de *Forgot Password* com geração de tokens seguros e envio de links por e-mail.
-* **CI/CD Integrado**: Pipelines configuradas via GitHub Actions para integração e entrega contínuas.
+* **Event-Driven Notifications**: *Application Events* do Spring (`OcorrenciaCriadaEvent`, `ReservaRejeitadaEvent`, etc.) para desacoplar regras de negócio do envio de e-mails.
+* **Recuperação de Senha**: fluxo completo de *forgot password* com tokens seguros por e-mail.
+* **CI**: pipeline via GitHub Actions rodando a suíte de testes em cada PR.
 
----
+## 🆚 Convive vs. SaaS de gestão condominial
+
+| | Convive (open source) | SaaS pago típico |
+|---|---|---|
+| Custo | Gratuito, você hospeda | Mensalidade por unidade/condomínio |
+| Código-fonte | Aberto (MIT) | Fechado |
+| Dados | Ficam na sua própria infraestrutura | Ficam com o fornecedor |
+| Suporte | Comunidade / issues no GitHub | Suporte contratado |
 
 ## 🛠️ Tecnologias e Arquitetura
 
-O projeto foi construído seguindo o padrão arquitetural **MVC (Model-View-Controller)**, priorizando código limpo e fácil manutenção, características essenciais de uma boa engenharia de software.
+Padrão **MVC (Model-View-Controller)** server-side, sem SPA.
 
-**Back-end:**
+**Back-end:** Java 21, Spring Boot 3.2 (Web, Data JPA, Security, Mail, Validation), Maven.
 
-* **Java 17+**
-* **Spring Boot** (Web, Data JPA, Security, Mail)
-* **Maven** (Gerenciamento de dependências)
+**Front-end:** Thymeleaf (Server-Side Rendering), HTML5, CSS3, JavaScript vanilla, TailwindCSS.
 
-**Front-end:**
-
-* **Thymeleaf** (Motor de templates para renderização Server-Side)
-* **HTML5, CSS3 e JavaScript (Vanilla)**
-* **TailwindCSS** (Estilização utilitária e design responsivo)
-
-**Infraestrutura & DevOps:**
-
-* **Banco de Dados Relacional** (Mapeamento via Hibernate/JPA)
-* **GitHub Actions** (Pipelines de CI/Deploy)
-
----
+**Infraestrutura:** PostgreSQL em produção (H2 embutido para desenvolvimento local), Docker/Docker Compose para self-hosting, GitHub Actions para CI.
 
 ## 📂 Estrutura do Projeto
 
-O back-end está organizado de forma modular no pacote `src/main/java/com/EC6/Convive/`:
+O back-end está organizado de forma modular no pacote `Convive/src/main/java/com/EC6/Convive/`:
 
-* `Config/`: Configurações globais de segurança (SecurityConfig), MVC e inicialização de dados.
-* `Controller/`: Controladores responsáveis por expor as rotas e gerenciar o fluxo das views (`Moderador`, `Morador`, `Public`).
-* `Model/`: Entidades de domínio mapeadas para o banco de dados (ex: `Usuario`, `Reserva`, `Ocorrencia`).
-* `Repository/`: Interfaces Spring Data JPA para acesso a dados.
-* `Service/`: Camada de regras de negócio isoladas das rotas web.
-* `Event/ & Listener/`: Implementação de padrão Observer para disparos de e-mail e notificações assíncronas.
-* `Security/`: Implementações customizadas de `UserDetailsService` para autenticação.
+* `Config/`: configurações globais de segurança (`SecurityConfig`), MVC e inicialização de dados (`DataInitializer`).
+* `Controller/`: rotas e fluxo das views (`Moderador`, `Morador`, `Public`).
+* `Model/`: entidades de domínio (`Usuario`, `Reserva`, `Ocorrencia`, etc.).
+* `Repository/`: interfaces Spring Data JPA.
+* `Service/`: regras de negócio isoladas das rotas web.
+* `Event/` & `Listener/`: padrão Observer para notificações assíncronas.
+* `Security/`: implementações customizadas de `UserDetailsService`.
 
----
+## 🗺️ Roadmap
+
+Itens em aberto e priorização estão rastreados nas [issues do repositório](https://github.com/dioguit0s/Convive-WebApp/issues).
+## 🤝 Contribuindo
+
+Issues e PRs são bem-vindos. Abra uma [issue](https://github.com/dioguit0s/Convive-WebApp/issues/new) descrevendo o problema ou a proposta antes de submeter um PR grande.
 
 ## 👨‍💻 Autores
 
@@ -76,8 +106,6 @@ O back-end está organizado de forma modular no pacote `src/main/java/com/EC6/Co
 *Engenheiro de Software*
 [GitHub](https://github.com/leonardorosario)
 
----
-
 ## 📄 Licença
 
-Este projeto está sob a licença [MIT](https://opensource.org/licenses/MIT). Sinta-se à vontade para utilizá-lo e modificá-lo.
+Este projeto está sob a licença [MIT](LICENSE). Sinta-se à vontade para utilizá-lo, modificá-lo e hospedá-lo.

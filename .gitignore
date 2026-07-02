@@ -33,6 +33,10 @@ build/
 ### VS Code ###
 .vscode/
 
+### Cursor ###
+.cursor/
+.cursor/rules/
+mvnw.cmd
 
 ### DATABASE ###
 /data/

@@ -195,25 +195,4 @@ public class MoradorHomeController {
             default -> throw new IllegalArgumentException("Turno inválido");
         };
     }
-
-    @PostMapping("/usuarios/{id}/inadimplencia")
-    public String alterarInadimplenciaUsuario(
-            @PathVariable UUID id,
-            @RequestParam boolean inadimplente,
-            RedirectAttributes redirectAttributes
-    ) {
-        try {
-            usuarioService.alterarInadimplencia(id, inadimplente);
-
-            if (inadimplente) {
-                redirectAttributes.addFlashAttribute("sucesso", "Morador marcado como INADIMPLENTE com sucesso.");
-            } else {
-                redirectAttributes.addFlashAttribute("sucesso", "Restrição removida. Morador agora está ADIMPLENTE.");
-            }
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("erro", "Erro ao tentar alterar o status do morador.");
-        }
-
-        return "redirect:/moderador/usuarios";
-    }
 }

@@ -33,8 +33,8 @@ public abstract class Usuario {
     @Column(name = "status")
     private String status;
 
-    @Column(name = "isInadimplente")
-    private boolean isInadimplente = true;
+    @Column(name = "isInadimplente", nullable = false)
+    private boolean isInadimplente = false;
 
     @Column(name = "fotoPerfil")
     private String fotoPerfil;

@@ -1,9 +1,11 @@
 package com.EC6.Convive.Service;
 
 import com.EC6.Convive.Event.OcorrenciaCriadaEvent;
+import com.EC6.Convive.Model.Moderador;
 import com.EC6.Convive.Model.Ocorrencia;
 import com.EC6.Convive.Model.Prioridade;
 import com.EC6.Convive.Model.StatusOcorrencia;
+import com.EC6.Convive.Model.Usuario;
 import com.EC6.Convive.Repository.OcorrenciaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -81,6 +83,20 @@ public class OcorrenciaService {
 
     public void delete(UUID id) {
         ocorrenciaRepository.deleteById(id);
+    }
+
+    public boolean deleteForUser(UUID ocorrenciaId, Usuario usuario) {
+        Optional<Ocorrencia> ocorrencia;
+        if (usuario instanceof Moderador) {
+            ocorrencia = ocorrenciaRepository.findById(ocorrenciaId);
+        } else {
+            ocorrencia = ocorrenciaRepository.findByIdAndUsuario_Id(ocorrenciaId, usuario.getId());
+        }
+        if (ocorrencia.isEmpty()) {
+            return false;
+        }
+        ocorrenciaRepository.delete(ocorrencia.get());
+        return true;
     }
 
     public List<Ocorrencia> listByUser(UUID moradorId) {
