@@ -68,9 +68,6 @@ public class ComunicadoController {
             } catch (Exception e) {
                 redirectAttributes.addFlashAttribute("erro", "Erro ao publicar aviso: " + e.getMessage());
             }
-
-            comunicadoService.insert(comunicado);
-            redirectAttributes.addFlashAttribute("sucesso", "Aviso publicado com sucesso!");
         } else {
             redirectAttributes.addFlashAttribute("erro", "Você não tem permissão para publicar comunicados.");
         }
@@ -79,13 +76,22 @@ public class ComunicadoController {
     }
 
     @PostMapping("/excluir")
-    public String excluirComunicado(@RequestParam UUID id, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
-        try {
-            comunicadoService.delete(id);
-            redirectAttributes.addFlashAttribute("sucesso", "Aviso excluído com sucesso.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("erro", "Erro ao excluir o aviso.");
+    public String excluirComunicado(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                      @RequestParam UUID id,
+                                      RedirectAttributes redirectAttributes) {
+        Usuario usuario = userDetails.getUsuario();
+
+        if (usuario instanceof Moderador) {
+            try {
+                comunicadoService.delete(id);
+                redirectAttributes.addFlashAttribute("sucesso", "Aviso excluído com sucesso.");
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("erro", "Erro ao excluir o aviso.");
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("erro", "Você não tem permissão para excluir comunicados.");
         }
+
         return "redirect:/morador/comunicados";
     }
 

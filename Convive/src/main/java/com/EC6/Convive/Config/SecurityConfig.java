@@ -2,6 +2,7 @@ package com.EC6.Convive.Config;
 
 import com.EC6.Convive.Security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -19,19 +20,32 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
 
+    @Value("${spring.h2.console.enabled:false}")
+    private boolean h2ConsoleEnabled;
+
+    @Value("${app.remember-me.key:chave-secreta-unica-do-projeto-convive}")
+    private String rememberMeKey;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/login", "/features", "/about", "/contact",
-                                "/forgot-password", "/reset-password").permitAll()
-                        .requestMatchers("/css/**", "/js/**", "/img/**", "/h2-console/**").permitAll()
+                .authorizeHttpRequests(authorize -> {
+                    authorize
+                            .requestMatchers("/", "/login", "/features", "/about", "/contact",
+                                    "/privacy", "/terms",
+                                    "/forgot-password", "/reset-password").permitAll()
+                            .requestMatchers("/css/**", "/js/**", "/img/**").permitAll();
 
-                        .requestMatchers("/morador/**").hasAnyRole("MORADOR", "MODERADOR")
-                        .requestMatchers("/moderador/**").hasRole("MODERADOR")
+                    if (h2ConsoleEnabled) {
+                        authorize.requestMatchers("/h2-console/**").permitAll();
+                    }
 
-                        .anyRequest().authenticated()
-                )
+                    authorize
+                            .requestMatchers("/morador/**").hasAnyRole("MORADOR", "MODERADOR")
+                            .requestMatchers("/moderador/**").hasRole("MODERADOR")
+
+                            .anyRequest().authenticated();
+                })
                 .formLogin(form -> form
                         .loginPage("/login")
                         .usernameParameter("email")
@@ -40,7 +54,7 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .rememberMe(remember -> remember
-                        .key("chave-secreta-unica-do-projeto-convive")
+                        .key(rememberMeKey)
                         .userDetailsService(userDetailsService)
                         .rememberMeParameter("remember-me")
                         .tokenValiditySeconds(7 * 24 * 60 * 60)
@@ -50,8 +64,18 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 )
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
-                .headers(headers -> headers.frameOptions(frame -> frame.disable()));
+                .csrf(csrf -> {
+                    if (h2ConsoleEnabled) {
+                        csrf.ignoringRequestMatchers("/h2-console/**");
+                    }
+                })
+                .headers(headers -> {
+                    if (h2ConsoleEnabled) {
+                        // O console do H2 roda em um iframe; so relaxamos a protecao de clickjacking
+                        // quando ele esta habilitado (nunca em producao).
+                        headers.frameOptions(frame -> frame.disable());
+                    }
+                });
 
         return http.build();
     }

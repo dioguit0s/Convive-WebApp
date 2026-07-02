@@ -17,4 +17,10 @@ public class IndexController {
     @GetMapping("/about")
     public String about() {return "public/about";}
 
+    @GetMapping("/privacy")
+    public String privacy() {return "public/privacy";}
+
+    @GetMapping("/terms")
+    public String terms() {return "public/terms";}
+
 }
