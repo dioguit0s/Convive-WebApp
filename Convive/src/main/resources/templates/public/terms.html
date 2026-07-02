@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Termos de Uso - Convive</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script th:src="@{/js/tailwindTheme.js}"></script>
+
+    <link rel="stylesheet" th:href="@{/css/landing.css}"/>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased">
+
+<div th:replace="~{fragments/public/components :: navbar}"></div>
+
+<main class="pt-[80px]">
+    <section class="px-4 sm:px-6 md:px-margin py-xl">
+        <div class="max-w-3xl mx-auto">
+            <h1 class="font-display text-display text-on-background mb-md">Termos de Uso</h1>
+            <p class="font-body-md text-body-md text-on-surface-variant mb-lg">Última atualização: julho de 2026.</p>
+
+            <div class="space-y-lg font-body-md text-body-md text-on-surface-variant">
+                <div>
+                    <h2 class="font-h2 text-h2 text-on-surface mb-sm">O que é o Convive</h2>
+                    <p>
+                        O Convive é um software livre, distribuído sob a licença
+                        <a href="https://github.com/dioguit0s/Convive-WebApp/blob/main/LICENSE" target="_blank" rel="noopener" class="underline hover:text-primary">MIT</a>.
+                        Qualquer pessoa pode obter o código-fonte, instalar e operar sua própria instância.
+                    </p>
+                </div>
+
+                <div>
+                    <h2 class="font-h2 text-h2 text-on-surface mb-sm">Sem garantias</h2>
+                    <p>
+                        Assim como a maioria dos projetos open source, o Convive é fornecido "no estado em que se
+                        encontra" (as-is), sem garantias de qualquer tipo, conforme os termos da licença MIT. Os
+                        mantenedores do projeto não se responsabilizam por perdas, danos ou indisponibilidade
+                        decorrentes do uso da aplicação em instâncias de terceiros.
+                    </p>
+                </div>
+
+                <div>
+                    <h2 class="font-h2 text-h2 text-on-surface mb-sm">Responsabilidade pela instância</h2>
+                    <p>
+                        Quem instala e opera uma instância do Convive é responsável por essa instância: segurança do
+                        servidor, backups, conformidade legal (incluindo LGPD) e relacionamento com os
+                        usuários/moradores que a utilizam. Os mantenedores do projeto no GitHub não têm acesso nem
+                        controle sobre instâncias de terceiros.
+                    </p>
+                </div>
+
+                <div>
+                    <h2 class="font-h2 text-h2 text-on-surface mb-sm">Uso aceitável</h2>
+                    <p>
+                        Ao usar uma instância do Convive, espera-se que você forneça informações verdadeiras e não
+                        utilize o sistema para fins ilícitos, ofensivos ou que violem direitos de terceiros.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/public/components :: footer}"></div>
+
+</body>
+</html>

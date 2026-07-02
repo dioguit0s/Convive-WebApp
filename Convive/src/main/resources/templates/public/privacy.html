@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Política de Privacidade - Convive</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script th:src="@{/js/tailwindTheme.js}"></script>
+
+    <link rel="stylesheet" th:href="@{/css/landing.css}"/>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased">
+
+<div th:replace="~{fragments/public/components :: navbar}"></div>
+
+<main class="pt-[80px]">
+    <section class="px-4 sm:px-6 md:px-margin py-xl">
+        <div class="max-w-3xl mx-auto">
+            <h1 class="font-display text-display text-on-background mb-md">Política de Privacidade</h1>
+            <p class="font-body-md text-body-md text-on-surface-variant mb-lg">Última atualização: julho de 2026.</p>
+
+            <div class="space-y-lg font-body-md text-body-md text-on-surface-variant">
+                <p>
+                    O Convive é um software <strong>open source e self-hosted</strong>: o código é público, e cada
+                    condomínio (ou pessoa) que o instala roda a própria cópia, no próprio servidor. Isso significa que
+                    <strong>não existe uma empresa Convive processando dados centralmente</strong> — quem controla os
+                    dados desta instância é quem administra o servidor onde ela está rodando (geralmente o síndico ou
+                    responsável técnico do condomínio).
+                </p>
+
+                <div>
+                    <h2 class="font-h2 text-h2 text-on-surface mb-sm">Quais dados são armazenados</h2>
+                    <ul class="list-disc pl-lg space-y-xs">
+                        <li>Dados de cadastro: nome, e-mail, apartamento e senha (armazenada com hash, nunca em texto puro).</li>
+                        <li>Conteúdo gerado pelo uso: reservas de áreas comuns, ocorrências registradas, comunicados e notificações.</li>
+                        <li>Foto de perfil e anexos enviados voluntariamente pelo usuário.</li>
+                        <li>Cookies estritamente funcionais: sessão de login e "lembrar-me" (nenhum cookie de rastreamento/publicidade).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h2 class="font-h2 text-h2 text-on-surface mb-sm">Com quem os dados são compartilhados</h2>
+                    <p>
+                        Por padrão, com ninguém fora da própria instância. O único envio a terceiros é o e-mail
+                        transacional (recuperação de senha, notificações) via o servidor SMTP configurado pelo
+                        administrador da instância.
+                    </p>
+                </div>
+
+                <div>
+                    <h2 class="font-h2 text-h2 text-on-surface mb-sm">Seus direitos</h2>
+                    <p>
+                        Para acessar, corrigir ou solicitar a exclusão dos seus dados, entre em contato com quem
+                        administra o condomínio/instância que você utiliza — normalmente pelo canal de
+                        <a th:href="@{/contact}" class="underline hover:text-primary">contato</a> desta própria aplicação.
+                    </p>
+                </div>
+
+                <div>
+                    <h2 class="font-h2 text-h2 text-on-surface mb-sm">Código aberto</h2>
+                    <p>
+                        Como o projeto é open source, você pode inspecionar exatamente como os dados são tratados no
+                        <a href="https://github.com/dioguit0s/Convive-WebApp" target="_blank" rel="noopener" class="underline hover:text-primary">repositório público no GitHub</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/public/components :: footer}"></div>
+
+</body>
+</html>
