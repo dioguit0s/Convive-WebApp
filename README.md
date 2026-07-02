@@ -7,6 +7,12 @@ O **Convive** é uma alternativa **open source e self-hosted** aos sistemas de g
 
 > **Estado do projeto:** nasceu como projeto de faculdade e hoje é mantido como software livre. Cobre o essencial da gestão condominial (comunicados, reservas de áreas comuns, ocorrências, notificações); recursos como pagamentos, portaria e app mobile ainda não existem — veja [Roadmap](#-roadmap).
 
+## 📸 Telas
+
+| Landing page | Dashboard do moderador | Portal do morador |
+|---|---|---|
+| ![Landing page do Convive](Convive/src/main/resources/static/img/screenshots/landing.png) | ![Dashboard do moderador](Convive/src/main/resources/static/img/screenshots/dashboard-moderador.png) | ![Portal do morador](Convive/src/main/resources/static/img/screenshots/portal-morador.png) |
+
 ## 🚀 Quickstart (self-hosted)
 
 Pré-requisito: [Docker](https://docs.docker.com/get-docker/) e Docker Compose.

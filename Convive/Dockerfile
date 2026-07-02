@@ -13,7 +13,7 @@ RUN ./mvnw -B clean package -DskipTests
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 
-RUN useradd -r -u 1000 convive \
+RUN useradd -r convive \
     && mkdir -p /app/uploads \
     && chown -R convive:convive /app
 
