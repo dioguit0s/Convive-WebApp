@@ -3,7 +3,7 @@
 [![CI](https://github.com/dioguit0s/Convive-WebApp/actions/workflows/ci.yml/badge.svg)](https://github.com/dioguit0s/Convive-WebApp/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-O **Convive** é uma alternativa **open source e self-hosted** aos sistemas de gestão condominial pagos (SuperLógica, Condofy, TownSq etc.). Roda na sua própria infraestrutura, com o código-fonte completo aberto — sem mensalidade, sem vendor lock-in.
+O **Convive** é uma alternativa **open source e self-hosted** aos sistemas de gestão condominial pagos. Roda na sua própria infraestrutura, com o código-fonte completo aberto — sem mensalidade, sem vendor lock-in.
 
 > **Estado do projeto:** nasceu como projeto de faculdade e hoje é mantido como software livre. Cobre o essencial da gestão condominial (comunicados, reservas de áreas comuns, ocorrências, notificações); recursos como pagamentos, portaria e app mobile ainda não existem — veja [Roadmap](#-roadmap).
 
@@ -59,7 +59,6 @@ A aplicação é dividida em dois domínios principais de acesso, com separaçã
 | Custo | Gratuito, você hospeda | Mensalidade por unidade/condomínio |
 | Código-fonte | Aberto (MIT) | Fechado |
 | Dados | Ficam na sua própria infraestrutura | Ficam com o fornecedor |
-| Pagamentos, portaria, app mobile | No roadmap, ainda não implementados | Geralmente incluídos |
 | Suporte | Comunidade / issues no GitHub | Suporte contratado |
 
 ## 🛠️ Tecnologias e Arquitetura
@@ -86,8 +85,7 @@ O back-end está organizado de forma modular no pacote `Convive/src/main/java/co
 
 ## 🗺️ Roadmap
 
-Itens em aberto e priorização estão rastreados nas [issues do repositório](https://github.com/dioguit0s/Convive-WebApp/issues). Não há um plano de multi-tenant/SaaS hospedado no momento — o foco é a versão self-hosted de instância única por condomínio.
-
+Itens em aberto e priorização estão rastreados nas [issues do repositório](https://github.com/dioguit0s/Convive-WebApp/issues).
 ## 🤝 Contribuindo
 
 Issues e PRs são bem-vindos. Abra uma [issue](https://github.com/dioguit0s/Convive-WebApp/issues/new) descrevendo o problema ou a proposta antes de submeter um PR grande.
