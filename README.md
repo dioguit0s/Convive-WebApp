@@ -7,6 +7,24 @@ O **Convive** é uma alternativa **open source e self-hosted** aos sistemas de g
 
 > **Estado do projeto:** nasceu como projeto de faculdade e hoje é mantido como software livre. Cobre o essencial da gestão condominial (comunicados, reservas de áreas comuns, ocorrências, notificações); recursos como pagamentos, portaria e app mobile ainda não existem — veja [Roadmap](#-roadmap).
 
+## 🌐 Ambiente de Demonstração (Live Demo)
+
+Quer testar o Convive na prática antes de hospedar? Acesse nosso ambiente de demonstração:
+
+👉 **[http://convive.homelab-server.space/](http://convive.homelab-server.space/)**
+
+Utilize as credenciais abaixo para explorar os diferentes painéis de acesso:
+
+**Acesso Moderador / Síndico:**
+* **E-mail:** `moderador@convive.com`
+* **Senha:** `moderador123`
+
+**Acesso Morador:**
+* **E-mail:** `morador@convive.com`
+* **Senha:** ``
+
+*(Nota: O banco de dados de demonstração contém dados fictícios e pode ser resetado periodicamente).*
+
 ## 📸 Telas
 
 | Landing page | Dashboard do moderador | Portal do morador |
