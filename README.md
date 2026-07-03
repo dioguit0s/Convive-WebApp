@@ -44,6 +44,8 @@ docker compose up --build
 
 A aplicação sobe em `http://localhost:8085` já com dados de exemplo (moradores, áreas comuns, reservas, ocorrências e comunicados fictícios) — veja as credenciais de teste no log de inicialização do container `app`.
 
+> ⚠️ **Atenção ao hospedar em produção:** a aplicação sobe sempre com uma conta de moderador de demonstração (`moderador@convive.com` / `moderador123`), mesmo fora do ambiente de testes. Essa senha está documentada publicamente neste README — se for expor a aplicação na internet, **troque a senha (ou remova a conta) imediatamente após o primeiro login**.
+
 Para rodar localmente sem Docker (perfil de desenvolvimento com banco H2 embutido):
 
 ```bash
@@ -89,7 +91,7 @@ A aplicação é dividida em dois domínios principais de acesso, com separaçã
 
 Padrão **MVC (Model-View-Controller)** server-side, sem SPA.
 
-**Back-end:** Java 21, Spring Boot 3.2 (Web, Data JPA, Security, Mail, Validation), Maven.
+**Back-end:** Java 21 (compilado e testado em CI com JDK 23 Temurin), Spring Boot 3.2 (Web, Data JPA, Security, Mail, Validation), Maven.
 
 **Front-end:** Thymeleaf (Server-Side Rendering), HTML5, CSS3, JavaScript vanilla, TailwindCSS.
 
