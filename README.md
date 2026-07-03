@@ -20,8 +20,8 @@ Utilize as credenciais abaixo para explorar os diferentes painéis de acesso:
 * **Senha:** `moderador123`
 
 **Acesso Morador:**
-* **E-mail:** `morador@convive.com`
-* **Senha:** ``
+* **E-mail:** `carlos.mendes@email.com`
+* **Senha:** `123`
 
 *(Nota: O banco de dados de demonstração contém dados fictícios e pode ser resetado periodicamente).*
 
