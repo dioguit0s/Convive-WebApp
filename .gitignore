@@ -42,3 +42,6 @@ mvnw.cmd
 /data/
 *.db
 /uploads/
+
+### Node ###
+node_modules/
